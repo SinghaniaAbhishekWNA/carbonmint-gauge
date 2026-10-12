@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Gauge reader v1: the 79.7% figure</title>
+<style>
+@page { size: Letter; margin: 18mm 17mm 18mm 17mm; @bottom-right { content: "Page " counter(page) " of " counter(pages); font: 8.5pt "Segoe UI", sans-serif; color: #5b6862; } }
+:root { --ink: #1c2420; --muted: #5b6862; --line: #d5ddd8; --accent: #b3262d; --ok: #2f7d4a; --soft: #f3f6f4; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #fff; color: var(--ink); font: 10.5pt/1.5 "Segoe UI", system-ui, sans-serif; }
+h1 { font-size: 21pt; line-height: 1.2; margin: 0 0 4pt; }
+h2 { font-size: 14pt; margin: 20pt 0 6pt; padding-top: 6pt; border-top: 1.5pt solid var(--ink); break-after: avoid; }
+p { margin: 0 0 7pt; }
+.meta { color: var(--muted); font-size: 9.5pt; margin-bottom: 12pt; }
+.lede { font-size: 11.5pt; }
+ul, ol { margin: 0 0 8pt; padding-left: 18pt; }
+li { margin-bottom: 3pt; }
+table { width: 100%; border-collapse: collapse; margin: 6pt 0 10pt; font-size: 9.5pt; break-inside: avoid; }
+th, td { text-align: left; vertical-align: top; padding: 5pt 7pt; border-bottom: 0.75pt solid var(--line); }
+th { background: var(--soft); font-weight: 600; }
+td.num, th.num { text-align: right; white-space: nowrap; }
+tr.total td { font-weight: 700; border-top: 1.25pt solid var(--ink); }
+.kpis { display: flex; gap: 10pt; margin: 10pt 0 12pt; }
+.kpi { flex: 1; border: 0.75pt solid var(--line); border-radius: 5pt; padding: 8pt 10pt; }
+.kpi b { display: block; font-size: 18pt; line-height: 1.1; }
+.kpi span { color: var(--muted); font-size: 8.8pt; }
+.kpi.v1 b { color: var(--ok); }
+.note { border-left: 3pt solid var(--accent); background: var(--soft); padding: 6pt 10pt; margin: 8pt 0 10pt; font-size: 9.5pt; break-inside: avoid; }
+.small { font-size: 9pt; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<h1>Gauge reader v1: the 79.7% figure, explained</h1>
+<div class="meta">Companion to the v1 service report &middot; CarbonMint water-gauge reader &middot; Oct 12, 2026</div>
+
+<p class="lede">The v1 service report gives v1's accuracy as <b>76.4%</b>: 97 of 127 photos accepted with an <b>exactly</b> correct stripe count. Some pilot results are reported with a looser rule. Scored that way, the same v1, with no change to the system, gets <b>94 of 118 photos (79.7%)</b>. This note explains the looser rule, gives the full breakdown, and shows where the 3.3-point difference comes from.</p>
+
+<div class="kpis">
+ <div class="kpi"><b>76.4%</b><span>strict rule: exact count, all 127 photos (97)</span></div>
+ <div class="kpi v1"><b>79.7%</b><span>looser rule: tolerance, 118 countable photos (94)</span></div>
+ <div class="kpi"><b>17.8%</b><span>v0 under the looser rule (21 of 118)</span></div>
+</div>
+
+<h2>Two ways to score the same readings</h2>
+<table>
+ <thead><tr><th></th><th>Strict rule (the service report)</th><th>Looser rule (this note)</th></tr></thead>
+ <tbody>
+  <tr><td>A photo counts when</td><td>It is accepted and its stripe count matches the hand count exactly</td><td>It is accepted and its stripe count is within the hand count's tolerance</td></tr>
+  <tr><td>Tolerance</td><td>None</td><td>&plusmn;1 stripe where the hand count is exact (55 photos); &plusmn;3 stripes where it is an estimate on a tall stem (63 photos)</td></tr>
+  <tr><td>Photos scored</td><td>All 127</td><td>118: the 9 photos whose gauge can't be counted by eye are left out</td></tr>
+  <tr><td>Answer key</td><td>Ours: whole stripes, checked by a person (15 of 15 in the second round)</td><td>The key that comes with the looser rule: counted by eye and recounted once at full resolution</td></tr>
+ </tbody>
+</table>
+<p class="small">The looser rule's key covers 128 photos. One of them (a partly hidden photo) is not in our copy of the pilot data, so this note scores 118 of its 119 countable photos.</p>
+
+<h2>Results under the looser rule</h2>
+<p>Both readers, the same rule, the same key. The visibility sets come with the key.</p>
+<table>
+ <thead><tr><th>Photos</th><th class="num">v0</th><th class="num">v1</th></tr></thead>
+ <tbody>
+  <tr><td>Clear (59)</td><td class="num">17 = 28.8%</td><td class="num">45 = 76.3%</td></tr>
+  <tr><td>Partly hidden (38)</td><td class="num">4 = 10.5%</td><td class="num">30 = 78.9%</td></tr>
+  <tr><td>Hard (21)</td><td class="num">0 = 0%</td><td class="num">19 = 90.5%</td></tr>
+  <tr class="total"><td>All (118)</td><td class="num">21 = 17.8%</td><td class="num">94 = 79.7%</td></tr>
+  <tr><td>Accepted</td><td class="num">46</td><td class="num">107</td></tr>
+  <tr><td>Accepted but outside the tolerance</td><td class="num">25</td><td class="num">13</td></tr>
+  <tr><td>Hand count exact (55): within &plusmn;1</td><td class="num">13</td><td class="num">50</td></tr>
+  <tr><td>Hand count estimated (63): within &plusmn;3</td><td class="num">8</td><td class="num">44</td></tr>
+ </tbody>
+</table>
+<p>v0's result here, 21 photos, is the same as published elsewhere for v0 under this rule (21 of 119). That match shows the scoring is the same as the published one.</p>
+<p>For reference, the team's Image V1 reports <b>92 of 119 (77.3%)</b> under this rule: clear 84.7%, partly hidden 74.4%, hard 61.9%, with 11 accepted outside the tolerance. Image V1 does better on clear photos and makes slightly fewer confident mistakes. v1 does better on partly hidden and hard photos, and better overall.</p>
+
+<h2>From 76.4% to 79.7%: where the difference comes from</h2>
+<p>The looser rule changes two things: which photos are scored, and what counts as right. Most of the gain comes from the first.</p>
+<table>
+ <thead><tr><th>Step</th><th class="num">v1 photos counted</th><th class="num">Out of</th><th class="num">Share</th></tr></thead>
+ <tbody>
+  <tr><td>Strict rule, all photos</td><td class="num">97</td><td class="num">127</td><td class="num">76.4%</td></tr>
+  <tr><td>Leave out the 9 photos that can't be counted by eye (v1 had 4 of them exactly right)</td><td class="num">93</td><td class="num">118</td><td class="num">78.8%</td></tr>
+  <tr><td>Count readings within &plusmn;1 or &plusmn;3 of the other key: 7 photos that are not exact on our key now count</td><td class="num">+7</td><td class="num"></td><td class="num"></td></tr>
+  <tr><td>Use the other key: 6 photos that are exact on our key fall outside its tolerance</td><td class="num">&minus;6</td><td class="num"></td><td class="num"></td></tr>
+  <tr class="total"><td>Looser rule</td><td class="num">94</td><td class="num">118</td><td class="num">79.7%</td></tr>
+ </tbody>
+</table>
+<div class="note">Leaving out the 9 hardest photos moves the score from 76.4% to 78.8%. The tolerance itself adds only one photo, because the two answer keys disagree on several photos. Measured exactly on the same 118 photos with our key, v1 is right on 93 (78.8%).</div>
+
+<h2>The two answer keys</h2>
+<p>The two hand counts were made separately. On the 118 countable photos they agree exactly on 65, are 1 stripe apart on 29, 2 to 3 apart on 20, and more than 3 apart on 4. Most differences are on tall stems, where the other key's count is an estimate (38 of its 63 estimated photos differ from ours). That is why its rule allows &plusmn;3 there. Where a count is exact in the other key, the two keys agree on 40 of 55.</p>
+<p>Neither key is proven right where they differ; settling it means a third look at those photos. Our key was checked by a person against the photos in two rounds, so the strict figure is the one we stand behind.</p>
+
+<h2>Which number to quote</h2>
+<ul>
+ <li><b>76.4% (97 of 127)</b> is v1's headline. Every photo is counted and the count has to be exact. This is the number in the service report.</li>
+ <li><b>79.7% (94 of 118)</b> is the right number when comparing with results reported under the looser rule, such as Image V1's 77.3%. Always quote it with its rule: &ldquo;within &plusmn;1, or &plusmn;3 on estimated tall stems; 9 uncountable photos left out&rdquo;.</li>
+ <li>Under either rule, v1 is inside the 70&ndash;80% target and four to five times v0.</li>
+</ul>
+
+<h2>Limits</h2>
+<ul>
+ <li>Both figures are on the photos v1 was built on. The confidence model is always scored on a field it had not seen, but the reading rules were designed looking at these photos. A fresh batch is the real test.</li>
+ <li>Under the looser rule, a reading 3 stripes off on a tall stem still counts. For the water level that is up to about 3 cm (if 1 stripe = 1 cm, still unconfirmed), so the looser figure says less about the exact level than the strict one.</li>
+ <li>v1's confidence model was trained against our key, not the other key, which may slightly favour v1 under the strict rule. Image V1 was tuned against the other key, which may favour it under the looser rule.</li>
+</ul>
+
+</body>
+</html>
