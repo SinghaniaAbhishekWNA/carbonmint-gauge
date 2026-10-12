@@ -12,13 +12,17 @@ W = 1200          # hosted function size limit (250 MB with numpy+scipy) sets th
 OUT = Path("media_private/photos")
 
 
+def public_comparison():
+    c = json.load(open("data/comparison.json"))
+    return {"v0": c["v0 (company, rebuilt)"], "Colour method": c["Colour method"], "v1": c["**v2**"]}
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     lab = {r["photo"]: r for r in csv.DictReader(open("data/labels.csv", newline=""))}
     reads = {r["photo"]: r for r in csv.DictReader(open("data/photo_reads_v2.csv", newline=""))}
     v0 = {r["photo"]: r for r in csv.DictReader(open("data/v0_reads.csv", newline=""))}
-    v1 = {r["photo"]: r for r in csv.DictReader(open("data/v1_reads.csv", newline=""))}
-    v2 = {r["photo"]: r for r in csv.DictReader(open("data/v2_reads.csv", newline=""))}
+    v1 = {r["photo"]: r for r in csv.DictReader(open("data/v2_reads.csv", newline=""))}   # public v1 = current reader
     T = Path("methods/teammate")
     key = {int(r["idx"]): f'{r["checkpoint_folder"]}/{r["file"]}' for r in
            csv.DictReader(open(T / "sorted/visibility_labels.csv", encoding="utf-8"))}
@@ -46,13 +50,11 @@ def main():
             teammate=tm[photo],
             v1=dict(cm=f(v1[photo]["cm"]), confidence=float(v1[photo]["confidence_lopo"]), accepted=v1[photo]["accepted"] == "1",
                     note=v1[photo]["note"], state=soil(f(v1[photo]["cm"]))[1]),
-            v2=dict(cm=f(v2[photo]["cm"]), confidence=float(v2[photo]["confidence_lopo"]), accepted=v2[photo]["accepted"] == "1",
-                    note=v2[photo]["note"], state=soil(f(v2[photo]["cm"]))[1]),
             mark=None if f(r["first_y"]) is None or f(r["cx"]) is None else dict(
                 x=round(f(r["cx"]) * sc), first=round(f(r["first_y"]) * sc), last=round(f(r["last_y"]) * sc),
                 top=round(f(r["top_y"]) * sc) if f(r["top_y"]) is not None else None, half=round(f(r["half"]) * sc)),
             size=[W, round(src.height * sc)]))
-    Path("data/gallery.json").write_text(json.dumps(dict(photos=items, comparison=json.load(open("data/comparison.json")))))
+    Path("data/gallery.json").write_text(json.dumps(dict(photos=items, comparison=public_comparison())))
     print(f"{len(items)} photos -> data/gallery.json, {OUT}")
 
 

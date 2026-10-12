@@ -111,8 +111,8 @@ svg text{fill:var(--ink);font-family:var(--sans)}
   <tr><td>Confidence</td><td>Spacing &times; holes &times; solidity &times; thickness</td><td>Trained probability of an exact count</td></tr>
   <tr><td>Accepting a reading</td><td colspan="2">Confidence &ge; 0.7; a visit takes the mean of its accepted photos (same rule)</td></tr>
  </tbody></table></div>
- <h3 style="margin-top:20px">What v2 changes</h3>
- <p>v2 is v1 with three changes, each kept only because it raised the score on photos from a field the model had not seen:</p>
+ <h3 style="margin-top:20px">What made the difference</h3>
+ <p>Three details, each kept only because it raised the score on photos from a field the model had not seen:</p>
  <ul>
   <li><b>Ring gap.</b> The gap is the shortest strong repeat, not the strongest. The strongest repeat can be 2&ndash;4 rings long, which made one rod read 4 instead of 24.</li>
   <li><b>Gap-by-gap count.</b> Perspective stretches the gap along the rod, so each gap is compared with the gaps next to it rather than one average gap.</li>
@@ -123,7 +123,7 @@ svg text{fill:var(--ink);font-family:var(--sans)}
 <section id="accuracy">
  <h2>How accuracy is measured</h2>
  <p>The company's target: of the photos showing a correct gauge, 70&ndash;80% must be <b>accepted</b> (confidence 0.7 or more) <b>and exact</b>. A confident wrong count does not count.</p>
- <div class="scroll"><table class="table"><thead><tr><th>Method</th><th>Accepted &amp; exact</th><th>Accepted</th><th>Right when accepted</th><th>Exact, all photos</th></tr></thead><tbody><tr><td>v0: current detector (rebuilt)</td><td><b>19/127 = 15.0%</b></td><td>37.0%</td><td>40.4%</td><td>15.7%</td></tr><tr><td>Colour method</td><td><b>51/127 = 40.2%</b></td><td>81.1%</td><td>49.5%</td><td>51.2%</td></tr><tr><td>v1 reader, untrained confidence</td><td><b>17/127 = 13.4%</b></td><td>19.7%</td><td>68.0%</td><td>78.0%</td></tr><tr><td>v1</td><td><b>92/127 = 72.4%</b></td><td>82.7%</td><td>87.6%</td><td>78.0%</td></tr><tr><td><b>v2</b></td><td><b>97/127 = 76.4%</b></td><td>89.0%</td><td>85.8%</td><td>82.7%</td></tr></tbody></table></div>
+ <div class="scroll"><table class="table"><thead><tr><th>Method</th><th>Accepted &amp; exact</th><th>Accepted</th><th>Right when accepted</th><th>Exact, all photos</th></tr></thead><tbody><tr><td>v0: current detector (rebuilt)</td><td><b>19/127 = 15.0%</b></td><td>37.0%</td><td>40.4%</td><td>15.7%</td></tr><tr><td>Colour method</td><td><b>51/127 = 40.2%</b></td><td>81.1%</td><td>49.5%</td><td>51.2%</td></tr><tr><td><b>v1</b></td><td><b>97/127 = 76.4%</b></td><td>89.0%</td><td>85.8%</td><td>82.7%</td></tr></tbody></table></div>
  <p class="small">How the numbers were made:</p>
  <ul class="small">
   <li><b>Labels:</b> ring counts for 127 photos were read by eye. A person checked two random samples of 15: round 1 matched 10 of 15, so the labels were fixed and moved to whole rings; round 2 matched 15 of 15.</li>

@@ -71,8 +71,8 @@
   <tr><td>Confidence</td><td>Spacing &times; holes &times; solidity &times; thickness</td><td>Trained probability of an exact count</td></tr>
   <tr><td>Accepting a reading</td><td colspan="2">Confidence &ge; 0.7; a visit takes the mean of its accepted photos (same rule)</td></tr>
  </tbody></table></div>
- <h3 style="margin-top:20px">What v2 changes</h3>
- <p>v2 is v1 with three changes, each kept only because it raised the score on photos from a field the model had not seen:</p>
+ <h3 style="margin-top:20px">What made the difference</h3>
+ <p>Three details, each kept only because it raised the score on photos from a field the model had not seen:</p>
  <ul>
   <li><b>Ring gap.</b> The gap is the shortest strong repeat, not the strongest. The strongest repeat can be 2&ndash;4 rings long, which made one rod read 4 instead of 24.</li>
   <li><b>Gap-by-gap count.</b> Perspective stretches the gap along the rod, so each gap is compared with the gaps next to it rather than one average gap.</li>

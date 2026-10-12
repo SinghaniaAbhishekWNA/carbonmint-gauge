@@ -7,7 +7,8 @@ rod with red rings: the more rings show above the sleeve, the more water. One ri
   description (`docs/v0-spec.md`), so both versions can be scored on the same photos.
 - **v1**: our ring-rhythm reader, a trained confidence model, a bad-gauge check, and the company's own acceptance
   rule.
-- **v2**: v1 plus two reader fixes (the ring gap can't lock onto a multiple of itself; rings are counted gap by gap
+- **v2** (shown as **v1** on the site, in the app, the Docker service and the stakeholder report; the earlier
+  draft above is not shown there): v1 plus two reader fixes (the ring gap can't lock onto a multiple of itself; rings are counted gap by gap
   because perspective stretches the gap) and the colour method's locator when the reader finds no rod.
 
 ## Results

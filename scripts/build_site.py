@@ -7,10 +7,10 @@ from pathlib import Path
 
 SITE, PUB = Path("site"), Path("public")
 APP_URL = sys.argv[sys.argv.index("--app-url") + 1] if "--app-url" in sys.argv else "app.html"
-NAMES = {"v0 (company, rebuilt)": "v0: current detector (rebuilt)", "Colour method": "Colour method",
-         "Our reader, own score": "v1 reader, untrained confidence", "v1": "v1", "**v2**": "<b>v2</b>"}
+# public names: the current reader (v2 in data/ and models/) is shown as v1; the earlier draft is not shown
+NAMES = {"v0 (company, rebuilt)": "v0: current detector (rebuilt)", "Colour method": "Colour method", "**v2**": "<b>v1</b>"}
 CHAPTERS = [(0, "The gauge and the goal"), (10.6, "Three methods"), (28.1, "None was good enough"),
-            (38.3, "v1: the best idea from each"), (53.0, "The company's rule"), (66.0, "Result: 72.4%"), (81.6, "Next"), (90.0, "Update: v2, 76.4%")]
+            (38.3, "v1: the best idea from each"), (53.0, "The company's rule"), (66.0, "Result: 76.4%"), (81.6, "Next")]
 
 
 def arch_svg():
@@ -43,6 +43,8 @@ def results_rows():
     pct = lambda a, b: f"{100 * a / b:.1f}%"
     rows = []
     for k, s in c.items():
+        if k not in NAMES:
+            continue
         rows.append(f"<tr><td>{NAMES.get(k, html.escape(k))}</td><td><b>{s['acc_exact']}/{s['n']} = {pct(s['acc_exact'], s['n'])}</b></td>"
                     f"<td>{pct(s['acc'], s['n'])}</td><td>{pct(s['acc_exact'], max(s['acc'], 1))}</td><td>{pct(s['exact'], s['n'])}</td></tr>")
     return "".join(rows), c
@@ -74,7 +76,7 @@ def main():
             t = t.replace(k, v)
         assert "{{" not in t, (page, t[t.index("{{"):t.index("{{") + 30])
         (PUB / page).write_text(t, encoding="utf-8")
-    print(f"public/: index, documentation, app; {n} built features; v0 {fill['{{V0_PCT}}']} vs v2 {fill['{{V1_PCT}}']}; app url {APP_URL}")
+    print(f"public/: index, documentation, app; {n} built features; v0 {fill['{{V0_PCT}}']} vs v1 {fill['{{V1_PCT}}']}; app url {APP_URL}")
 
 
 if __name__ == "__main__":

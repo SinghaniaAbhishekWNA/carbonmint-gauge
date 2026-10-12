@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Gauge reader demo</title>
-<meta name="description" content="Sign in to see every pilot photo read by v0, v1 and v2, and to read a gauge photo live.">
+<meta name="description" content="Sign in to see every pilot photo read by v0, the colour method and v1, and to read a gauge photo live.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='5' y='0' width='6' height='16' rx='2' fill='%23b3262d'/%3E%3C/svg%3E">
 <script>(function(){try{var t=localStorage.getItem("cm-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}})();
 function cmToggleTheme(){var r=document.documentElement,cur=r.getAttribute("data-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"),nx=cur==="dark"?"light":"dark";r.setAttribute("data-theme",nx);try{localStorage.setItem("cm-theme",nx)}catch(e){}cmThemeLabel()}
@@ -80,7 +80,7 @@ input[type=file]{max-width:100%;font:15px var(--sans)}input[type=number]{width:6
  <section id="p-gal" role="tabpanel" aria-labelledby="t-gal" style="padding:0;border:0">
   <div class="card" id="sum" style="margin-bottom:16px"></div>
   <div class="filters"><label class="small" for="fplot">Field</label><select id="fplot"><option value="">All fields</option></select>
-   <label class="small" for="fstate">v2</label><select id="fstate"><option value="">All photos</option><option value="acc">Accepted</option><option value="rev">In review</option><option value="wrong">Accepted but not exact</option></select>
+   <label class="small" for="fstate">v1</label><select id="fstate"><option value="">All photos</option><option value="acc">Accepted</option><option value="rev">In review</option><option value="wrong">Accepted but not exact</option></select>
    <span class="small" id="count"></span> <a class="btn ghost" id="export" href="/api/export.csv" hidden>Download CSV</a></div>
   <div class="tiles" id="tiles"></div>
   <div id="detail" hidden style="margin-top:24px"></div>
@@ -106,13 +106,13 @@ function tab(which){var g=which==="gal";$("#t-gal").setAttribute("aria-selected"
 $("#t-gal").addEventListener("click",function(){tab("gal")});$("#t-read").addEventListener("click",function(){tab("read")});
 async function loadGallery(){if(G)return render();var r=await fetch("/api/gallery");if(!r.ok)return me();G=await r.json();
  var plots=[...new Set(G.photos.map(function(p){return p.plot}))].sort();plots.forEach(function(p){var o=document.createElement("option");o.value=p;o.textContent=p;$("#fplot").appendChild(o)});
- var c=G.comparison,v0=c["v0 (company, rebuilt)"],v1=c["v1"],v2=c["**v2**"];
- $("#sum").innerHTML="<b>Accepted and exact on these "+v1.n+" photos:</b> v0 "+v0.acc_exact+" ("+Math.round(100*v0.acc_exact/v0.n)+"%) &middot; v1 "+v1.acc_exact+" ("+Math.round(100*v1.acc_exact/v1.n)+"%) &middot; v2 "+v2.acc_exact+" ("+Math.round(100*v2.acc_exact/v2.n)+"%). Open any photo to compare every method.";render()}
-function shown(){var fp=$("#fplot").value,fs=$("#fstate").value;return G.photos.filter(function(p){if(fp&&p.plot!==fp)return false;if(fs==="acc")return p.v2.accepted;if(fs==="rev")return !p.v2.accepted;if(fs==="wrong")return p.v2.accepted&&p.v2.cm!==p.label;return true})}
+ var c=G.comparison,v0=c["v0"],v1=c["v1"];
+ $("#sum").innerHTML="<b>Accepted and exact on these "+v1.n+" photos:</b> v0 "+v0.acc_exact+" ("+Math.round(100*v0.acc_exact/v0.n)+"%) &middot; v1 "+v1.acc_exact+" ("+Math.round(100*v1.acc_exact/v1.n)+"%). Open any photo to compare every method.";render()}
+function shown(){var fp=$("#fplot").value,fs=$("#fstate").value;return G.photos.filter(function(p){if(fp&&p.plot!==fp)return false;if(fs==="acc")return p.v1.accepted;if(fs==="rev")return !p.v1.accepted;if(fs==="wrong")return p.v1.accepted&&p.v1.cm!==p.label;return true})}
 function render(){var list=shown();$("#count").textContent=list.length+" photos";var t=$("#tiles");t.innerHTML="";
  list.forEach(function(p){var b=document.createElement("button");b.className="tile";b.type="button";
-  var ok=p.v2.accepted?(p.v2.cm===p.label?'<span class="pill ok">accepted &middot; exact</span>':'<span class="pill bad">accepted &middot; off</span>'):'<span class="pill warn">review</span>';
-  b.innerHTML='<img loading="lazy" alt="Gauge photo '+esc(p.id)+'" src="/api/photo/'+esc(p.id)+'.jpg" width="400" height="300"><div><b>v2: '+esc(fmt(p.v2.cm))+'</b> &middot; hand '+esc(p.label)+'<br>'+ok+'<br><span class="small">'+esc(p.plot.slice(-9))+' &middot; '+esc(p.date)+' &middot; shot '+p.shot+'</span></div>';
+  var ok=p.v1.accepted?(p.v1.cm===p.label?'<span class="pill ok">accepted &middot; exact</span>':'<span class="pill bad">accepted &middot; off</span>'):'<span class="pill warn">review</span>';
+  b.innerHTML='<img loading="lazy" alt="Gauge photo '+esc(p.id)+'" src="/api/photo/'+esc(p.id)+'.jpg" width="400" height="300"><div><b>v1: '+esc(fmt(p.v1.cm))+'</b> &middot; hand '+esc(p.label)+'<br>'+ok+'<br><span class="small">'+esc(p.plot.slice(-9))+' &middot; '+esc(p.date)+' &middot; shot '+p.shot+'</span></div>';
   b.addEventListener("click",function(){detail(p)});t.appendChild(b)})}
 $("#fplot").addEventListener("change",render);$("#fstate").addEventListener("change",render);
 function overlay(src,size,mark){var w=size[0],h=size[1],s='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Photo with the first and last ring marked"><image href="'+src+'" width="'+w+'" height="'+h+'"/>';
@@ -121,8 +121,8 @@ function overlay(src,size,mark){var w=size[0],h=size[1],s='<svg viewBox="0 0 '+w
 function row(name,v,acc,note){return "<tr><td>"+name+"</td><td><b>"+esc(fmt(v))+"</b></td><td>"+(acc==null?"":acc?'<span class="pill ok">accepted</span>':'<span class="pill warn">not accepted</span>')+"</td><td class='small'>"+esc(note||"")+"</td></tr>"}
 function detail(p){var d=$("#detail");d.hidden=false;
  var corr='<form id="corr" class="filters" style="margin-top:12px"><label class="small" for="cval">Right count</label><input id="cval" type="number" min="0" max="40" step="1" value="'+p.label+'"><button class="btn ghost" type="submit">Save correction</button><span id="cmsg" class="small" role="status"></span></form>';
- d.innerHTML='<h2 style="font-size:26px">'+esc(p.plot)+' &middot; '+esc(p.date)+' &middot; shot '+p.shot+'</h2><div class="detail"><div class="view">'+overlay("/api/photo/"+p.id+".jpg",p.size,p.mark)+'<p class="small">Green line: v2\'s first ring. Amber: its last ring.</p></div><div><div class="scroll"><table class="table"><thead><tr><th>Method</th><th>Rings (cm)</th><th></th><th></th></tr></thead><tbody>'+
-  row("Hand count (checked)",p.label,null,p.label_conf==="low"?"hard photo":"")+row("v2",p.v2.cm,p.v2.accepted,"confidence "+p.v2.confidence+(p.v2.state?" · "+p.v2.state:"")+(p.v2.note?" · "+p.v2.note:""))+row("v1",p.v1.cm,p.v1.accepted,"confidence "+p.v1.confidence+(p.v1.state?" · "+p.v1.state:"")+(p.v1.note?" · "+p.v1.note:""))+
+ d.innerHTML='<h2 style="font-size:26px">'+esc(p.plot)+' &middot; '+esc(p.date)+' &middot; shot '+p.shot+'</h2><div class="detail"><div class="view">'+overlay("/api/photo/"+p.id+".jpg",p.size,p.mark)+'<p class="small">Green line: v1\'s first ring. Amber: its last ring.</p></div><div><div class="scroll"><table class="table"><thead><tr><th>Method</th><th>Rings (cm)</th><th></th><th></th></tr></thead><tbody>'+
+  row("Hand count (checked)",p.label,null,p.label_conf==="low"?"hard photo":"")+row("v1",p.v1.cm,p.v1.accepted,"confidence "+p.v1.confidence+(p.v1.state?" · "+p.v1.state:"")+(p.v1.note?" · "+p.v1.note:""))+
   row("v0 (current detector)",p.v0.cm,p.v0.accepted,"confidence "+p.v0.confidence)+row("Colour method",p.teammate.cm,p.teammate.accepted,"")+"</tbody></table></div>"+corr+"</div></div>";
  d.querySelector("#corr").addEventListener("submit",async function(e){e.preventDefault();var r=await fetch("/api/correct",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({id:p.id,rings:Number($("#cval").value)})});var j=await r.json();
   $("#cmsg").textContent=r.ok?(j.kept?"Saved.":"Noted (the hosted demo does not store corrections)."):(j.error||"Not saved")});

@@ -79,7 +79,7 @@ def role_of(env):
     return None
 
 
-# ---- the v2 reader, loaded on first use (numpy/scipy are heavy) ----------------------------------------
+# ---- the v1 reader (current; files named v2), loaded on first use (numpy/scipy are heavy) ----------------------------------------
 _model = None
 
 
@@ -209,14 +209,13 @@ def api(env, start, path, method, role):
         return j(start, 200, dict(corrections=rows))
     if path == "/api/export.csv":
         s = io.StringIO(); w = csv.writer(s)
-        w.writerow(["id", "plot", "visit", "date", "shot", "v2_cm", "v2_confidence", "v2_accepted", "v2_note", "v1_cm", "v1_confidence", "v1_accepted", "v1_note", "v0_cm", "v0_accepted", "label"])
+        w.writerow(["id", "plot", "visit", "date", "shot", "v1_cm", "v1_confidence", "v1_accepted", "v1_note", "v0_cm", "v0_accepted", "label"])
         for p in GALLERY["photos"]:
-            w.writerow([p["id"], p["plot"], p["visit"], p["date"], p["shot"], p["v2"]["cm"], p["v2"]["confidence"],
-                        int(p["v2"]["accepted"]), p["v2"]["note"], p["v1"]["cm"], p["v1"]["confidence"],
+            w.writerow([p["id"], p["plot"], p["visit"], p["date"], p["shot"], p["v1"]["cm"], p["v1"]["confidence"],
                         int(p["v1"]["accepted"]), p["v1"]["note"], p["v0"]["cm"], int(p["v0"]["accepted"]), p["label"]])
         b = s.getvalue().encode()
         start("200 OK", [("Content-Type", "text/csv; charset=utf-8"), ("Content-Length", str(len(b))),
-                         ("Content-Disposition", "attachment; filename=carbonmint_v2.csv")])
+                         ("Content-Disposition", "attachment; filename=carbonmint_v1.csv")])
         return [b]
     return j(start, 404, dict(error="not found"))
 
