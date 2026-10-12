@@ -1,0 +1,7 @@
+{
+  "functions": { "app.py": { "maxDuration": 60, "includeFiles": "{data/gallery.json,models/**,media_private/**}" } },
+  "rewrites": [ { "source": "/api/(.*)", "destination": "/app.py" } ],
+  "redirects": [
+    { "source": "/", "has": [{ "type": "host", "value": "carbonmint-gauge-app.vercel.app" }], "destination": "/app.html", "permanent": false }
+  ]
+}

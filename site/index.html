@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CarbonMint gauge reader</title>
+<meta name="description" content="Reads the water level from drone photos of AWD field gauges. v1 is accepted and exact on {{V1_PCT}} of photos, against {{V0_PCT}} for the current detector on the same photos.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='5' y='0' width='6' height='16' rx='2' fill='%23b3262d'/%3E%3C/svg%3E">
+<script>{{THEME}}</script>
+<style>{{STYLE}}</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+ <a class="brand" href="index.html"><i aria-hidden="true"></i>CarbonMint gauge reader</a>
+ <nav class="links" aria-label="Sections"><a href="#problem">Problem</a><a href="#product">Product</a><a href="#architecture">Architecture</a><a href="#status">Status</a><a href="#roadmap">Roadmap</a><a href="#deployment">Deployment</a><a href="documentation.html">Docs</a></nav>
+ <button class="theme" type="button" data-theme-toggle aria-label="Switch theme">&#9790;</button>
+ <a class="btn" data-app href="app.html">Open the demo</a>
+</div></header>
+
+<main>
+<section id="hero"><div class="wrap">
+ <div class="eyebrow">Water level from drone photos</div>
+ <h1>Read the gauge in most photos, not half of them.</h1>
+ <p class="lede">Each paddy field has a float gauge: the more red rings show above the sleeve, the more water. A drone photographs it every day. v1 reads those rings, says when it is sure, and sends the rest to a person.</p>
+ <p><a class="btn" href="#tour" id="watch">Watch the tour</a> <a class="btn ghost" data-app href="app.html">Try it on real photos</a></p>
+ <div class="grid g2" style="margin:28px 0 8px">
+  <div class="card"><div class="small">Current detector (v0), same 127 photos</div><div class="stat v0">{{V0_PCT}}</div><div class="small">accepted at confidence 0.7 and exactly right</div></div>
+  <div class="card"><div class="small">v1</div><div class="stat v1">{{V1_PCT}}</div><div class="small">accepted at confidence 0.7 and exactly right &middot; target 70&ndash;80%</div></div>
+ </div>
+ <div id="tour" style="margin-top:28px">
+  <div class="player"><video id="tourvid" controls preload="metadata" playsinline poster="media/explainer-poster.jpg" width="1920" height="1080">
+   <source src="media/explainer.mp4" type="video/mp4">
+   <track kind="captions" src="media/explainer.captions.vtt" srclang="en" label="English">
+   <track kind="chapters" src="media/explainer.chapters.vtt" srclang="en" label="Chapters">
+  </video></div>
+  <p class="small">55-second tour: how v1 measures the ring rhythm instead of counting rings one by one. Captions are in the picture; a text track is also available from the player menu.</p>
+  <ol class="chapters" id="chapters">{{CHAPTERS}}</ol>
+ </div>
+</div></section>
+
+<section id="problem"><div class="wrap">
+ <div class="eyebrow">The problem</div>
+ <h2>Half the photos never give an accepted reading.</h2>
+ <div class="grid g2">
+  <div><p>Carbon credits for alternate wetting and drying need proof that each field really dried out between irrigations. The proof is a float gauge read every day from a drone photo.</p>
+  <p>The current detector accepts a reading only at confidence 0.7 or more. On the company's own photos, about half the good gauges reach that bar. The rest stay in review, even when their count was right.</p></div>
+  <div class="card"><h3>Why photos fail</h3><ul>
+   <li>Rice leaves and seed heads cover rings.</li>
+   <li>The drone looks down at an angle, so rings look like thick arcs.</li>
+   <li>Rods lean; a fixed upright window slides off them.</li>
+   <li>Rings in shade are dark red, below the colour rule's brightness floor.</li>
+   <li>Far or blurred shots leave too few pixels per ring.</li></ul></div>
+ </div>
+</div></section>
+
+<section id="product"><div class="wrap">
+ <div class="eyebrow">The product</div>
+ <h2>Measure the rod, don't just count the rings.</h2>
+ <div class="grid g2">
+  <ol class="steps">
+   <li><b>Find the gauge by its ring stack:</b> three or more separate red bands on one upright line. A rod split by a leaf is joined back up.</li>
+   <li><b>Straighten it.</b> The rod's own lean and bend are measured, so a tilted rod reads like an upright one.</li>
+   <li><b>Read the ring rhythm.</b> Rings repeat at a fixed spacing, so the count runs from the first ring to the last and includes the ones a leaf hides.</li>
+   <li><b>Say how sure it is.</b> A small trained model turns the reader's signals into the chance the count is exactly right. Above 0.7 it is accepted, the company's own bar.</li>
+   <li><b>Check it makes sense.</b> A reading that breaks the gauge's physics is never accepted. Two shots that disagree go to a person.</li>
+  </ol>
+  <div><div class="crops">
+   <figure><img src="media/crop-good.jpg" alt="Sharp upright gauge with 20 red rings above a black sleeve" loading="lazy" width="360" height="900"><figcaption>Sharp, upright: read right.</figcaption></figure>
+   <figure><img src="media/crop-far.jpg" alt="Far gauge, rings tiny and washed pink" loading="lazy" width="360" height="900"><figcaption>Far: rings merge, sent to review.</figcaption></figure>
+   <figure><img src="media/crop-blur.jpg" alt="Blurred gauge with faint rings" loading="lazy" width="360" height="900"><figcaption>Blurred: the hardest case.</figcaption></figure>
+  </div><p class="small">Real crops from the pilot photos, metadata removed.</p></div>
+ </div>
+ <h3 style="margin-top:36px">Every photo through every method</h3>
+ <p class="small">127 drone photos, 7 fields, 66 visits, 23 September to 6 October 2026. Ring counts were read by eye and checked by a person on two random samples of 15 (the second matched 15 of 15).</p>
+ <div class="scroll"><table class="table"><thead><tr><th>Method</th><th>Accepted &amp; exact</th><th>Accepted</th><th>Right when accepted</th><th>Exact, all photos</th></tr></thead><tbody>{{RESULTS_ROWS}}</tbody></table></div>
+ <p class="small">v0 is the current detector, rebuilt from its written description; its 50% is measured on the company's photos, these photos are harder for it (its brightness floor drops shaded rings). v1's confidence model is trained on six fields and scored on the seventh, for each field in turn. The reader's rules were designed on these same photos, so the next batch of field photos is the real test.</p>
+</div></section>
+
+<section id="architecture"><div class="wrap">
+ <div class="eyebrow">Architecture</div>
+ <h2>One photo in, one accepted reading or a review flag out.</h2>
+ <div class="card scroll">{{ARCH_SVG}}</div>
+</div></section>
+
+<section id="status"><div class="wrap">
+ <div class="eyebrow">Status</div>
+ <h2>What is built and tested: {{BUILT_COUNT}} features</h2>
+ <div class="scroll"><table class="table" id="matrix"><thead><tr><th>Feature</th><th>Closes the gap</th><th>Runs</th></tr></thead><tbody>{{MATRIX_ROWS}}</tbody></table></div>
+</div></section>
+
+<section id="roadmap"><div class="wrap">
+ <div class="eyebrow">Roadmap</div>
+ <h2>Now, next, later</h2>
+ <div class="grid g3">
+  <div class="card"><h3>Now</h3><ul><li>v1 reader with trained confidence</li><li>Demo on the 127 pilot photos</li><li>Capture guide for pilots</li></ul></div>
+  <div class="card"><h3>Next</h3><ul><li>Score v1 on the company's own labelled photos</li><li>Confirm the ring-to-centimetre scale</li><li>Add sharpness to the confidence score</li><li>Test the bad-gauge check on a real broken gauge</li></ul></div>
+  <div class="card"><h3>Later</h3><ul><li>Trained detector for very far shots</li><li>Burst and low-angle capture trial</li><li>Daily batch run per field</li></ul></div>
+ </div>
+</div></section>
+
+<section id="deployment"><div class="wrap">
+ <div class="eyebrow">Deployment and migration</div>
+ <h2>Two ways to run it</h2>
+ <div class="grid g2">
+  <div class="card"><h3>On-premises</h3><p>Runs on your own machine under a process manager that restarts it after a crash or reboot. It reads full-size photos and keeps corrections.</p><pre>python -m gauge.web 6900</pre></div>
+  <div class="card"><h3>Hosted demo</h3><p>The same code on Vercel, flipped by environment settings only. Uploads are shrunk to 2048 px in the browser (the host caps a request at 4.5 MB), and corrections are not stored.</p><pre>CM_CLOUD=1  CM_SECRET=...  CM_ADMIN_PIN=...  CM_USER_PIN=...</pre></div>
+ </div>
+ <h3 style="margin-top:28px">Moving from v0</h3>
+ <ul><li>Same inputs: one drone JPEG per shot, a folder per visit.</li><li>Same rule: accept at confidence 0.7; a visit takes the mean of its accepted photos; none accepted means review.</li><li>Same outputs: centimetres, level against the guide (count minus 10), and soil state. CSV export from the demo.</li><li>Open item: 1 ring = 1 cm is taken from the current detector's description and still needs the company's confirmation.</li></ul>
+</div></section>
+
+<section id="demo"><div class="wrap" style="text-align:center">
+ <h2>See it on the real photos</h2>
+ <p class="lede" style="margin:0 auto 20px">Every pilot photo with v0's and v1's reading side by side, and a live reading of any gauge photo you upload. Sign-in needed: the photos belong to the fields.</p>
+ <a class="btn" data-app href="app.html">Open the demo</a> <a class="btn ghost" href="documentation.html">Read the docs</a>
+</div></section>
+</main>
+<footer><div class="wrap">CarbonMint gauge reader v1 &middot; v0 is the current detector, rebuilt for comparison &middot; <a href="documentation.html">Documentation</a></div></footer>
+<script>
+window.CM_APP_URL={{APP_URL}};
+(function(){var v=document.getElementById("tourvid"),items=[].slice.call(document.querySelectorAll("#chapters button"));
+items.forEach(function(b){b.addEventListener("click",function(){v.currentTime=parseFloat(b.dataset.t);v.play()})});
+v.addEventListener("timeupdate",function(){var t=v.currentTime,cur=null;items.forEach(function(b){if(parseFloat(b.dataset.t)<=t+0.05)cur=b});items.forEach(function(b){b.setAttribute("aria-current",b===cur?"true":"false")})});
+document.getElementById("watch").addEventListener("click",function(e){e.preventDefault();document.getElementById("tour").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});v.play()});})();
+</script>
+</body>
+</html>

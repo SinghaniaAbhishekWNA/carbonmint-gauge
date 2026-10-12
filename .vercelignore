@@ -1,0 +1,12 @@
+way points/
+methods/
+videos/
+docs/
+tests/
+scripts/
+site/
+data/crops/
+data/cache/
+data/*.jpg
+data/.secret
+walk-shots/

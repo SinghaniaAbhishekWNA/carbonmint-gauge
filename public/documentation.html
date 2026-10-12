@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gauge reader docs</title>
+<meta name="description" content="User manual, a day in the life, technical architecture and API reference for the CarbonMint gauge reader v1.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='5' y='0' width='6' height='16' rx='2' fill='%23b3262d'/%3E%3C/svg%3E">
+<script>(function(){try{var t=localStorage.getItem("cm-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}})();
+function cmToggleTheme(){var r=document.documentElement,cur=r.getAttribute("data-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"),nx=cur==="dark"?"light":"dark";r.setAttribute("data-theme",nx);try{localStorage.setItem("cm-theme",nx)}catch(e){}cmThemeLabel()}
+function cmThemeLabel(){var b=document.querySelectorAll("[data-theme-toggle]"),d=(document.documentElement.getAttribute("data-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"))==="dark";b.forEach(function(x){x.textContent=d?"☀":"☾";x.setAttribute("aria-label",d?"Switch to light theme":"Switch to dark theme")})}
+document.addEventListener("DOMContentLoaded",function(){cmThemeLabel();document.querySelectorAll("[data-theme-toggle]").forEach(function(b){b.addEventListener("click",cmToggleTheme)});var host=location.hostname;var app=window.CM_APP_URL||"app.html";document.querySelectorAll("[data-app]").forEach(function(a){a.href=app})});
+</script>
+<style>:root{--bg:#f6f5ef;--paper:#fffefa;--ink:#17211b;--mut:#4d5a52;--line:#d8ddd4;--brand:#1f5a38;--brand-ink:#ffffff;--ring:#b3262d;--ok:#1d6b35;--warn:#8a5300;--chip:#e9eee6;--shadow:0 1px 2px rgba(0,0,0,.06),0 6px 24px rgba(0,0,0,.06);--serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;--sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--mono:ui-monospace,"Cascadia Mono",Consolas,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1712;--paper:#15211a;--ink:#e7ede8;--mut:#a7b4ab;--line:#2b3a31;--brand:#7bd88f;--brand-ink:#0b130e;--ring:#ff7b80;--ok:#7bd88f;--warn:#f2b95b;--chip:#1d2b23;--shadow:none}}
+:root[data-theme="dark"]{--bg:#0e1712;--paper:#15211a;--ink:#e7ede8;--mut:#a7b4ab;--line:#2b3a31;--brand:#7bd88f;--brand-ink:#0b130e;--ring:#ff7b80;--ok:#7bd88f;--warn:#f2b95b;--chip:#1d2b23;--shadow:none}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans);overflow-x:hidden}
+[hidden]{display:none!important}img,video,svg{max-width:100%;height:auto}a{color:var(--brand)}a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:3px solid var(--ring);outline-offset:2px;border-radius:4px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+header.top{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;gap:16px;min-height:60px;flex-wrap:wrap}
+.brand{font:700 18px/1 var(--serif);color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px}
+.brand i{width:12px;height:28px;border-radius:3px;background:repeating-linear-gradient(var(--ring) 0 4px,#9fb2c0 4px 9px);display:inline-block}
+nav.links{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}nav.links a{color:var(--mut);text-decoration:none;padding:10px 10px;border-radius:8px;font-size:15px;min-height:44px;display:inline-flex;align-items:center}
+nav.links a:hover{color:var(--ink);background:var(--chip)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 18px;border-radius:10px;border:1px solid var(--brand);background:var(--brand);color:var(--brand-ink);font:600 15px/1 var(--sans);text-decoration:none;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--brand)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.theme{min-width:44px;min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;font-size:18px}
+h1,h2,h3{font-family:var(--serif);line-height:1.15;letter-spacing:-.01em}h1{font-size:clamp(34px,5.4vw,58px);margin:0 0 16px}h2{font-size:clamp(26px,3.4vw,38px);margin:0 0 12px}h3{font-size:21px;margin:0 0 6px}
+.lede{font-size:clamp(17px,2vw,20px);color:var(--mut);max-width:62ch}
+section{padding:64px 0;border-bottom:1px solid var(--line)}section:last-of-type{border-bottom:0}
+.eyebrow{font:600 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--ring);margin-bottom:12px}
+.grid{display:grid;gap:18px}.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow);min-width:0}
+.stat{font:700 clamp(36px,6vw,54px)/1 var(--serif)}.stat.v1{color:var(--ok)}.stat.v0{color:var(--ring)}.small{font-size:14px;color:var(--mut)}
+.table{width:100%;border-collapse:collapse;font-size:15px}.table th,.table td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}.table th{font-weight:600;color:var(--mut)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;font:600 12px/1.6 var(--sans);background:var(--chip);color:var(--ink)}.pill.ok{color:var(--ok)}.pill.warn{color:var(--warn)}.pill.bad{color:var(--ring)}
+.player{background:#000;border-radius:14px;overflow:hidden;border:1px solid var(--line)}.player video{display:block;width:100%;height:auto}
+.chapters{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px}.chapters button{min-height:44px;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;font:14px var(--sans)}
+.chapters button[aria-current="true"]{border-color:var(--brand);background:var(--chip);font-weight:600}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0;display:grid;gap:12px}.steps li{counter-increment:s;padding-left:46px;position:relative}.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font:700 15px var(--sans)}
+code{font:14px var(--mono);background:var(--chip);padding:1px 6px;border-radius:6px;overflow-wrap:anywhere}pre{background:var(--chip);padding:14px;border-radius:10px;overflow-x:auto;font:13px/1.5 var(--mono)}
+footer{padding:36px 0;color:var(--mut);font-size:14px}
+.crops{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.crops figure{margin:0}.crops img{border-radius:10px;border:1px solid var(--line);width:100%;aspect-ratio:2/5;object-fit:cover}.crops figcaption{font-size:13px;color:var(--mut);margin-top:6px}
+svg text{fill:var(--ink);font-family:var(--sans)}
+@media (max-width:640px){section{padding:44px 0}nav.links{display:none}header.top .wrap{gap:10px;padding-top:8px;padding-bottom:8px}header.top .btn{padding:10px 14px}.crops{grid-template-columns:repeat(3,minmax(0,1fr))}.table{font-size:14px}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+.doc{display:grid;grid-template-columns:240px minmax(0,1fr);gap:40px;padding:40px 0}.toc{position:sticky;top:76px;align-self:start}.toc ol{padding-left:18px;margin:0}.toc a{display:inline-block;padding:6px 0;min-height:36px}
+.doc section{padding:0 0 40px;border:0}@media (max-width:860px){.doc{grid-template-columns:minmax(0,1fr)}.toc{position:static}}</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+ <a class="brand" href="index.html"><i aria-hidden="true"></i>CarbonMint gauge reader</a>
+ <nav class="links" aria-label="Pages"><a href="index.html">Home</a><a href="#manual">Manual</a><a href="#day">Day in the life</a><a href="#tech">Architecture</a><a href="#api">API</a></nav>
+ <button class="theme" type="button" data-theme-toggle aria-label="Switch theme">&#9790;</button>
+ <a class="btn" data-app href="app.html">Open the demo</a>
+</div></header>
+<main class="wrap doc">
+<aside class="toc" aria-label="Contents"><strong>Contents</strong><ol>
+ <li><a href="#manual">User manual</a></li><li><a href="#day">A day in the life</a></li><li><a href="#tech">Technical architecture</a></li><li><a href="#accuracy">How accuracy is measured</a></li><li><a href="#api">API reference</a></li></ol></aside>
+<div>
+<section id="manual">
+ <h1>Documentation</h1>
+ <h2>User manual</h2>
+ <h3>Signing in</h3>
+ <p>Open the demo and enter your PIN. There are two roles:</p>
+ <ul><li><b>User</b>: browse every photo, upload a photo for a live reading, save a correction.</li><li><b>Admin</b>: everything a user can do, plus download the CSV of every reading and see saved corrections.</li></ul>
+ <p>The demo shows the fields' real drone photos, so PINs are shared by the CarbonMint team rather than printed here. Five wrong PINs lock sign-in for 60 seconds. A session lasts 8 hours.</p>
+ <h3>Gallery</h3>
+ <p>Every pilot photo with the ring count from each method. Filter by field, or by whether v1 accepted the photo. Open a photo to see the rod with v1's first and last ring marked, and the four readings side by side:</p>
+ <ul><li><b>v0</b>: the current detector, rebuilt from its description.</li><li><b>Colour method</b>: the team's colour-isolation and shot-transfer method.</li><li><b>v1</b>: this product.</li><li><b>Hand count</b>: the checked label.</li></ul>
+ <h3>Read a photo</h3>
+ <p>Choose a drone JPEG of a gauge. v1 returns:</p>
+ <ul><li>the ring count, in centimetres</li><li>the level against the guide, and the soil state</li><li>its confidence</li><li>whether the reading is accepted</li></ul>
+ <p>On the hosted demo the photo is shrunk to 2048 px in your browser first, because the host accepts at most 4.5 MB per request. Exact readings drop from 78% to about 73% at that size. The on-premises lane reads full size.</p>
+ <h3>Corrections and export</h3>
+ <p>Type the right count and save. On-premises, corrections go to <code>data/corrections.csv</code>; the hosted demo does not keep them. Admins can download every reading as CSV.</p>
+</section>
+<section id="day">
+ <h2>A day in the life</h2>
+ <ol class="steps">
+  <li><b>07:30.</b> The pilot flies the waypoint route and takes two shots at each gauge, following the capture guide: side-on, rod filling about a quarter of the frame, held still.</li>
+  <li><b>09:00.</b> The photos are dropped into the reader, one folder per visit. Each photo gets a count, a confidence and a note.</li>
+  <li><b>09:05.</b> Each visit with an accepted photo gets its level and soil state, for example "Drying". Visits where the two shots disagree, or nothing reached 0.7, wait for review.</li>
+  <li><b>09:15.</b> A reviewer opens the flagged visits, looks at the marked rod and saves the right count where needed.</li>
+  <li><b>09:30.</b> The CSV goes to the carbon-credit records.</li>
+ </ol>
+</section>
+<section id="tech">
+ <h2>Technical architecture</h2>
+ <div class="card scroll"><svg viewBox="0 0 1202 190" width="1202" height="190" role="img" aria-label="Pipeline: drone photo, find the rod, straighten, ring rhythm, confidence, checks, accept at 0.7 or send to review"><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs><rect x="10" y="30" width="150" height="70" rx="12" fill="var(--paper)" stroke="var(--line)" stroke-width="1.5"/><text x="85.0" y="60" text-anchor="middle" font-size="15" font-weight="700">Drone photo</text><text x="85.0" y="82" text-anchor="middle" font-size="11.5" style="fill:var(--mut)">JPEG, two shots a visit</text><rect x="182" y="30" width="150" height="70" rx="12" fill="var(--paper)" stroke="var(--line)" stroke-width="1.5"/><text x="257.0" y="60" text-anchor="middle" font-size="15" font-weight="700">Find the rod</text><text x="257.0" y="82" text-anchor="middle" font-size="11.5" style="fill:var(--mut)">ring stack, leaf gaps joined</text><line x1="162" y1="65.0" x2="179" y2="65.0" stroke="currentColor" style="color:var(--mut)" stroke-width="1.6" marker-end="url(#ar)"/><rect x="354" y="30" width="150" height="70" rx="12" fill="var(--paper)" stroke="var(--line)" stroke-width="1.5"/><text x="429.0" y="60" text-anchor="middle" font-size="15" font-weight="700">Straighten</text><text x="429.0" y="82" text-anchor="middle" font-size="11.5" style="fill:var(--mut)">follow lean and bend</text><line x1="334" y1="65.0" x2="351" y2="65.0" stroke="currentColor" style="color:var(--mut)" stroke-width="1.6" marker-end="url(#ar)"/><rect x="526" y="30" width="150" height="70" rx="12" fill="var(--paper)" stroke="var(--line)" stroke-width="1.5"/><text x="601.0" y="60" text-anchor="middle" font-size="15" font-weight="700">Ring rhythm</text><text x="601.0" y="82" text-anchor="middle" font-size="11.5" style="fill:var(--mut)">pitch, first to last ring</text><line x1="506" y1="65.0" x2="523" y2="65.0" stroke="currentColor" style="color:var(--mut)" stroke-width="1.6" marker-end="url(#ar)"/><rect x="698" y="30" width="150" height="70" rx="12" fill="var(--paper)" stroke="var(--line)" stroke-width="1.5" style="stroke:var(--brand);stroke-width:2.5"/><text x="773.0" y="60" text-anchor="middle" font-size="15" font-weight="700">Confidence</text><text x="773.0" y="82" text-anchor="middle" font-size="11.5" style="fill:var(--mut)">trained P(exact)</text><line x1="678" y1="65.0" x2="695" y2="65.0" stroke="currentColor" style="color:var(--mut)" stroke-width="1.6" marker-end="url(#ar)"/><rect x="870" y="30" width="150" height="70" rx="12" fill="var(--paper)" stroke="var(--line)" stroke-width="1.5"/><text x="945.0" y="60" text-anchor="middle" font-size="15" font-weight="700">Checks</text><text x="945.0" y="82" text-anchor="middle" font-size="11.5" style="fill:var(--mut)">bad gauge, two shots, spikes</text><line x1="850" y1="65.0" x2="867" y2="65.0" stroke="currentColor" style="color:var(--mut)" stroke-width="1.6" marker-end="url(#ar)"/><rect x="1042" y="30" width="150" height="70" rx="12" fill="var(--paper)" stroke="var(--line)" stroke-width="1.5"/><text x="1117.0" y="60" text-anchor="middle" font-size="15" font-weight="700">Accept ≥ 0.7</text><text x="1117.0" y="82" text-anchor="middle" font-size="11.5" style="fill:var(--mut)">cm, level, soil state</text><line x1="1022" y1="65.0" x2="1039" y2="65.0" stroke="currentColor" style="color:var(--mut)" stroke-width="1.6" marker-end="url(#ar)"/><path d="M945.0,100 V150 H1145.0" fill="none" stroke="var(--ring)" stroke-width="1.6" stroke-dasharray="5 4"/><text x="955.0" y="172" font-size="13" style="fill:var(--ring)">below 0.7 or flagged: a person reviews it</text></svg></div>
+ <h3 style="margin-top:20px">The reader, step by step</h3>
+ <ol>
+  <li><b>Ring stacks.</b> Pixels where red clearly beats green and blue, with straw and soil excluded, form blobs. Blobs stacked along a near-vertical line are joined into a stack; pieces split by a leaf are merged when they sit on the same axis. A plain blue-grey rod with no paint is the fallback, read as 0 rings.</li>
+  <li><b>Straightening.</b> A wide strip is sampled along the rod. A curve through the ring centre in each row follows lean and bend, and the core of the rod is resampled along it.</li>
+  <li><b>Ring rhythm.</b> The pitch comes from the autocorrelation of the redness down the rod. With only two to six rings, it is the median gap between them instead. Faint bands at either end, under 30% of a typical ring's redness, are sleeve rims or stains and are dropped.</li>
+  <li><b>Count.</b> (last ring &minus; first ring) &divide; pitch + 1. Rings hidden by leaves in between count automatically.</li>
+  <li><b>Confidence.</b> A logistic model predicts P(count is exact) from the reader's signals and whether the visit's other shot agrees. The signals are pattern strength, the share of rings actually seen, sharpness, rod size and red coverage.</li>
+  <li><b>Bad gauge.</b> More rings than the scale holds (25), or a ring spacing that does not fit the rod's width, is never accepted and carries the note "bad gauge".</li>
+  <li><b>Output.</b> Centimetres (1 ring = 1 cm), level = count &minus; 10, and soil state:
+   <ul><li>Flooded above +2</li><li>Saturated from &minus;2 to +2</li><li>Drying from &minus;12 to below &minus;2</li><li>Irrigate now below &minus;12</li></ul></li>
+ </ol>
+ <h3>How v1 differs from v0</h3>
+ <div class="scroll"><table class="table"><thead><tr><th></th><th>v0</th><th>v1</th></tr></thead><tbody>
+  <tr><td>Finding the gauge</td><td>Pinkest upright column, a fixed 2% of the image width</td><td>Stack of separate ring blobs on one line; follows the rod's lean</td></tr>
+  <tr><td>Ring colour</td><td>Hue &le;20&deg; or &ge;330&deg;, saturation &ge;35%, value &ge;50%</td><td>Red relative to green and blue; dark shaded rings count</td></tr>
+  <tr><td>Hidden rings</td><td>Gap &ge;1.65&times; pitch adds round(gap&divide;pitch)&minus;1; a gap over 4.5&times; ends the count</td><td>First-to-last span &divide; pitch; leaves up to 4 rings tall are bridged</td></tr>
+  <tr><td>No paint showing</td><td>No reading, confidence 0</td><td>0 rings (dry), a valid reading</td></tr>
+  <tr><td>Confidence</td><td>Spacing &times; holes &times; solidity &times; thickness</td><td>Trained probability of an exact count</td></tr>
+  <tr><td>Accepting a reading</td><td colspan="2">Confidence &ge; 0.7; a visit takes the mean of its accepted photos (same rule)</td></tr>
+ </tbody></table></div>
+</section>
+<section id="accuracy">
+ <h2>How accuracy is measured</h2>
+ <p>The company's target: of the photos showing a correct gauge, 70&ndash;80% must be <b>accepted</b> (confidence 0.7 or more) <b>and exact</b>. A confident wrong count does not count.</p>
+ <div class="scroll"><table class="table"><thead><tr><th>Method</th><th>Accepted &amp; exact</th><th>Accepted</th><th>Right when accepted</th><th>Exact, all photos</th></tr></thead><tbody><tr><td>v0: current detector (rebuilt)</td><td><b>19/127 = 15.0%</b></td><td>37.0%</td><td>40.4%</td><td>15.7%</td></tr><tr><td>Colour method (team)</td><td><b>51/127 = 40.2%</b></td><td>81.1%</td><td>49.5%</td><td>51.2%</td></tr><tr><td>v1 reader, untrained confidence</td><td><b>17/127 = 13.4%</b></td><td>19.7%</td><td>68.0%</td><td>78.0%</td></tr><tr><td><b>v1</b></td><td><b>92/127 = 72.4%</b></td><td>82.7%</td><td>87.6%</td><td>78.0%</td></tr></tbody></table></div>
+ <p class="small">How the numbers were made:</p>
+ <ul class="small">
+  <li><b>Labels:</b> ring counts for 127 photos were read by eye. A person checked two random samples of 15: round 1 matched 10 of 15, so the labels were fixed and moved to whole rings; round 2 matched 15 of 15.</li>
+  <li><b>v1's confidence:</b> the model is trained on six fields and scored on the seventh, for each field in turn.</li>
+  <li><b>Caveat:</b> the reader's rules were designed on these photos, so the next batch of field photos is the real test.</li>
+ </ul>
+</section>
+<section id="api">
+ <h2>API reference</h2>
+ <p>JSON over HTTPS. The session is an HttpOnly, signed cookie (<code>cm_session</code>) set by <code>/api/login</code>.</p>
+ <div class="scroll"><table class="table"><thead><tr><th>Route</th><th>Role</th><th>What it does</th></tr></thead><tbody>
+  <tr><td><code>GET /api/me</code></td><td>public</td><td><code>{role, cloud, max_upload}</code>; <code>role</code> is null when signed out</td></tr>
+  <tr><td><code>POST /api/login</code></td><td>public</td><td><code>{pin}</code> &rarr; sets the session; 401 wrong PIN, 429 while locked</td></tr>
+  <tr><td><code>POST /api/logout</code></td><td>public</td><td>Clears the session</td></tr>
+  <tr><td><code>GET /api/gallery</code></td><td>user</td><td>Every photo with the readings of v0, the colour method and v1, plus the hand count</td></tr>
+  <tr><td><code>GET /api/photo/&lt;id&gt;.jpg</code></td><td>user</td><td>A 1200 px copy of a photo, metadata removed</td></tr>
+  <tr><td><code>POST /api/read</code></td><td>user</td><td>Body: one JPEG (&le;4.4 MB). Returns <code>{cm, level, state, confidence, accepted, note, mark}</code></td></tr>
+  <tr><td><code>POST /api/correct</code></td><td>user</td><td><code>{id, rings}</code>; kept on-premises only</td></tr>
+  <tr><td><code>GET /api/corrections</code></td><td>admin</td><td>Saved corrections</td></tr>
+  <tr><td><code>GET /api/export.csv</code></td><td>admin</td><td>Every photo's readings as CSV</td></tr>
+ </tbody></table></div>
+</section>
+</div>
+</main>
+<footer><div class="wrap"><a href="index.html">&larr; Home</a></div></footer>
+<script>window.CM_APP_URL="app.html";</script>
+</body>
+</html>

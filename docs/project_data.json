@@ -1,0 +1,33 @@
+{
+ "product": "CarbonMint gauge reader v1",
+ "features": [
+  {"name": "Finds the gauge by its ring stack", "gap": "v0 picks the pinkest upright column and loses leaning rods", "status": "built", "complexity": "medium", "impact": "high", "cost": "free", "runs": "local"},
+  {"name": "Joins a rod split by a leaf", "gap": "a leaf across the rod split it into two short pieces", "status": "built", "complexity": "low", "impact": "high", "cost": "free", "runs": "local"},
+  {"name": "Straightens tilted and bent rods", "gap": "a fixed upright window drifts off a rod leaning 5-9 degrees", "status": "built", "complexity": "medium", "impact": "high", "cost": "free", "runs": "local"},
+  {"name": "Counts rings hidden by leaves from the ring rhythm", "gap": "counting visible bands misses covered rings", "status": "built", "complexity": "medium", "impact": "high", "cost": "free", "runs": "local"},
+  {"name": "Reads shaded and washed-out rings", "gap": "v0's brightness floor (value >= 50%) drops shaded rings", "status": "built", "complexity": "low", "impact": "high", "cost": "free", "runs": "local"},
+  {"name": "Ignores a faint pink sleeve rim", "gap": "a stained rim was counted as an extra ring", "status": "built", "complexity": "low", "impact": "medium", "cost": "free", "runs": "local"},
+  {"name": "Reads an all-grey rod as 0 rings (dry), not 'not found'", "gap": "v0 gives no reading when no stripe shows", "status": "built", "complexity": "low", "impact": "high", "cost": "free", "runs": "local"},
+  {"name": "Trained confidence: 0.7 means probably exact", "gap": "v0's confidence keeps right readings below 0.7", "status": "built", "complexity": "medium", "impact": "high", "cost": "free", "runs": "local"},
+  {"name": "Company acceptance rule and folder average", "gap": "same rule as v0, so results compare like for like", "status": "built", "complexity": "low", "impact": "high", "cost": "free", "runs": "local"},
+  {"name": "Level against the guide and soil state", "gap": "same output as v0: Flooded, Saturated, Drying, Irrigate now", "status": "built", "complexity": "low", "impact": "medium", "cost": "free", "runs": "local"},
+  {"name": "Two-shot check per visit", "gap": "two shots that disagree go to review", "status": "built", "complexity": "low", "impact": "medium", "cost": "free", "runs": "local"},
+  {"name": "One-day spike check per plot", "gap": "a single impossible jump is flagged", "status": "built", "complexity": "low", "impact": "medium", "cost": "free", "runs": "local"},
+  {"name": "Demo app: gallery of every photo with every method's reading", "gap": "see v0 and v1 side by side on real photos", "status": "built", "complexity": "medium", "impact": "high", "cost": "free", "runs": "hybrid"},
+  {"name": "Live reading of an uploaded photo", "gap": "try v1 on a new photo", "status": "built", "complexity": "medium", "impact": "high", "cost": "free", "runs": "hybrid"},
+  {"name": "PIN sign-in with admin and user roles", "gap": "the photos are client data", "status": "built", "complexity": "low", "impact": "high", "cost": "free", "runs": "hybrid"},
+  {"name": "CSV export of every reading", "gap": "hand the results to the field team", "status": "built", "complexity": "low", "impact": "medium", "cost": "free", "runs": "hybrid"},
+  {"name": "Pilot capture guide", "gap": "blurred and far shots are read right only about half the time", "status": "built", "complexity": "low", "impact": "high", "cost": "free", "runs": "local"},
+  {"name": "Bad-gauge check", "gap": "a broken gauge must never be accepted", "status": "partial", "complexity": "low", "impact": "high", "cost": "free", "runs": "local", "note": "physics rules built; no photo of a real bad gauge to test on yet"},
+  {"name": "Sharpness in the confidence score", "gap": "a blurred rod showing no paint reads 0 and can be trusted too much", "status": "partial", "complexity": "low", "impact": "medium", "cost": "free", "runs": "local"},
+  {"name": "Ring-to-centimetre scale confirmed by the company", "gap": "1 ring = 1 cm comes from the company's description", "status": "roadmap", "complexity": "low", "impact": "high", "cost": "free", "runs": "local"},
+  {"name": "Benchmark on the company's own labelled photos", "gap": "our 127 photos are not the company's test set", "status": "roadmap", "complexity": "low", "impact": "high", "cost": "free", "runs": "local"},
+  {"name": "Trained detector for very far shots", "gap": "a rod about 30 px tall is too small for colour alone", "status": "roadmap", "complexity": "high", "impact": "medium", "cost": "free", "runs": "local"}
+ ],
+ "dependencies": [
+  {"name": "Python 3.11 standard library", "cost": "free", "runs": "local"},
+  {"name": "numpy, scipy, Pillow", "cost": "free", "runs": "local"},
+  {"name": "Vercel (hosted demo)", "cost": "free tier", "runs": "cloud"},
+  {"name": "PM2 (local lane)", "cost": "free", "runs": "local"}
+ ]
+}

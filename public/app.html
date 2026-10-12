@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gauge reader demo</title>
+<meta name="description" content="Sign in to see every pilot photo read by v0 and v1, and to read a gauge photo live.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='5' y='0' width='6' height='16' rx='2' fill='%23b3262d'/%3E%3C/svg%3E">
+<script>(function(){try{var t=localStorage.getItem("cm-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}})();
+function cmToggleTheme(){var r=document.documentElement,cur=r.getAttribute("data-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"),nx=cur==="dark"?"light":"dark";r.setAttribute("data-theme",nx);try{localStorage.setItem("cm-theme",nx)}catch(e){}cmThemeLabel()}
+function cmThemeLabel(){var b=document.querySelectorAll("[data-theme-toggle]"),d=(document.documentElement.getAttribute("data-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"))==="dark";b.forEach(function(x){x.textContent=d?"☀":"☾";x.setAttribute("aria-label",d?"Switch to light theme":"Switch to dark theme")})}
+document.addEventListener("DOMContentLoaded",function(){cmThemeLabel();document.querySelectorAll("[data-theme-toggle]").forEach(function(b){b.addEventListener("click",cmToggleTheme)});var host=location.hostname;var app=window.CM_APP_URL||"app.html";document.querySelectorAll("[data-app]").forEach(function(a){a.href=app})});
+</script>
+<style>:root{--bg:#f6f5ef;--paper:#fffefa;--ink:#17211b;--mut:#4d5a52;--line:#d8ddd4;--brand:#1f5a38;--brand-ink:#ffffff;--ring:#b3262d;--ok:#1d6b35;--warn:#8a5300;--chip:#e9eee6;--shadow:0 1px 2px rgba(0,0,0,.06),0 6px 24px rgba(0,0,0,.06);--serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;--sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--mono:ui-monospace,"Cascadia Mono",Consolas,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1712;--paper:#15211a;--ink:#e7ede8;--mut:#a7b4ab;--line:#2b3a31;--brand:#7bd88f;--brand-ink:#0b130e;--ring:#ff7b80;--ok:#7bd88f;--warn:#f2b95b;--chip:#1d2b23;--shadow:none}}
+:root[data-theme="dark"]{--bg:#0e1712;--paper:#15211a;--ink:#e7ede8;--mut:#a7b4ab;--line:#2b3a31;--brand:#7bd88f;--brand-ink:#0b130e;--ring:#ff7b80;--ok:#7bd88f;--warn:#f2b95b;--chip:#1d2b23;--shadow:none}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans);overflow-x:hidden}
+[hidden]{display:none!important}img,video,svg{max-width:100%;height:auto}a{color:var(--brand)}a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:3px solid var(--ring);outline-offset:2px;border-radius:4px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+header.top{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;gap:16px;min-height:60px;flex-wrap:wrap}
+.brand{font:700 18px/1 var(--serif);color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px}
+.brand i{width:12px;height:28px;border-radius:3px;background:repeating-linear-gradient(var(--ring) 0 4px,#9fb2c0 4px 9px);display:inline-block}
+nav.links{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}nav.links a{color:var(--mut);text-decoration:none;padding:10px 10px;border-radius:8px;font-size:15px;min-height:44px;display:inline-flex;align-items:center}
+nav.links a:hover{color:var(--ink);background:var(--chip)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 18px;border-radius:10px;border:1px solid var(--brand);background:var(--brand);color:var(--brand-ink);font:600 15px/1 var(--sans);text-decoration:none;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--brand)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.theme{min-width:44px;min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;font-size:18px}
+h1,h2,h3{font-family:var(--serif);line-height:1.15;letter-spacing:-.01em}h1{font-size:clamp(34px,5.4vw,58px);margin:0 0 16px}h2{font-size:clamp(26px,3.4vw,38px);margin:0 0 12px}h3{font-size:21px;margin:0 0 6px}
+.lede{font-size:clamp(17px,2vw,20px);color:var(--mut);max-width:62ch}
+section{padding:64px 0;border-bottom:1px solid var(--line)}section:last-of-type{border-bottom:0}
+.eyebrow{font:600 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--ring);margin-bottom:12px}
+.grid{display:grid;gap:18px}.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow);min-width:0}
+.stat{font:700 clamp(36px,6vw,54px)/1 var(--serif)}.stat.v1{color:var(--ok)}.stat.v0{color:var(--ring)}.small{font-size:14px;color:var(--mut)}
+.table{width:100%;border-collapse:collapse;font-size:15px}.table th,.table td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}.table th{font-weight:600;color:var(--mut)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;font:600 12px/1.6 var(--sans);background:var(--chip);color:var(--ink)}.pill.ok{color:var(--ok)}.pill.warn{color:var(--warn)}.pill.bad{color:var(--ring)}
+.player{background:#000;border-radius:14px;overflow:hidden;border:1px solid var(--line)}.player video{display:block;width:100%;height:auto}
+.chapters{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px}.chapters button{min-height:44px;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;font:14px var(--sans)}
+.chapters button[aria-current="true"]{border-color:var(--brand);background:var(--chip);font-weight:600}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0;display:grid;gap:12px}.steps li{counter-increment:s;padding-left:46px;position:relative}.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font:700 15px var(--sans)}
+code{font:14px var(--mono);background:var(--chip);padding:1px 6px;border-radius:6px;overflow-wrap:anywhere}pre{background:var(--chip);padding:14px;border-radius:10px;overflow-x:auto;font:13px/1.5 var(--mono)}
+footer{padding:36px 0;color:var(--mut);font-size:14px}
+.crops{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.crops figure{margin:0}.crops img{border-radius:10px;border:1px solid var(--line);width:100%;aspect-ratio:2/5;object-fit:cover}.crops figcaption{font-size:13px;color:var(--mut);margin-top:6px}
+svg text{fill:var(--ink);font-family:var(--sans)}
+@media (max-width:640px){section{padding:44px 0}nav.links{display:none}header.top .wrap{gap:10px;padding-top:8px;padding-bottom:8px}header.top .btn{padding:10px 14px}.crops{grid-template-columns:repeat(3,minmax(0,1fr))}.table{font-size:14px}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+.signin{max-width:420px;margin:8vh auto;padding:0 20px}.signin input{width:100%;min-height:48px;font:600 22px/1 var(--mono);letter-spacing:.3em;text-align:center;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);padding:10px}
+.tabs{display:flex;gap:6px;margin:20px 0}.tabs button{min-height:44px;padding:8px 16px;border-radius:10px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;font:600 15px var(--sans)}.tabs button[aria-selected="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}select{min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:0 10px;font:15px var(--sans);max-width:100%}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,170px),1fr));gap:12px}.tile{background:var(--paper);border:1px solid var(--line);border-radius:12px;overflow:hidden;cursor:pointer;text-align:left;padding:0;color:var(--ink);font:14px var(--sans);min-height:44px}
+.tile img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--chip)}.tile div{padding:8px 10px}
+.detail{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:20px}@media (max-width:820px){.detail{grid-template-columns:minmax(0,1fr)}}
+.view svg{width:100%;height:auto;border-radius:12px;background:#000;display:block}
+.msg{padding:10px 14px;border-radius:10px;background:var(--chip)}.err{color:var(--ring)}
+input[type=file]{max-width:100%;font:15px var(--sans)}input[type=number]{width:6em;min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:0 10px;font:15px var(--sans)}</style>
+</head>
+<body>
+<div id="signin" class="signin" hidden>
+ <p><a href="index.html">&larr; Back to home</a></p>
+ <h1 style="font-size:34px">Gauge reader demo</h1>
+ <p class="small">The photos belong to the fields, so the demo needs a PIN from the CarbonMint team.</p>
+ <form id="loginform"><label for="pin" class="small">PIN</label><input id="pin" type="password" inputmode="numeric" autocomplete="current-password" required minlength="4" maxlength="12">
+ <p><button class="btn" type="submit" style="width:100%">Sign in</button></p><p id="loginmsg" class="err" role="alert"></p></form>
+</div>
+
+<div id="appview" hidden>
+<header class="top"><div class="wrap">
+ <a class="brand" href="index.html"><i aria-hidden="true"></i>Gauge reader</a>
+ <a class="btn ghost" href="index.html" style="margin-left:auto">Home</a>
+ <span class="pill" id="who"></span>
+ <button class="theme" type="button" data-theme-toggle aria-label="Switch theme">&#9790;</button>
+ <button class="btn ghost" type="button" id="logout">Sign out</button>
+</div></header>
+<main class="wrap">
+ <div class="tabs" role="tablist"><button role="tab" id="t-gal" aria-selected="true" aria-controls="p-gal">Gallery</button><button role="tab" id="t-read" aria-selected="false" aria-controls="p-read">Read a photo</button></div>
+
+ <section id="p-gal" role="tabpanel" aria-labelledby="t-gal" style="padding:0;border:0">
+  <div class="card" id="sum" style="margin-bottom:16px"></div>
+  <div class="filters"><label class="small" for="fplot">Field</label><select id="fplot"><option value="">All fields</option></select>
+   <label class="small" for="fstate">v1</label><select id="fstate"><option value="">All photos</option><option value="acc">Accepted</option><option value="rev">In review</option><option value="wrong">Accepted but not exact</option></select>
+   <span class="small" id="count"></span> <a class="btn ghost" id="export" href="/api/export.csv" hidden>Download CSV</a></div>
+  <div class="tiles" id="tiles"></div>
+  <div id="detail" hidden style="margin-top:24px"></div>
+ </section>
+
+ <section id="p-read" role="tabpanel" aria-labelledby="t-read" hidden style="padding:0;border:0">
+  <div class="card"><label for="file"><b>Choose a drone photo of a gauge</b> (JPEG)</label><p><input id="file" type="file" accept="image/jpeg"></p>
+   <p class="small" id="readnote"></p><div id="readmsg" class="msg" hidden role="status"></div></div>
+  <div class="detail" id="readout" hidden style="margin-top:18px"><div class="view" id="readview"></div><div id="readtable"></div></div>
+ </section>
+</main>
+</div>
+<script>
+var $=function(s){return document.querySelector(s)},G=null,ME=null;
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function fmt(v){return v==null?"no reading":(Math.round(v*10)/10)}
+async function me(){ME=await (await fetch("/api/me",{cache:"no-store"})).json();if(ME.role){$("#signin").hidden=true;$("#appview").hidden=false;$("#who").textContent=ME.role;$("#export").hidden=ME.role!=="admin";
+ $("#readnote").textContent=ME.cloud?"The hosted demo shrinks the photo to 2048 px before sending (4.5 MB limit). Exact readings drop from 78% to about 73% at that size; the on-premises lane reads full size.":"Reads the photo at full size.";loadGallery()}else{$("#appview").hidden=true;$("#signin").hidden=false;$("#pin").focus()}}
+$("#loginform").addEventListener("submit",async function(e){e.preventDefault();var r=await fetch("/api/login",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({pin:$("#pin").value})});
+ if(r.ok){$("#pin").value="";$("#loginmsg").textContent="";me()}else{$("#loginmsg").textContent=(await r.json()).error||"Sign-in failed"}});
+$("#logout").addEventListener("click",async function(){await fetch("/api/logout",{method:"POST"});G=null;me()});
+function tab(which){var g=which==="gal";$("#t-gal").setAttribute("aria-selected",g);$("#t-read").setAttribute("aria-selected",!g);$("#p-gal").hidden=!g;$("#p-read").hidden=g}
+$("#t-gal").addEventListener("click",function(){tab("gal")});$("#t-read").addEventListener("click",function(){tab("read")});
+async function loadGallery(){if(G)return render();var r=await fetch("/api/gallery");if(!r.ok)return me();G=await r.json();
+ var plots=[...new Set(G.photos.map(function(p){return p.plot}))].sort();plots.forEach(function(p){var o=document.createElement("option");o.value=p;o.textContent=p;$("#fplot").appendChild(o)});
+ var c=G.comparison,v0=c["v0 (company, rebuilt)"],v1=c["**v1**"];
+ $("#sum").innerHTML="<b>Accepted and exact on these "+v1.n+" photos:</b> v0 "+v0.acc_exact+" ("+Math.round(100*v0.acc_exact/v0.n)+"%) &middot; v1 "+v1.acc_exact+" ("+Math.round(100*v1.acc_exact/v1.n)+"%). Open any photo to compare every method.";render()}
+function shown(){var fp=$("#fplot").value,fs=$("#fstate").value;return G.photos.filter(function(p){if(fp&&p.plot!==fp)return false;if(fs==="acc")return p.v1.accepted;if(fs==="rev")return !p.v1.accepted;if(fs==="wrong")return p.v1.accepted&&p.v1.cm!==p.label;return true})}
+function render(){var list=shown();$("#count").textContent=list.length+" photos";var t=$("#tiles");t.innerHTML="";
+ list.forEach(function(p){var b=document.createElement("button");b.className="tile";b.type="button";
+  var ok=p.v1.accepted?(p.v1.cm===p.label?'<span class="pill ok">accepted &middot; exact</span>':'<span class="pill bad">accepted &middot; off</span>'):'<span class="pill warn">review</span>';
+  b.innerHTML='<img loading="lazy" alt="Gauge photo '+esc(p.id)+'" src="/api/photo/'+esc(p.id)+'.jpg" width="400" height="300"><div><b>v1: '+esc(fmt(p.v1.cm))+'</b> &middot; hand '+esc(p.label)+'<br>'+ok+'<br><span class="small">'+esc(p.plot.slice(-9))+' &middot; '+esc(p.date)+' &middot; shot '+p.shot+'</span></div>';
+  b.addEventListener("click",function(){detail(p)});t.appendChild(b)})}
+$("#fplot").addEventListener("change",render);$("#fstate").addEventListener("change",render);
+function overlay(src,size,mark){var w=size[0],h=size[1],s='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Photo with the first and last ring marked"><image href="'+src+'" width="'+w+'" height="'+h+'"/>';
+ if(mark){var x=mark.x,hw=Math.max(18,mark.half*2.2);[["first",mark.first,"#7bd88f"],["last",mark.last,"#f2a93b"]].forEach(function(m){s+='<line x1="'+(x-hw)+'" x2="'+(x+hw)+'" y1="'+m[1]+'" y2="'+m[1]+'" stroke="'+m[2]+'" stroke-width="'+Math.max(3,w/400)+'"/>'})}
+ return s+"</svg>"}
+function row(name,v,acc,note){return "<tr><td>"+name+"</td><td><b>"+esc(fmt(v))+"</b></td><td>"+(acc==null?"":acc?'<span class="pill ok">accepted</span>':'<span class="pill warn">not accepted</span>')+"</td><td class='small'>"+esc(note||"")+"</td></tr>"}
+function detail(p){var d=$("#detail");d.hidden=false;
+ var corr='<form id="corr" class="filters" style="margin-top:12px"><label class="small" for="cval">Right count</label><input id="cval" type="number" min="0" max="40" step="1" value="'+p.label+'"><button class="btn ghost" type="submit">Save correction</button><span id="cmsg" class="small" role="status"></span></form>';
+ d.innerHTML='<h2 style="font-size:26px">'+esc(p.plot)+' &middot; '+esc(p.date)+' &middot; shot '+p.shot+'</h2><div class="detail"><div class="view">'+overlay("/api/photo/"+p.id+".jpg",p.size,p.mark)+'<p class="small">Green line: v1\'s first ring. Amber: its last ring.</p></div><div><div class="scroll"><table class="table"><thead><tr><th>Method</th><th>Rings (cm)</th><th></th><th></th></tr></thead><tbody>'+
+  row("Hand count (checked)",p.label,null,p.label_conf==="low"?"hard photo":"")+row("v1",p.v1.cm,p.v1.accepted,"confidence "+p.v1.confidence+(p.v1.state?" · "+p.v1.state:"")+(p.v1.note?" · "+p.v1.note:""))+
+  row("v0 (current detector)",p.v0.cm,p.v0.accepted,"confidence "+p.v0.confidence)+row("Colour method (team)",p.teammate.cm,p.teammate.accepted,"")+"</tbody></table></div>"+corr+"</div></div>";
+ d.querySelector("#corr").addEventListener("submit",async function(e){e.preventDefault();var r=await fetch("/api/correct",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({id:p.id,rings:Number($("#cval").value)})});var j=await r.json();
+  $("#cmsg").textContent=r.ok?(j.kept?"Saved.":"Noted (the hosted demo does not store corrections)."):(j.error||"Not saved")});
+ d.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"})}
+async function shrink(file,maxW){var img=await createImageBitmap(file);var sc=Math.min(1,maxW/img.width);if(sc===1&&file.size<=ME.max_upload)return file;
+ var c=document.createElement("canvas");c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+ return await new Promise(function(res){c.toBlob(res,"image/jpeg",0.9)})}
+$("#file").addEventListener("change",async function(e){var f=e.target.files[0];if(!f)return;var m=$("#readmsg");m.hidden=false;m.textContent="Reading…";$("#readout").hidden=true;
+ try{var blob=ME.cloud||f.size>ME.max_upload?await shrink(f,2048):f;if(blob.size>ME.max_upload){m.textContent="This photo is too large to send.";return}
+  var r=await fetch("/api/read",{method:"POST",headers:{"content-type":"image/jpeg"},body:blob});var j=await r.json();if(!r.ok){m.textContent=j.error||"Could not read";return}
+  m.textContent=j.cm==null?"No gauge found in this photo.":(j.accepted?"Accepted: ":"Needs review: ")+fmt(j.cm)+" rings ("+fmt(j.cm)+" cm), confidence "+j.confidence+".";
+  var url=URL.createObjectURL(blob);$("#readview").innerHTML=overlay(url,j.size,j.mark);
+  $("#readtable").innerHTML='<div class="scroll"><table class="table"><tbody><tr><th>Rings (cm)</th><td>'+esc(fmt(j.cm))+'</td></tr><tr><th>Level vs guide</th><td>'+esc(j.level==null?"-":j.level+" cm")+'</td></tr><tr><th>Soil state</th><td>'+esc(j.state||"-")+'</td></tr><tr><th>Confidence</th><td>'+esc(j.confidence)+'</td></tr><tr><th>Accepted</th><td>'+(j.accepted?"yes":"no")+'</td></tr><tr><th>Note</th><td>'+esc(j.note||"-")+'</td></tr></tbody></table></div><p class="small">A single upload has no second shot to compare, so confidence is a little lower than in the gallery.</p>';
+  $("#readout").hidden=false}catch(err){m.textContent="Could not read this photo."}});
+me();
+</script>
+</body>
+</html>

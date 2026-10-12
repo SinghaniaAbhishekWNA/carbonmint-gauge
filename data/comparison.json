@@ -1,0 +1,46 @@
+{
+ "v0 (company, rebuilt)": {
+  "n": 127,
+  "acc": 47,
+  "acc_exact": 19,
+  "prec": 0.40425531914893614,
+  "exact": 20,
+  "pm1": 22,
+  "none": 66,
+  "visits": 66,
+  "visit_ok": 9
+ },
+ "Teammate (method 3)": {
+  "n": 127,
+  "acc": 103,
+  "acc_exact": 51,
+  "prec": 0.49514563106796117,
+  "exact": 65,
+  "pm1": 88,
+  "none": 4,
+  "visits": 66,
+  "visit_ok": 23
+ },
+ "Our reader, own score": {
+  "n": 127,
+  "acc": 25,
+  "acc_exact": 17,
+  "prec": 0.68,
+  "exact": 99,
+  "pm1": 111,
+  "none": 2,
+  "visits": 66,
+  "visit_ok": 11
+ },
+ "**v1**": {
+  "n": 127,
+  "acc": 105,
+  "acc_exact": 92,
+  "prec": 0.8761904761904762,
+  "exact": 99,
+  "pm1": 111,
+  "none": 2,
+  "visits": 66,
+  "visit_ok": 50
+ }
+}

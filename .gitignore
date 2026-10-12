@@ -1,0 +1,23 @@
+# client originals (EXIF/XMP carries field GPS) and anything derived at full size
+way points/
+methods/teammate/sorted/*
+!methods/teammate/sorted/visibility_labels.csv
+data/crops/
+data/cache/
+data/spotcheck*.jpg
+data/candidates.json
+data/dev_reads.json
+data/windows.json
+data/.secret
+data/corrections.csv
+videos/
+walk-shots/
+__pycache__/
+*.pyc
+.env*
+!.env.example
+.vercel/
+node_modules/
+phase 1.txt
+methods/0*/
+data/index.csv

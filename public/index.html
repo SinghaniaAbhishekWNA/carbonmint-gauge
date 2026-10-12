@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CarbonMint gauge reader</title>
+<meta name="description" content="Reads the water level from drone photos of AWD field gauges. v1 is accepted and exact on 72% of photos, against 15% for the current detector on the same photos.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='5' y='0' width='6' height='16' rx='2' fill='%23b3262d'/%3E%3C/svg%3E">
+<script>(function(){try{var t=localStorage.getItem("cm-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}})();
+function cmToggleTheme(){var r=document.documentElement,cur=r.getAttribute("data-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"),nx=cur==="dark"?"light":"dark";r.setAttribute("data-theme",nx);try{localStorage.setItem("cm-theme",nx)}catch(e){}cmThemeLabel()}
+function cmThemeLabel(){var b=document.querySelectorAll("[data-theme-toggle]"),d=(document.documentElement.getAttribute("data-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"))==="dark";b.forEach(function(x){x.textContent=d?"☀":"☾";x.setAttribute("aria-label",d?"Switch to light theme":"Switch to dark theme")})}
+document.addEventListener("DOMContentLoaded",function(){cmThemeLabel();document.querySelectorAll("[data-theme-toggle]").forEach(function(b){b.addEventListener("click",cmToggleTheme)});var host=location.hostname;var app=window.CM_APP_URL||"app.html";document.querySelectorAll("[data-app]").forEach(function(a){a.href=app})});
+</script>
+<style>:root{--bg:#f6f5ef;--paper:#fffefa;--ink:#17211b;--mut:#4d5a52;--line:#d8ddd4;--brand:#1f5a38;--brand-ink:#ffffff;--ring:#b3262d;--ok:#1d6b35;--warn:#8a5300;--chip:#e9eee6;--shadow:0 1px 2px rgba(0,0,0,.06),0 6px 24px rgba(0,0,0,.06);--serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;--sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--mono:ui-monospace,"Cascadia Mono",Consolas,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1712;--paper:#15211a;--ink:#e7ede8;--mut:#a7b4ab;--line:#2b3a31;--brand:#7bd88f;--brand-ink:#0b130e;--ring:#ff7b80;--ok:#7bd88f;--warn:#f2b95b;--chip:#1d2b23;--shadow:none}}
+:root[data-theme="dark"]{--bg:#0e1712;--paper:#15211a;--ink:#e7ede8;--mut:#a7b4ab;--line:#2b3a31;--brand:#7bd88f;--brand-ink:#0b130e;--ring:#ff7b80;--ok:#7bd88f;--warn:#f2b95b;--chip:#1d2b23;--shadow:none}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans);overflow-x:hidden}
+[hidden]{display:none!important}img,video,svg{max-width:100%;height:auto}a{color:var(--brand)}a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:3px solid var(--ring);outline-offset:2px;border-radius:4px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+header.top{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;gap:16px;min-height:60px;flex-wrap:wrap}
+.brand{font:700 18px/1 var(--serif);color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px}
+.brand i{width:12px;height:28px;border-radius:3px;background:repeating-linear-gradient(var(--ring) 0 4px,#9fb2c0 4px 9px);display:inline-block}
+nav.links{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}nav.links a{color:var(--mut);text-decoration:none;padding:10px 10px;border-radius:8px;font-size:15px;min-height:44px;display:inline-flex;align-items:center}
+nav.links a:hover{color:var(--ink);background:var(--chip)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 18px;border-radius:10px;border:1px solid var(--brand);background:var(--brand);color:var(--brand-ink);font:600 15px/1 var(--sans);text-decoration:none;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--brand)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.theme{min-width:44px;min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;font-size:18px}
+h1,h2,h3{font-family:var(--serif);line-height:1.15;letter-spacing:-.01em}h1{font-size:clamp(34px,5.4vw,58px);margin:0 0 16px}h2{font-size:clamp(26px,3.4vw,38px);margin:0 0 12px}h3{font-size:21px;margin:0 0 6px}
+.lede{font-size:clamp(17px,2vw,20px);color:var(--mut);max-width:62ch}
+section{padding:64px 0;border-bottom:1px solid var(--line)}section:last-of-type{border-bottom:0}
+.eyebrow{font:600 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--ring);margin-bottom:12px}
+.grid{display:grid;gap:18px}.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow);min-width:0}
+.stat{font:700 clamp(36px,6vw,54px)/1 var(--serif)}.stat.v1{color:var(--ok)}.stat.v0{color:var(--ring)}.small{font-size:14px;color:var(--mut)}
+.table{width:100%;border-collapse:collapse;font-size:15px}.table th,.table td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}.table th{font-weight:600;color:var(--mut)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;font:600 12px/1.6 var(--sans);background:var(--chip);color:var(--ink)}.pill.ok{color:var(--ok)}.pill.warn{color:var(--warn)}.pill.bad{color:var(--ring)}
+.player{background:#000;border-radius:14px;overflow:hidden;border:1px solid var(--line)}.player video{display:block;width:100%;height:auto}
+.chapters{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px}.chapters button{min-height:44px;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;font:14px var(--sans)}
+.chapters button[aria-current="true"]{border-color:var(--brand);background:var(--chip);font-weight:600}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0;display:grid;gap:12px}.steps li{counter-increment:s;padding-left:46px;position:relative}.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font:700 15px var(--sans)}
+code{font:14px var(--mono);background:var(--chip);padding:1px 6px;border-radius:6px;overflow-wrap:anywhere}pre{background:var(--chip);padding:14px;border-radius:10px;overflow-x:auto;font:13px/1.5 var(--mono)}
+footer{padding:36px 0;color:var(--mut);font-size:14px}
+.crops{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.crops figure{margin:0}.crops img{border-radius:10px;border:1px solid var(--line);width:100%;aspect-ratio:2/5;object-fit:cover}.crops figcaption{font-size:13px;color:var(--mut);margin-top:6px}
+svg text{fill:var(--ink);font-family:var(--sans)}
+@media (max-width:640px){section{padding:44px 0}nav.links{display:none}header.top .wrap{gap:10px;padding-top:8px;padding-bottom:8px}header.top .btn{padding:10px 14px}.crops{grid-template-columns:repeat(3,minmax(0,1fr))}.table{font-size:14px}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+ <a class="brand" href="index.html"><i aria-hidden="true"></i>CarbonMint gauge reader</a>
+ <nav class="links" aria-label="Sections"><a href="#problem">Problem</a><a href="#product">Product</a><a href="#architecture">Architecture</a><a href="#status">Status</a><a href="#roadmap">Roadmap</a><a href="#deployment">Deployment</a><a href="documentation.html">Docs</a></nav>
+ <button class="theme" type="button" data-theme-toggle aria-label="Switch theme">&#9790;</button>
+ <a class="btn" data-app href="app.html">Open the demo</a>
+</div></header>
+
+<main>
+<section id="hero"><div class="wrap">
+ <div class="eyebrow">Water level from drone photos</div>
+ <h1>Read the gauge in most photos, not half of them.</h1>
+ <p class="lede">Each paddy field has a float gauge: the more red rings show above the sleeve, the more water. A drone photographs it every day. v1 reads those rings, says when it is sure, and sends the rest to a person.</p>
+ <p><a class="btn" href="#tour" id="watch">Watch the tour</a> <a class="btn ghost" data-app href="app.html">Try it on real photos</a></p>
+ <div class="grid g2" style="margin:28px 0 8px">
+  <div class="card"><div class="small">Current detector (v0), same 127 photos</div><div class="stat v0">15%</div><div class="small">accepted at confidence 0.7 and exactly right</div></div>
+  <div class="card"><div class="small">v1</div><div class="stat v1">72%</div><div class="small">accepted at confidence 0.7 and exactly right &middot; target 70&ndash;80%</div></div>
+ </div>
+ <div id="tour" style="margin-top:28px">
+  <div class="player"><video id="tourvid" controls preload="metadata" playsinline poster="media/explainer-poster.jpg" width="1920" height="1080">
+   <source src="media/explainer.mp4" type="video/mp4">
+   <track kind="captions" src="media/explainer.captions.vtt" srclang="en" label="English">
+   <track kind="chapters" src="media/explainer.chapters.vtt" srclang="en" label="Chapters">
+  </video></div>
+  <p class="small">55-second tour: how v1 measures the ring rhythm instead of counting rings one by one. Captions are in the picture; a text track is also available from the player menu.</p>
+  <ol class="chapters" id="chapters"><li><button type="button" data-t="0">The gauge</button></li><li><button type="button" data-t="7.9">Counting fails</button></li><li><button type="button" data-t="14.3">Straighten, find the ends</button></li><li><button type="button" data-t="24.0">The ring gap</button></li><li><button type="button" data-t="35.4">The reading</button></li><li><button type="button" data-t="42.2">Safety check</button></li><li><button type="button" data-t="51.2">Measure, don&#x27;t count</button></li></ol>
+ </div>
+</div></section>
+
+<section id="problem"><div class="wrap">
+ <div class="eyebrow">The problem</div>
+ <h2>Half the photos never give an accepted reading.</h2>
+ <div class="grid g2">
+  <div><p>Carbon credits for alternate wetting and drying need proof that each field really dried out between irrigations. The proof is a float gauge read every day from a drone photo.</p>
+  <p>The current detector accepts a reading only at confidence 0.7 or more. On the company's own photos, about half the good gauges reach that bar. The rest stay in review, even when their count was right.</p></div>
+  <div class="card"><h3>Why photos fail</h3><ul>
+   <li>Rice leaves and seed heads cover rings.</li>
+   <li>The drone looks down at an angle, so rings look like thick arcs.</li>
+   <li>Rods lean; a fixed upright window slides off them.</li>
+   <li>Rings in shade are dark red, below the colour rule's brightness floor.</li>
+   <li>Far or blurred shots leave too few pixels per ring.</li></ul></div>
+ </div>
+</div></section>
+
+<section id="product"><div class="wrap">
+ <div class="eyebrow">The product</div>
+ <h2>Measure the rod, don't just count the rings.</h2>
+ <div class="grid g2">
+  <ol class="steps">
+   <li><b>Find the gauge by its ring stack:</b> three or more separate red bands on one upright line. A rod split by a leaf is joined back up.</li>
+   <li><b>Straighten it.</b> The rod's own lean and bend are measured, so a tilted rod reads like an upright one.</li>
+   <li><b>Read the ring rhythm.</b> Rings repeat at a fixed spacing, so the count runs from the first ring to the last and includes the ones a leaf hides.</li>
+   <li><b>Say how sure it is.</b> A small trained model turns the reader's signals into the chance the count is exactly right. Above 0.7 it is accepted, the company's own bar.</li>
+   <li><b>Check it makes sense.</b> A reading that breaks the gauge's physics is never accepted. Two shots that disagree go to a person.</li>
+  </ol>
+  <div><div class="crops">
+   <figure><img src="media/crop-good.jpg" alt="Sharp upright gauge with 20 red rings above a black sleeve" loading="lazy" width="360" height="900"><figcaption>Sharp, upright: read right.</figcaption></figure>
+   <figure><img src="media/crop-far.jpg" alt="Far gauge, rings tiny and washed pink" loading="lazy" width="360" height="900"><figcaption>Far: rings merge, sent to review.</figcaption></figure>
+   <figure><img src="media/crop-blur.jpg" alt="Blurred gauge with faint rings" loading="lazy" width="360" height="900"><figcaption>Blurred: the hardest case.</figcaption></figure>
+  </div><p class="small">Real crops from the pilot photos, metadata removed.</p></div>
+ </div>
+ <h3 style="margin-top:36px">Every photo through every method</h3>
+ <p class="small">127 drone photos, 7 fields, 66 visits, 23 September to 6 October 2026. Ring counts were read by eye and checked by a person on two random samples of 15 (the second matched 15 of 15).</p>
+ <div class="scroll"><table class="table"><thead><tr><th>Method</th><th>Accepted &amp; exact</th><th>Accepted</th><th>Right when accepted</th><th>Exact, all photos</th></tr></thead><tbody><tr><td>v0: current detector (rebuilt)</td><td><b>19/127 = 15.0%</b></td><td>37.0%</td><td>40.4%</td><td>15.7%</td></tr><tr><td>Colour method (team)</td><td><b>51/127 = 40.2%</b></td><td>81.1%</td><td>49.5%</td><td>51.2%</td></tr><tr><td>v1 reader, untrained confidence</td><td><b>17/127 = 13.4%</b></td><td>19.7%</td><td>68.0%</td><td>78.0%</td></tr><tr><td><b>v1</b></td><td><b>92/127 = 72.4%</b></td><td>82.7%</td><td>87.6%</td><td>78.0%</td></tr></tbody></table></div>
+ <p class="small">v0 is the current detector, rebuilt from its written description; its 50% is measured on the company's photos, these photos are harder for it (its brightness floor drops shaded rings). v1's confidence model is trained on six fields and scored on the seventh, for each field in turn. The reader's rules were designed on these same photos, so the next batch of field photos is the real test.</p>
+</div></section>
+
+<section id="architecture"><div class="wrap">
+ <div class="eyebrow">Architecture</div>
+ <h2>One photo in, one accepted reading or a review flag out.</h2>
+ <div class="card scroll"><svg viewBox="0 0 1202 190" width="1202" height="190" role="img" aria-label="Pipeline: drone photo, find the rod, straighten, ring rhythm, confidence, checks, accept at 0.7 or send to review"><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs><rect x="10" y="30" width="150" height="70" rx="12" fill="var(--paper)" stroke="var(--line)" stroke-width="1.5"/><text x="85.0" y="60" text-anchor="middle" font-size="15" font-weight="700">Drone photo</text><text x="85.0" y="82" text-anchor="middle" font-size="11.5" style="fill:var(--mut)">JPEG, two shots a visit</text><rect x="182" y="30" width="150" height="70" rx="12" fill="var(--paper)" stroke="var(--line)" stroke-width="1.5"/><text x="257.0" y="60" text-anchor="middle" font-size="15" font-weight="700">Find the rod</text><text x="257.0" y="82" text-anchor="middle" font-size="11.5" style="fill:var(--mut)">ring stack, leaf gaps joined</text><line x1="162" y1="65.0" x2="179" y2="65.0" stroke="currentColor" style="color:var(--mut)" stroke-width="1.6" marker-end="url(#ar)"/><rect x="354" y="30" width="150" height="70" rx="12" fill="var(--paper)" stroke="var(--line)" stroke-width="1.5"/><text x="429.0" y="60" text-anchor="middle" font-size="15" font-weight="700">Straighten</text><text x="429.0" y="82" text-anchor="middle" font-size="11.5" style="fill:var(--mut)">follow lean and bend</text><line x1="334" y1="65.0" x2="351" y2="65.0" stroke="currentColor" style="color:var(--mut)" stroke-width="1.6" marker-end="url(#ar)"/><rect x="526" y="30" width="150" height="70" rx="12" fill="var(--paper)" stroke="var(--line)" stroke-width="1.5"/><text x="601.0" y="60" text-anchor="middle" font-size="15" font-weight="700">Ring rhythm</text><text x="601.0" y="82" text-anchor="middle" font-size="11.5" style="fill:var(--mut)">pitch, first to last ring</text><line x1="506" y1="65.0" x2="523" y2="65.0" stroke="currentColor" style="color:var(--mut)" stroke-width="1.6" marker-end="url(#ar)"/><rect x="698" y="30" width="150" height="70" rx="12" fill="var(--paper)" stroke="var(--line)" stroke-width="1.5" style="stroke:var(--brand);stroke-width:2.5"/><text x="773.0" y="60" text-anchor="middle" font-size="15" font-weight="700">Confidence</text><text x="773.0" y="82" text-anchor="middle" font-size="11.5" style="fill:var(--mut)">trained P(exact)</text><line x1="678" y1="65.0" x2="695" y2="65.0" stroke="currentColor" style="color:var(--mut)" stroke-width="1.6" marker-end="url(#ar)"/><rect x="870" y="30" width="150" height="70" rx="12" fill="var(--paper)" stroke="var(--line)" stroke-width="1.5"/><text x="945.0" y="60" text-anchor="middle" font-size="15" font-weight="700">Checks</text><text x="945.0" y="82" text-anchor="middle" font-size="11.5" style="fill:var(--mut)">bad gauge, two shots, spikes</text><line x1="850" y1="65.0" x2="867" y2="65.0" stroke="currentColor" style="color:var(--mut)" stroke-width="1.6" marker-end="url(#ar)"/><rect x="1042" y="30" width="150" height="70" rx="12" fill="var(--paper)" stroke="var(--line)" stroke-width="1.5"/><text x="1117.0" y="60" text-anchor="middle" font-size="15" font-weight="700">Accept ≥ 0.7</text><text x="1117.0" y="82" text-anchor="middle" font-size="11.5" style="fill:var(--mut)">cm, level, soil state</text><line x1="1022" y1="65.0" x2="1039" y2="65.0" stroke="currentColor" style="color:var(--mut)" stroke-width="1.6" marker-end="url(#ar)"/><path d="M945.0,100 V150 H1145.0" fill="none" stroke="var(--ring)" stroke-width="1.6" stroke-dasharray="5 4"/><text x="955.0" y="172" font-size="13" style="fill:var(--ring)">below 0.7 or flagged: a person reviews it</text></svg></div>
+</div></section>
+
+<section id="status"><div class="wrap">
+ <div class="eyebrow">Status</div>
+ <h2>What is built and tested: 17 features</h2>
+ <div class="scroll"><table class="table" id="matrix"><thead><tr><th>Feature</th><th>Closes the gap</th><th>Runs</th></tr></thead><tbody><tr><td>Finds the gauge by its ring stack</td><td>v0 picks the pinkest upright column and loses leaning rods</td><td>On-premises</td></tr><tr><td>Joins a rod split by a leaf</td><td>a leaf across the rod split it into two short pieces</td><td>On-premises</td></tr><tr><td>Straightens tilted and bent rods</td><td>a fixed upright window drifts off a rod leaning 5-9 degrees</td><td>On-premises</td></tr><tr><td>Counts rings hidden by leaves from the ring rhythm</td><td>counting visible bands misses covered rings</td><td>On-premises</td></tr><tr><td>Reads shaded and washed-out rings</td><td>v0&#x27;s brightness floor (value &gt;= 50%) drops shaded rings</td><td>On-premises</td></tr><tr><td>Ignores a faint pink sleeve rim</td><td>a stained rim was counted as an extra ring</td><td>On-premises</td></tr><tr><td>Reads an all-grey rod as 0 rings (dry), not &#x27;not found&#x27;</td><td>v0 gives no reading when no stripe shows</td><td>On-premises</td></tr><tr><td>Trained confidence: 0.7 means probably exact</td><td>v0&#x27;s confidence keeps right readings below 0.7</td><td>On-premises</td></tr><tr><td>Company acceptance rule and folder average</td><td>same rule as v0, so results compare like for like</td><td>On-premises</td></tr><tr><td>Level against the guide and soil state</td><td>same output as v0: Flooded, Saturated, Drying, Irrigate now</td><td>On-premises</td></tr><tr><td>Two-shot check per visit</td><td>two shots that disagree go to review</td><td>On-premises</td></tr><tr><td>One-day spike check per plot</td><td>a single impossible jump is flagged</td><td>On-premises</td></tr><tr><td>Demo app: gallery of every photo with every method&#x27;s reading</td><td>see v0 and v1 side by side on real photos</td><td>On-premises and hosted</td></tr><tr><td>Live reading of an uploaded photo</td><td>try v1 on a new photo</td><td>On-premises and hosted</td></tr><tr><td>PIN sign-in with admin and user roles</td><td>the photos are client data</td><td>On-premises and hosted</td></tr><tr><td>CSV export of every reading</td><td>hand the results to the field team</td><td>On-premises and hosted</td></tr><tr><td>Pilot capture guide</td><td>blurred and far shots are read right only about half the time</td><td>On-premises</td></tr></tbody></table></div>
+</div></section>
+
+<section id="roadmap"><div class="wrap">
+ <div class="eyebrow">Roadmap</div>
+ <h2>Now, next, later</h2>
+ <div class="grid g3">
+  <div class="card"><h3>Now</h3><ul><li>v1 reader with trained confidence</li><li>Demo on the 127 pilot photos</li><li>Capture guide for pilots</li></ul></div>
+  <div class="card"><h3>Next</h3><ul><li>Score v1 on the company's own labelled photos</li><li>Confirm the ring-to-centimetre scale</li><li>Add sharpness to the confidence score</li><li>Test the bad-gauge check on a real broken gauge</li></ul></div>
+  <div class="card"><h3>Later</h3><ul><li>Trained detector for very far shots</li><li>Burst and low-angle capture trial</li><li>Daily batch run per field</li></ul></div>
+ </div>
+</div></section>
+
+<section id="deployment"><div class="wrap">
+ <div class="eyebrow">Deployment and migration</div>
+ <h2>Two ways to run it</h2>
+ <div class="grid g2">
+  <div class="card"><h3>On-premises</h3><p>Runs on your own machine under a process manager that restarts it after a crash or reboot. It reads full-size photos and keeps corrections.</p><pre>python -m gauge.web 6900</pre></div>
+  <div class="card"><h3>Hosted demo</h3><p>The same code on Vercel, flipped by environment settings only. Uploads are shrunk to 2048 px in the browser (the host caps a request at 4.5 MB), and corrections are not stored.</p><pre>CM_CLOUD=1  CM_SECRET=...  CM_ADMIN_PIN=...  CM_USER_PIN=...</pre></div>
+ </div>
+ <h3 style="margin-top:28px">Moving from v0</h3>
+ <ul><li>Same inputs: one drone JPEG per shot, a folder per visit.</li><li>Same rule: accept at confidence 0.7; a visit takes the mean of its accepted photos; none accepted means review.</li><li>Same outputs: centimetres, level against the guide (count minus 10), and soil state. CSV export from the demo.</li><li>Open item: 1 ring = 1 cm is taken from the current detector's description and still needs the company's confirmation.</li></ul>
+</div></section>
+
+<section id="demo"><div class="wrap" style="text-align:center">
+ <h2>See it on the real photos</h2>
+ <p class="lede" style="margin:0 auto 20px">Every pilot photo with v0's and v1's reading side by side, and a live reading of any gauge photo you upload. Sign-in needed: the photos belong to the fields.</p>
+ <a class="btn" data-app href="app.html">Open the demo</a> <a class="btn ghost" href="documentation.html">Read the docs</a>
+</div></section>
+</main>
+<footer><div class="wrap">CarbonMint gauge reader v1 &middot; v0 is the current detector, rebuilt for comparison &middot; <a href="documentation.html">Documentation</a></div></footer>
+<script>
+window.CM_APP_URL="app.html";
+(function(){var v=document.getElementById("tourvid"),items=[].slice.call(document.querySelectorAll("#chapters button"));
+items.forEach(function(b){b.addEventListener("click",function(){v.currentTime=parseFloat(b.dataset.t);v.play()})});
+v.addEventListener("timeupdate",function(){var t=v.currentTime,cur=null;items.forEach(function(b){if(parseFloat(b.dataset.t)<=t+0.05)cur=b});items.forEach(function(b){b.setAttribute("aria-current",b===cur?"true":"false")})});
+document.getElementById("watch").addEventListener("click",function(e){e.preventDefault();document.getElementById("tour").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});v.play()});})();
+</script>
+</body>
+</html>

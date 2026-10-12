@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gauge reader docs</title>
+<meta name="description" content="User manual, a day in the life, technical architecture and API reference for the CarbonMint gauge reader v1.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='5' y='0' width='6' height='16' rx='2' fill='%23b3262d'/%3E%3C/svg%3E">
+<script>{{THEME}}</script>
+<style>{{STYLE}}
+.doc{display:grid;grid-template-columns:240px minmax(0,1fr);gap:40px;padding:40px 0}.toc{position:sticky;top:76px;align-self:start}.toc ol{padding-left:18px;margin:0}.toc a{display:inline-block;padding:6px 0;min-height:36px}
+.doc section{padding:0 0 40px;border:0}@media (max-width:860px){.doc{grid-template-columns:minmax(0,1fr)}.toc{position:static}}</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+ <a class="brand" href="index.html"><i aria-hidden="true"></i>CarbonMint gauge reader</a>
+ <nav class="links" aria-label="Pages"><a href="index.html">Home</a><a href="#manual">Manual</a><a href="#day">Day in the life</a><a href="#tech">Architecture</a><a href="#api">API</a></nav>
+ <button class="theme" type="button" data-theme-toggle aria-label="Switch theme">&#9790;</button>
+ <a class="btn" data-app href="app.html">Open the demo</a>
+</div></header>
+<main class="wrap doc">
+<aside class="toc" aria-label="Contents"><strong>Contents</strong><ol>
+ <li><a href="#manual">User manual</a></li><li><a href="#day">A day in the life</a></li><li><a href="#tech">Technical architecture</a></li><li><a href="#accuracy">How accuracy is measured</a></li><li><a href="#api">API reference</a></li></ol></aside>
+<div>
+<section id="manual">
+ <h1>Documentation</h1>
+ <h2>User manual</h2>
+ <h3>Signing in</h3>
+ <p>Open the demo and enter your PIN. There are two roles:</p>
+ <ul><li><b>User</b>: browse every photo, upload a photo for a live reading, save a correction.</li><li><b>Admin</b>: everything a user can do, plus download the CSV of every reading and see saved corrections.</li></ul>
+ <p>The demo shows the fields' real drone photos, so PINs are shared by the CarbonMint team rather than printed here. Five wrong PINs lock sign-in for 60 seconds. A session lasts 8 hours.</p>
+ <h3>Gallery</h3>
+ <p>Every pilot photo with the ring count from each method. Filter by field, or by whether v1 accepted the photo. Open a photo to see the rod with v1's first and last ring marked, and the four readings side by side:</p>
+ <ul><li><b>v0</b>: the current detector, rebuilt from its description.</li><li><b>Colour method</b>: the team's colour-isolation and shot-transfer method.</li><li><b>v1</b>: this product.</li><li><b>Hand count</b>: the checked label.</li></ul>
+ <h3>Read a photo</h3>
+ <p>Choose a drone JPEG of a gauge. v1 returns:</p>
+ <ul><li>the ring count, in centimetres</li><li>the level against the guide, and the soil state</li><li>its confidence</li><li>whether the reading is accepted</li></ul>
+ <p>On the hosted demo the photo is shrunk to 2048 px in your browser first, because the host accepts at most 4.5 MB per request. Exact readings drop from 78% to about 73% at that size. The on-premises lane reads full size.</p>
+ <h3>Corrections and export</h3>
+ <p>Type the right count and save. On-premises, corrections go to <code>data/corrections.csv</code>; the hosted demo does not keep them. Admins can download every reading as CSV.</p>
+</section>
+<section id="day">
+ <h2>A day in the life</h2>
+ <ol class="steps">
+  <li><b>07:30.</b> The pilot flies the waypoint route and takes two shots at each gauge, following the capture guide: side-on, rod filling about a quarter of the frame, held still.</li>
+  <li><b>09:00.</b> The photos are dropped into the reader, one folder per visit. Each photo gets a count, a confidence and a note.</li>
+  <li><b>09:05.</b> Each visit with an accepted photo gets its level and soil state, for example "Drying". Visits where the two shots disagree, or nothing reached 0.7, wait for review.</li>
+  <li><b>09:15.</b> A reviewer opens the flagged visits, looks at the marked rod and saves the right count where needed.</li>
+  <li><b>09:30.</b> The CSV goes to the carbon-credit records.</li>
+ </ol>
+</section>
+<section id="tech">
+ <h2>Technical architecture</h2>
+ <div class="card scroll">{{ARCH_SVG}}</div>
+ <h3 style="margin-top:20px">The reader, step by step</h3>
+ <ol>
+  <li><b>Ring stacks.</b> Pixels where red clearly beats green and blue, with straw and soil excluded, form blobs. Blobs stacked along a near-vertical line are joined into a stack; pieces split by a leaf are merged when they sit on the same axis. A plain blue-grey rod with no paint is the fallback, read as 0 rings.</li>
+  <li><b>Straightening.</b> A wide strip is sampled along the rod. A curve through the ring centre in each row follows lean and bend, and the core of the rod is resampled along it.</li>
+  <li><b>Ring rhythm.</b> The pitch comes from the autocorrelation of the redness down the rod. With only two to six rings, it is the median gap between them instead. Faint bands at either end, under 30% of a typical ring's redness, are sleeve rims or stains and are dropped.</li>
+  <li><b>Count.</b> (last ring &minus; first ring) &divide; pitch + 1. Rings hidden by leaves in between count automatically.</li>
+  <li><b>Confidence.</b> A logistic model predicts P(count is exact) from the reader's signals and whether the visit's other shot agrees. The signals are pattern strength, the share of rings actually seen, sharpness, rod size and red coverage.</li>
+  <li><b>Bad gauge.</b> More rings than the scale holds (25), or a ring spacing that does not fit the rod's width, is never accepted and carries the note "bad gauge".</li>
+  <li><b>Output.</b> Centimetres (1 ring = 1 cm), level = count &minus; 10, and soil state:
+   <ul><li>Flooded above +2</li><li>Saturated from &minus;2 to +2</li><li>Drying from &minus;12 to below &minus;2</li><li>Irrigate now below &minus;12</li></ul></li>
+ </ol>
+ <h3>How v1 differs from v0</h3>
+ <div class="scroll"><table class="table"><thead><tr><th></th><th>v0</th><th>v1</th></tr></thead><tbody>
+  <tr><td>Finding the gauge</td><td>Pinkest upright column, a fixed 2% of the image width</td><td>Stack of separate ring blobs on one line; follows the rod's lean</td></tr>
+  <tr><td>Ring colour</td><td>Hue &le;20&deg; or &ge;330&deg;, saturation &ge;35%, value &ge;50%</td><td>Red relative to green and blue; dark shaded rings count</td></tr>
+  <tr><td>Hidden rings</td><td>Gap &ge;1.65&times; pitch adds round(gap&divide;pitch)&minus;1; a gap over 4.5&times; ends the count</td><td>First-to-last span &divide; pitch; leaves up to 4 rings tall are bridged</td></tr>
+  <tr><td>No paint showing</td><td>No reading, confidence 0</td><td>0 rings (dry), a valid reading</td></tr>
+  <tr><td>Confidence</td><td>Spacing &times; holes &times; solidity &times; thickness</td><td>Trained probability of an exact count</td></tr>
+  <tr><td>Accepting a reading</td><td colspan="2">Confidence &ge; 0.7; a visit takes the mean of its accepted photos (same rule)</td></tr>
+ </tbody></table></div>
+</section>
+<section id="accuracy">
+ <h2>How accuracy is measured</h2>
+ <p>The company's target: of the photos showing a correct gauge, 70&ndash;80% must be <b>accepted</b> (confidence 0.7 or more) <b>and exact</b>. A confident wrong count does not count.</p>
+ <div class="scroll"><table class="table"><thead><tr><th>Method</th><th>Accepted &amp; exact</th><th>Accepted</th><th>Right when accepted</th><th>Exact, all photos</th></tr></thead><tbody>{{RESULTS_ROWS}}</tbody></table></div>
+ <p class="small">How the numbers were made:</p>
+ <ul class="small">
+  <li><b>Labels:</b> ring counts for 127 photos were read by eye. A person checked two random samples of 15: round 1 matched 10 of 15, so the labels were fixed and moved to whole rings; round 2 matched 15 of 15.</li>
+  <li><b>v1's confidence:</b> the model is trained on six fields and scored on the seventh, for each field in turn.</li>
+  <li><b>Caveat:</b> the reader's rules were designed on these photos, so the next batch of field photos is the real test.</li>
+ </ul>
+</section>
+<section id="api">
+ <h2>API reference</h2>
+ <p>JSON over HTTPS. The session is an HttpOnly, signed cookie (<code>cm_session</code>) set by <code>/api/login</code>.</p>
+ <div class="scroll"><table class="table"><thead><tr><th>Route</th><th>Role</th><th>What it does</th></tr></thead><tbody>
+  <tr><td><code>GET /api/me</code></td><td>public</td><td><code>{role, cloud, max_upload}</code>; <code>role</code> is null when signed out</td></tr>
+  <tr><td><code>POST /api/login</code></td><td>public</td><td><code>{pin}</code> &rarr; sets the session; 401 wrong PIN, 429 while locked</td></tr>
+  <tr><td><code>POST /api/logout</code></td><td>public</td><td>Clears the session</td></tr>
+  <tr><td><code>GET /api/gallery</code></td><td>user</td><td>Every photo with the readings of v0, the colour method and v1, plus the hand count</td></tr>
+  <tr><td><code>GET /api/photo/&lt;id&gt;.jpg</code></td><td>user</td><td>A 1200 px copy of a photo, metadata removed</td></tr>
+  <tr><td><code>POST /api/read</code></td><td>user</td><td>Body: one JPEG (&le;4.4 MB). Returns <code>{cm, level, state, confidence, accepted, note, mark}</code></td></tr>
+  <tr><td><code>POST /api/correct</code></td><td>user</td><td><code>{id, rings}</code>; kept on-premises only</td></tr>
+  <tr><td><code>GET /api/corrections</code></td><td>admin</td><td>Saved corrections</td></tr>
+  <tr><td><code>GET /api/export.csv</code></td><td>admin</td><td>Every photo's readings as CSV</td></tr>
+ </tbody></table></div>
+</section>
+</div>
+</main>
+<footer><div class="wrap"><a href="index.html">&larr; Home</a></div></footer>
+<script>window.CM_APP_URL={{APP_URL}};</script>
+</body>
+</html>
