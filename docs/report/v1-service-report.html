@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>Gauge reader v1 service report</title>
 <style>
-@page { size: Letter; margin: 18mm 17mm 18mm 17mm; @bottom-right { content: "Page " counter(page) " of " counter(pages); } }
+@page { size: Letter; margin: 22mm 17mm 18mm 17mm; @bottom-right { content: "Page " counter(page) " of " counter(pages); font: 8.5pt "Segoe UI", sans-serif; color: #5b6862; } }
 :root { --ink: #1c2420; --muted: #5b6862; --line: #d5ddd8; --accent: #b3262d; --ok: #2f7d4a; --paper: #fff; --soft: #f3f6f4; }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--paper); color: var(--ink); font: 10.5pt/1.5 "Segoe UI", system-ui, sans-serif; }
@@ -31,9 +31,14 @@ pre { background: var(--soft); border: 0.75pt solid var(--line); border-radius: 
 .kpi.v1 b { color: var(--ok); }
 .note { border-left: 3pt solid var(--accent); background: var(--soft); padding: 6pt 10pt; margin: 8pt 0 10pt; font-size: 9.5pt; break-inside: avoid; }
 .small { font-size: 9pt; color: var(--muted); }
+.mast { display: flex; align-items: center; gap: 12pt; padding-bottom: 10pt; margin-bottom: 14pt; border-bottom: .75pt solid var(--ink); }
+.mast img { width: 54pt; height: 54pt; }
+.mast .org { font-size: 13pt; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.mast .sub { font-size: 9pt; color: var(--muted); }
 </style>
 </head>
 <body>
+<div class="mast"><img src="wn-logo.png" alt="White Noise logo"><div><div class="org">White Noise</div><div class="sub">Technical report &middot; CarbonMint water-gauge reader</div></div></div>
 
 <h1>Gauge reader v1 service report: what we built and how it differs from v0</h1>
 <div class="meta">CarbonMint water-gauge reader &middot; Oct 12, 2026</div>
