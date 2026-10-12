@@ -3,10 +3,11 @@ models/v{1,2}_confidence.json.
 
 Methods
   v0        the company's detector, rebuilt from its description (gauge/v0.py, data/v0_reads.csv)
-  teammate  jayaprakash-pixel/carbonmint-testing method 3 final + rings.py (methods/teammate/results)
+  colour    our colour method: colour isolation + gauge memory + shot transfer, method 3 final + rings.py
+            (carbonmint-testing@7d32b19, vendored in methods/teammate; results in methods/teammate/results)
   reader    our P0-P6 reader with its own confidence score (data/photo_reads.csv: v1 reader output, frozen at 53c006c)
   v1        our reader + trained confidence model (leave-one-plot-out) + bad-gauge check + company accept rule
-  v2        v1 + pitch and gap-count fixes (data/photo_reads_v2.csv, python -m gauge.run) + teammate locator fallback
+  v2        v1 + pitch and gap-count fixes (data/photo_reads_v2.csv, python -m gauge.run) + colour-method locator fallback
 
 Company metric (the target): share of correct-gauge photos that are ACCEPTED (confidence >= 0.7) AND EXACT.
 Labels: data/labels.csv (Claude-read, human spot-checked in two rounds)."""
@@ -33,7 +34,7 @@ def num(v):
 v0 = {r["photo"]: dict(cm=num(r["cm"]), conf=float(r["confidence"]), acc=r["accepted"] == "True")
       for r in csv.DictReader(open("data/v0_reads.csv", newline=""))}
 
-# --- teammate ---------------------------------------------------------------------------------------
+# --- colour method ---------------------------------------------------------------------------------------
 T = Path("methods/teammate")
 key = {int(r["idx"]): f'{r["checkpoint_folder"]}/{r["file"]}' for r in
        csv.DictReader(open(T / "sorted/visibility_labels.csv", encoding="utf-8"))}
@@ -79,13 +80,13 @@ def trained(reads, name):
 
 
 v1r = trained(reads, "v1")
-# v2: reader fixes (shortest strong pitch lag, gap-by-gap count) + the teammate's colour locator when ours finds no rod
+# v2: reader fixes (shortest strong pitch lag, gap-by-gap count) + the colour method's locator when the reader finds no rod
 tmraw = {key[int(r["idx"])]: r for r in csv.DictReader(open(T / "results/rings_method3final.csv")) if int(r["idx"]) in key}
 reads2 = {r["photo"]: r for r in csv.DictReader(open("data/photo_reads_v2.csv", newline=""))}
 v2r = trained([v1.fallback(reads2[p], tmraw[p]) for p in photos], "v2")
 
 # --- scoring ----------------------------------------------------------------------------------------
-METHODS = [("v0 (company, rebuilt)", v0), ("Teammate (method 3)", tm), ("Our reader, own score", rd), ("v1", v1r),
+METHODS = [("v0 (company, rebuilt)", v0), ("Colour method", tm), ("Our reader, own score", rd), ("v1", v1r),
            ("**v2**", v2r)]
 
 
@@ -128,18 +129,18 @@ L += ["", "Notes:",
       "photos it scores lower. Diagnostic (`scripts/v0_diag.py`): its colour rule needs value >= 50%, but shaded rings here "
       "sit at about 25-40%; relaxing only that rule lifts it from 19 to 55 accepted-and-exact. The magenta hue rule "
       "(140-175) changes nothing on these photos.",
-      "- **Teammate** has no confidence on its ring count; 'accepted' = its locator's own confident states "
+      "- **Colour method** has no confidence on its ring count; 'accepted' = its locator's own confident states "
       "(score >= 0.30), not the company's 0.7.",
       "- **Our reader, own score**: same readings as v1, but its untrained confidence rarely reaches 0.7.",
       "- **v1** confidence is a logistic model trained **leave-one-plot-out**: each plot's photos are scored by a model "
       "that never saw that plot. Accept = probability >= 0.7. Bad-gauge check: "
       f"{sum(1 for d in v1r.values() if d['note'].startswith('bad gauge'))} of 127 correct-gauge photos falsely flagged.",
-      "- **v2** = v1 plus two reader fixes and the teammate's locator: (1) the ring gap is the shortest autocorrelation lag "
+      "- **v2** = v1 plus two reader fixes and the colour method's locator: (1) the ring gap is the shortest autocorrelation lag "
       "at least 0.75 as strong as the best (the best can be 2-4x the true gap); (2) rings are counted gap by gap against "
       "the local gap, since perspective changes the gap along the rod; (3) when our rod finder sees nothing, the "
-      "teammate's colour locator is used (local lane only: needs OpenCV). Same features, same leave-one-plot-out training. "
+      "colour method's locator is used (local lane only: needs OpenCV). Same features, same leave-one-plot-out training. "
       "Tried and dropped (no gain or more errors on these photos): Lanczos 2-3x upscaling of small rods, an extra ring at "
-      "the sleeve, extending the count along a faint rhythm, extra confidence signals, and the teammate's count / box / "
+      "the sleeve, extending the count along a faint rhythm, extra confidence signals, and the colour method's count / box / "
       "score as confidence signals.", ""]
 # per held-out plot for v1
 L += ["## v2 per held-out plot", "", "| Plot | Photos | Accepted & exact | Accepted | Right when accepted |", "|---|---|---|---|---|"]

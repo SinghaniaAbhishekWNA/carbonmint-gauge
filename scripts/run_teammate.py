@@ -1,4 +1,4 @@
-"""Run the teammate's method 3 final (vendored, unchanged) on our photos.
+"""Run our colour method (method 3 final, vendored unchanged) on the photos.
 Links our photos into the layout their code expects (methods/teammate/sorted/<class>/<idx>__<folder>__<file>),
 then runs their pipeline. Needs opencv-python-headless. Their photo #93 is not in our folder and is skipped."""
 import csv, os, subprocess, sys

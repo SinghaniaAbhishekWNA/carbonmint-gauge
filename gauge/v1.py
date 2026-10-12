@@ -29,13 +29,13 @@ def bad_gauge(r):
     return ""
 
 
-def fallback(r, teammate):
-    """When our rod finder sees nothing, use the teammate's colour locator (methods/teammate, method 3 final): if it
+def fallback(r, colour):
+    """When our rod finder sees nothing, use the colour method's locator (methods/teammate, method 3 final): if it
     finds the gauge, take its ring count. Its own score is not trusted, so the reading enters at low confidence and
-    the model decides. Local lane only: it needs the teammate run (OpenCV) on the visit's photos."""
-    if r.get("rings") not in ("", None) or teammate.get("state") in (None, "unreadable"):
+    the model decides. Local lane only: it needs the colour-method run (OpenCV) on the visit's photos."""
+    if r.get("rings") not in ("", None) or colour.get("state") in (None, "unreadable"):
         return r
-    return dict(r, rings=float(teammate.get("rings") or 0), confidence=0.3, source="teammate locator")
+    return dict(r, rings=float(colour.get("rings") or 0), confidence=0.3, source="colour-method locator")
 
 
 def features(r, sibling_rings):

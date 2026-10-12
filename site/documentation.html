@@ -30,7 +30,7 @@
  <p>The demo shows the fields' real drone photos, so PINs are shared by the CarbonMint team rather than printed here. Five wrong PINs lock sign-in for 60 seconds. A session lasts 8 hours.</p>
  <h3>Gallery</h3>
  <p>Every pilot photo with the ring count from each method. Filter by field, or by whether v1 accepted the photo. Open a photo to see the rod with v1's first and last ring marked, and the four readings side by side:</p>
- <ul><li><b>v0</b>: the current detector, rebuilt from its description.</li><li><b>Colour method</b>: the team's colour-isolation and shot-transfer method.</li><li><b>v1</b>: this product.</li><li><b>Hand count</b>: the checked label.</li></ul>
+ <ul><li><b>v0</b>: the current detector, rebuilt from its description.</li><li><b>Colour method</b>: our colour-isolation and shot-transfer method.</li><li><b>v1</b>: this product.</li><li><b>Hand count</b>: the checked label.</li></ul>
  <h3>Read a photo</h3>
  <p>Choose a drone JPEG of a gauge. v1 returns:</p>
  <ul><li>the ring count, in centimetres</li><li>the level against the guide, and the soil state</li><li>its confidence</li><li>whether the reading is accepted</li></ul>
@@ -76,7 +76,7 @@
  <ul>
   <li><b>Ring gap.</b> The gap is the shortest strong repeat, not the strongest. The strongest repeat can be 2&ndash;4 rings long, which made one rod read 4 instead of 24.</li>
   <li><b>Gap-by-gap count.</b> Perspective stretches the gap along the rod, so each gap is compared with the gaps next to it rather than one average gap.</li>
-  <li><b>Colour-method locator as a fallback.</b> When our rod finder sees nothing, the team's colour locator is tried. On-premises only, because it needs OpenCV.</li>
+  <li><b>Colour-method locator as a fallback.</b> When our rod finder sees nothing, our colour method's locator is tried. On-premises only, because it needs OpenCV.</li>
  </ul>
  <p>Tried and dropped, because they gained nothing or added errors: 2&ndash;3&times; upscaling of far rods, adding a ring at the sleeve, following a faint rhythm past the last ring, and the colour method's count or score as a confidence signal.</p>
 </section>
