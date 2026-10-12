@@ -62,7 +62,7 @@ Set under `environment` in `docker-compose.yml`.
 |---|---|---|
 | `POLL_SECONDS` | 10 | how often the `in` folder is checked |
 | `CM_PER_STRIPE` | 1.0 | centimetres per stripe (an assumption until a gauge is measured) |
-| `WORKERS` | 1 | visits read in parallel; each worker needs about 400 MB more |
+| `WORKERS` | 1 | visits read in parallel (only 1 worker has been measured; more workers need more memory) |
 | `MAX_IMAGES` | 5000 | the largest zip accepted, counted in photos |
 
 ## Tests

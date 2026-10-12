@@ -5,32 +5,38 @@
 <title>Gauge reader v1 service report</title>
 <style>
 @page { size: Letter; margin: 22mm 17mm 18mm 17mm; @bottom-right { content: "Page " counter(page) " of " counter(pages); font: 8.5pt "Segoe UI", sans-serif; color: #5b6862; } }
-:root { --ink: #1c2420; --muted: #5b6862; --line: #d5ddd8; --accent: #b3262d; --ok: #2f7d4a; --paper: #fff; --soft: #f3f6f4; }
+:root { --ink: #1c2420; --muted: #5b6862; --line: #d5ddd8; --accent: #b3262d; --ok: #2f7d4a; --soft: #f3f6f4; }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--paper); color: var(--ink); font: 10.5pt/1.5 "Segoe UI", system-ui, sans-serif; }
-h1 { font-size: 21pt; line-height: 1.2; margin: 0 0 4pt; }
-h2 { font-size: 14pt; margin: 20pt 0 6pt; padding-top: 6pt; border-top: 1.5pt solid var(--ink); break-after: avoid; }
-h3 { font-size: 11pt; margin: 12pt 0 4pt; break-after: avoid; }
-p { margin: 0 0 7pt; }
-.meta { color: var(--muted); font-size: 9.5pt; margin-bottom: 12pt; }
-.lede { font-size: 11.5pt; }
-ol, ul { margin: 0 0 8pt; padding-left: 18pt; }
-li { margin-bottom: 3pt; }
-table { width: 100%; border-collapse: collapse; margin: 6pt 0 10pt; font-size: 9.5pt; break-inside: avoid; }
-th, td { text-align: left; vertical-align: top; padding: 5pt 7pt; border-bottom: 0.75pt solid var(--line); }
+body { margin: 0; background: #fff; color: var(--ink); font: 10pt/1.5 "Segoe UI", system-ui, sans-serif; }
+h1 { font-size: 20pt; line-height: 1.2; margin: 0 0 4pt; }
+h2 { font-size: 13.5pt; margin: 18pt 0 6pt; padding-top: 6pt; border-top: 1.5pt solid var(--ink); break-after: avoid; }
+h3 { font-size: 10.5pt; margin: 11pt 0 4pt; break-after: avoid; }
+p { margin: 0 0 6pt; }
+.meta { color: var(--muted); font-size: 9pt; margin-bottom: 10pt; }
+.lede { font-size: 11pt; }
+ol, ul { margin: 0 0 7pt; padding-left: 17pt; }
+li { margin-bottom: 2.5pt; }
+table { width: 100%; border-collapse: collapse; margin: 5pt 0 9pt; font-size: 9pt; }
+tr { break-inside: avoid; } thead { display: table-header-group; }
+th, td { text-align: left; vertical-align: top; padding: 4pt 6pt; border-bottom: 0.75pt solid var(--line); }
 th { background: var(--soft); font-weight: 600; }
 td.num, th.num { text-align: right; white-space: nowrap; }
 tr.total td { font-weight: 700; border-top: 1.25pt solid var(--ink); }
-code, pre { font-family: Consolas, "Cascadia Mono", monospace; font-size: 8.8pt; }
-code { background: var(--soft); padding: 0 3pt; border-radius: 2pt; }
-pre { background: var(--soft); border: 0.75pt solid var(--line); border-radius: 4pt; padding: 8pt 10pt; margin: 6pt 0 10pt; white-space: pre-wrap; break-inside: avoid; }
-.kpis { display: flex; gap: 10pt; margin: 10pt 0 12pt; }
-.kpi { flex: 1; border: 0.75pt solid var(--line); border-radius: 5pt; padding: 8pt 10pt; }
-.kpi b { display: block; font-size: 18pt; line-height: 1.1; }
-.kpi span { color: var(--muted); font-size: 8.8pt; }
+code, pre { font-family: Consolas, "Cascadia Mono", monospace; font-size: 8.4pt; }
+code { background: var(--soft); padding: 0 2.5pt; border-radius: 2pt; }
+pre { background: var(--soft); border: 0.75pt solid var(--line); border-radius: 4pt; padding: 7pt 9pt; margin: 5pt 0 9pt; white-space: pre-wrap; break-inside: avoid; line-height: 1.35; }
+.kpis { display: flex; gap: 9pt; margin: 9pt 0 11pt; }
+.kpi { flex: 1; border: 0.75pt solid var(--line); border-radius: 5pt; padding: 7pt 9pt; }
+.kpi b { display: block; font-size: 17pt; line-height: 1.1; }
+.kpi span { color: var(--muted); font-size: 8.5pt; }
 .kpi.v1 b { color: var(--ok); }
-.note { border-left: 3pt solid var(--accent); background: var(--soft); padding: 6pt 10pt; margin: 8pt 0 10pt; font-size: 9.5pt; break-inside: avoid; }
-.small { font-size: 9pt; color: var(--muted); }
+.note { border-left: 3pt solid var(--accent); background: var(--soft); padding: 6pt 9pt; margin: 7pt 0 9pt; font-size: 9pt; break-inside: avoid; }
+.small { font-size: 8.8pt; color: var(--muted); }
+.tag { display: inline-block; padding: 0 5pt; border-radius: 8pt; font-size: 8pt; font-weight: 600; white-space: nowrap; }
+.tag.ok { background: #e3f1e7; color: #1f5c34; } .tag.open { background: #fbe9e9; color: #8e1d23; } .tag.sus { background: #fdf2dc; color: #7a5208; }
+figure { margin: 6pt 0 10pt; break-inside: avoid; text-align: center; }
+figcaption { font-size: 8.5pt; color: var(--muted); margin-top: 3pt; }
+svg text { font-family: "Segoe UI", sans-serif; }
 .mast { display: flex; align-items: center; gap: 12pt; padding-bottom: 10pt; margin-bottom: 14pt; border-bottom: .75pt solid var(--ink); }
 .mast img { width: 54pt; height: 54pt; }
 .mast .org { font-size: 13pt; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
@@ -41,162 +47,348 @@ pre { background: var(--soft); border: 0.75pt solid var(--line); border-radius: 
 <div class="mast"><img src="wn-logo.png" alt="White Noise logo"><div><div class="org">White Noise</div><div class="sub">Technical report &middot; CarbonMint water-gauge reader</div></div></div>
 
 <h1>Gauge reader v1 service report: what we built and how it differs from v0</h1>
-<div class="meta">CarbonMint water-gauge reader &middot; Oct 12, 2026</div>
+<div class="meta">Technical edition &middot; Oct 13, 2026 &middot; engine 1.0.0, commit <code>d510b11</code> &middot; report schema 1.0</div>
 
-<p class="lede">v1 reads the water level of a paddy-field gauge from a drone photo. It is packaged as a Docker container: the client drops in a zip of photos and gets a JSON report back. On the 127 pilot photos, v1 gives an accepted, exactly correct stripe count on <b>97 photos (76.4%)</b>. The existing reader, v0, manages <b>19 (15.0%)</b>. The target was 70 to 80%.</p>
+<p class="lede">v1 reads the water level of a paddy-field gauge from a drone photo. It runs as a Docker container: a zip of photos goes into one folder and a JSON report comes out of another. On the 127-photo pilot batch, v1 gives an accepted, exactly correct stripe count on <b>97 photos (76.4%)</b> against <b>19 (15.0%)</b> for the existing reader, v0. The target is 70&ndash;80%. This figure comes from the same photos v1 was developed on; a fresh, unseen batch is needed before it can be called validated accuracy.</p>
 
 <div class="kpis">
  <div class="kpi"><b>15.0%</b><span>v0: accepted and exact (19 of 127)</span></div>
  <div class="kpi v1"><b>76.4%</b><span>v1: accepted and exact (97 of 127)</span></div>
  <div class="kpi"><b>28 &rarr; 16</b><span>accepted but wrong, v0 &rarr; v1</span></div>
+ <div class="kpi"><b>127 / 127</b><span>container = research code, same reading and decision</span></div>
 </div>
 
-<h2>What we did</h2>
-<p>The client flies a drone over each paddy field every day and photographs a small float gauge standing in the water. As the water rises, red stripes come up out of a black sleeve, about one stripe per centimetre. No stripes showing means the field is dry. The crop often grows over the gauge, and the client's existing reader (v0) gets only about half of the photos right. We were asked to reach 70 to 80% without changing the gauge itself.</p>
+<h3>System specification</h3>
+<table>
+ <tbody>
+  <tr><th style="width:24%">Input</th><td>A zip of drone photos (jpg, jpeg, png), one folder per visit named <code>&lt;checkpoint&gt; - &lt;ddmmyyHHMMSS&gt;</code>. Loose photos are accepted and read on their own.</td></tr>
+  <tr><th>Output</th><td><code>out/&lt;zip&gt;.report.json</code>: summary, one entry per visit, one entry per photo (JSON Schema draft 2020-12, <code>schema_version</code> 1.0). A zip that cannot be read gives <code>out/&lt;zip&gt;.error.json</code>.</td></tr>
+  <tr><th>Runtime</th><td>Docker (Linux, amd64). Inside the image: Python 3.11, NumPy 1.26.4, SciPy 1.13.1, Pillow 12.1.1, OpenCV (headless) 4.10.0.84. No GPU, no network access, no paid service.</td></tr>
+  <tr><th>Architecture</th><td>One container: a folder watcher, a batch reader that opens the zip in place, and the reading engine (rod finder, stripe-rhythm reader, confidence model, client rules).</td></tr>
+  <tr><th>Resources</th><td>2 GB memory limit; peak 518&ndash;528 MB on the pilot zip; one CPU core per worker; image 709 MB on disk.</td></tr>
+  <tr><th>Validation scope</th><td>127 photos processed; all 127 in the accuracy comparison (exact count). The client sent 128; one is missing from our copy. Development dataset only.</td></tr>
+  <tr><th>Status</th><td>Built, unit-tested and run end to end on the pilot zip. Not yet run on photos it has never seen. Centimetres per stripe not yet confirmed.</td></tr>
+ </tbody>
+</table>
+
+<h2>1. What we did</h2>
+<p>The client flies a drone over each paddy field every day and photographs a float gauge in the water. Red stripes come up out of a black sleeve as the water rises, about one stripe per centimetre; no stripes means the field is dry. Crop often grows over the gauge, and the client's existing reader (v0) gets only about half of the photos right. We were asked to reach 70&ndash;80% without changing the gauge.</p>
 <ol>
- <li><b>We made an answer key.</b> For every pilot photo we marked the first and last stripe and counted the stripes by hand, as whole stripes. A person then checked two random samples of 15 against the photos: the first round matched 10 of 15, so the key was corrected; the second round matched 15 of 15. Every number in this report is checked against that key.</li>
- <li><b>We rebuilt v0 and measured it.</b> We did not have v0's code, only a written description of how it works, so we rebuilt it rule by rule from that description and ran it on the same photos.</li>
- <li><b>We designed v1.</b> Instead of counting stripes one by one, v1 measures the rhythm of the stripes along the gauge, so stripes hidden by a leaf still count. A small trained model then judges how likely the count is to be exactly right, and the client's own acceptance rule decides. We tried each idea separately and kept only what helped.</li>
- <li><b>We checked the weak spots.</b> We tested enlarging far-away gauges, counting an extra stripe at the sleeve, and several other ideas. Those that did not improve the result on fields the model had not seen were dropped.</li>
- <li><b>We packaged it as a service.</b> A Docker container that watches a folder: a zip of photos goes in, a JSON report comes out.</li>
- <li><b>We tested the container with the real zip</b> (127 photos, 713 MB) and confirmed it gives the same answers as our research code on every photo.</li>
+ <li><b>Answer key.</b> Every pilot photo has a hand count of its stripes (section 6 describes how it was made and checked).</li>
+ <li><b>v0 rebuilt and measured.</b> v0's code was not available, so it was rebuilt rule by rule from its written description and run on the same photos.</li>
+ <li><b>v1 designed.</b> v1 measures the stripe rhythm instead of counting bars, then a small trained model estimates how likely the count is to be exactly right, and the client's acceptance rule decides. Each idea was tried separately and kept only if it helped on fields the model had not seen.</li>
+ <li><b>Weak spots checked.</b> Enlarging far gauges, adding a stripe at the sleeve and other ideas were tried and dropped because they did not help (section 7).</li>
+ <li><b>Packaged as a service</b> and <b>tested with the real zip</b> (127 photos, 713 MB): the container gives the research code's answer on every photo.</li>
 </ol>
 
-<h2>How the service works</h2>
-<p>The container runs all the time. The client copies a zip into one folder and collects the report from another.</p>
+<h2>2. Architecture and deployment</h2>
+<figure>
+<svg viewBox="0 0 560 150" width="100%" role="img" aria-label="Architecture: in folder, watcher, batch reader, engine, report in out folder; zip moved to done or failed">
+ <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1c2420"/></marker></defs>
+ <g font-size="9">
+  <rect x="4" y="40" width="82" height="52" rx="6" fill="#f3f6f4" stroke="#1c2420"/><text x="45" y="61" text-anchor="middle" font-weight="700">in/</text><text x="45" y="76" text-anchor="middle">zip of photos</text>
+  <rect x="114" y="40" width="96" height="52" rx="6" fill="#fff" stroke="#1c2420"/><text x="162" y="61" text-anchor="middle" font-weight="700">Watcher</text><text x="162" y="76" text-anchor="middle">every 10 s, size stable</text>
+  <rect x="238" y="40" width="100" height="52" rx="6" fill="#fff" stroke="#1c2420"/><text x="288" y="61" text-anchor="middle" font-weight="700">Batch reader</text><text x="288" y="76" text-anchor="middle">visits from folders</text>
+  <rect x="366" y="40" width="96" height="52" rx="6" fill="#fff" stroke="#2f7d4a" stroke-width="1.6"/><text x="414" y="61" text-anchor="middle" font-weight="700">Engine</text><text x="414" y="76" text-anchor="middle">find, read, confidence</text>
+  <rect x="488" y="40" width="68" height="52" rx="6" fill="#f3f6f4" stroke="#1c2420"/><text x="522" y="61" text-anchor="middle" font-weight="700">out/</text><text x="522" y="76" text-anchor="middle">report.json</text>
+  <path d="M86,66 H112" stroke="#1c2420" marker-end="url(#a)"/><path d="M210,66 H236" stroke="#1c2420" marker-end="url(#a)"/>
+  <path d="M338,66 H364" stroke="#1c2420" marker-end="url(#a)"/><path d="M462,66 H486" stroke="#1c2420" marker-end="url(#a)"/>
+  <path d="M162,92 V122 H45 V96" stroke="#5b6862" stroke-dasharray="3 2" fill="none" marker-end="url(#a)"/>
+  <text x="104" y="136" text-anchor="middle" fill="#5b6862">zip moved to in/done or in/failed</text>
+  <text x="288" y="26" text-anchor="middle" fill="#5b6862">photos read straight from the zip, never unpacked</text>
+  <text x="414" y="110" text-anchor="middle" fill="#5b6862">model file + colour locator</text>
+ </g>
+</svg>
+<figcaption>Figure 1. One container. The engine is the same code the research results come from.</figcaption>
+</figure>
+<h3>Directory layout and naming</h3>
+<pre>service/                         docker compose up -d --build   (run here)
+  in/                            drop zips here (created on first start)
+    done/                        zips that were read, or were already read
+    failed/                      zips that could not be read
+  out/
+    &lt;zip&gt;.report.json            one report per zip
+    &lt;zip&gt;.error.json             why a zip failed
+    .processed.json              fingerprints of zips already read
+
+expected zip:
+  way points/                                      (any top folder, or none)
+    AIT-CP-5286-2931-CKP K26 NG - 011026101600/    &lt;checkpoint&gt; - &lt;ddmmyyHHMMSS&gt;
+      dji_fly_..._photo.jpg                        2 shots per visit
+      dji_fly_..._photo.jpg</pre>
+<table>
+ <thead><tr><th style="width:28%">Behaviour</th><th>Exact rule</th></tr></thead>
+ <tbody>
+  <tr><td>When a zip is read</td><td>Every <code>POLL_SECONDS</code> the watcher lists <code>in/*.zip</code>. A zip is read only when its size is non-zero and the same as on the previous look, so a copy in progress is never read.</td></tr>
+  <tr><td>Fingerprint and duplicates</td><td>SHA-256 of the zip. Fingerprints of read zips are kept in <code>out/.processed.json</code> and survive restarts. A zip with a known fingerprint, under any name, is moved to <code>in/done</code> without a new report.</td></tr>
+  <tr><td>Visits</td><td>Photos are grouped by their folder. A folder whose name matches <code>&lt;checkpoint&gt; - &lt;12 digits&gt;</code> and holds 1&ndash;4 photos is one visit. Loose photos, and folders with more than 4 photos, are read one photo per visit (flag <code>no_twin_shot</code>).</td></tr>
+  <tr><td>Files skipped</td><td>Names with an absolute path, a drive letter or <code>..</code> (reason <code>unsafe path</code>); anything not jpg/jpeg/png (<code>not a jpg or png</code>); a photo larger than <code>MAX_PHOTO_MB</code> uncompressed (<code>photo too large</code>). All are listed under <code>skipped</code>.</td></tr>
+  <tr><td>Zip-level failure</td><td>Not a readable zip, no jpg/png inside, or more than <code>MAX_IMAGES</code> photos: <code>out/&lt;zip&gt;.error.json</code> is written and the zip goes to <code>in/failed</code>.</td></tr>
+  <tr><td>Photo-level failure</td><td>A photo that cannot be decoded or read from the zip gets <code>status: error</code>; the rest of the batch carries on.</td></tr>
+  <tr><td>Writing</td><td>Reports and error files are written to a <code>.part</code> file and renamed, so a half-written report is never visible.</td></tr>
+  <tr><td>Health check</td><td>The watcher writes a heartbeat at every poll and after every visit. <code>python -m gaugesvc health</code> passes while the heartbeat is younger than 3 &times; <code>POLL_SECONDS</code> + 120 s (150 s by default). Docker runs it every 30 s (timeout 10 s, start period 30 s, 3 retries).</td></tr>
+ </tbody>
+</table>
+<h3>Configuration (verified against the Dockerfile, the Compose file and the code)</h3>
+<table>
+ <thead><tr><th>Setting</th><th>Default</th><th>Effect</th></tr></thead>
+ <tbody>
+  <tr><td><code>POLL_SECONDS</code></td><td>10</td><td>How often <code>in/</code> is checked</td></tr>
+  <tr><td><code>CM_PER_STRIPE</code></td><td>1.0</td><td>Centimetres per stripe for <code>level_cm</code> and <code>soil_state</code> (an assumption until measured)</td></tr>
+  <tr><td><code>WORKERS</code></td><td>1</td><td>Visits read in parallel. Only 1 worker has been measured; more workers need more memory</td></tr>
+  <tr><td><code>MAX_IMAGES</code></td><td>5000</td><td>Largest zip accepted, in photos</td></tr>
+  <tr><td><code>MAX_PHOTO_MB</code></td><td>60</td><td>Largest single photo accepted (uncompressed size in the zip)</td></tr>
+  <tr><td><code>IN_DIR</code>, <code>OUT_DIR</code></td><td><code>/data/in</code>, <code>/data/out</code></td><td>Mounted from <code>./in</code> and <code>./out</code></td></tr>
+  <tr><td><code>GIT_COMMIT</code> (build argument)</td><td><code>unknown</code></td><td>Written into every report as <code>engine.commit</code></td></tr>
+  <tr><td>Compose limits</td><td colspan="2"><code>mem_limit: 2g</code>, <code>restart: unless-stopped</code>, runs as user <code>gauge</code> (uid 10001), no ports published</td></tr>
+ </tbody>
+</table>
+<pre>cd service
+GIT_COMMIT=$(git rev-parse --short HEAD) docker compose up -d --build    # start (builds the image)
+docker compose logs -f                                                    # follow the log
+docker compose down                                                       # stop
+python -m gaugesvc run some.zip report.json                               # one zip, without Docker</pre>
+
+<h2>3. Interface contract</h2>
+<h3>Report fields</h3>
+<table>
+ <thead><tr><th style="width:26%">Field</th><th>Meaning</th></tr></thead>
+ <tbody>
+  <tr><td><code>schema_version</code>, <code>engine</code></td><td><code>"1.0"</code>; engine name, version (<code>1.0.0</code>) and the commit the image was built from</td></tr>
+  <tr><td><code>zip</code>, <code>sha256</code>, <code>processed_at</code>, <code>seconds</code></td><td>Input name and fingerprint, finish time, reading time</td></tr>
+  <tr><td><code>settings</code></td><td><code>cm_per_stripe</code>, <code>accept_at</code> (0.7), <code>guide_zero_cm</code> (10)</td></tr>
+  <tr><td><code>summary</code></td><td>Counts: photos, accepted, review, no_gauge, error, visits, skipped</td></tr>
+  <tr><td><code>visits[]</code></td><td><code>folder</code>, <code>checkpoint</code>, <code>taken</code> (from the folder name), <code>photos</code>, <code>reading</code> (mean of the accepted shots, with level and soil state, or <code>status: review</code>), <code>consistent</code> (accepted shots within 1 stripe)</td></tr>
+  <tr><td><code>photos[]</code></td><td><code>file</code>, <code>visit</code>, <code>status</code>, <code>stripes</code>, <code>candidate_stripes</code>, <code>dry</code>, <code>level_cm</code>, <code>level_vs_guide_cm</code>, <code>soil_state</code>, <code>confidence</code>, <code>gauge_box</code>, <code>note</code>, <code>error</code>, <code>flags</code></td></tr>
+  <tr><td><code>skipped[]</code></td><td><code>name</code> and <code>reason</code> of every file not read</td></tr>
+ </tbody>
+</table>
+<table>
+ <thead><tr><th style="width:18%">Status</th><th>Meaning</th><th style="width:30%">Fields present</th></tr></thead>
+ <tbody>
+  <tr><td><code>accepted</code></td><td>Confidence &ge; 0.7 and no bad-gauge flag</td><td>stripes, dry, level_cm, level_vs_guide_cm, soil_state, confidence</td></tr>
+  <tr><td><code>review</code></td><td>A reading exists but confidence &lt; 0.7, or the bad-gauge check fired. No number is reported.</td><td>candidate_stripes (for the reviewer), confidence, note</td></tr>
+  <tr><td><code>no_gauge</code></td><td>Neither the rod finder nor the colour locator found a gauge</td><td>stripes: null</td></tr>
+  <tr><td><code>error</code></td><td>The photo could not be decoded or read from the zip</td><td>error</td></tr>
+ </tbody>
+</table>
+<p>Flags: <code>no_twin_shot</code> (read alone), <code>twin_unreadable</code> (the other shot gave no reading), <code>colour_locator_used</code>, <code>bad_gauge</code>. Soil state: level against the guide = <code>level_cm</code> &minus; 10; above +2 Flooded, &minus;2 to +2 Saturated, &minus;12 to below &minus;2 Drying, below &minus;12 Irrigate now.</p>
+<pre>{ "schema_version": "1.0",
+  "engine": {"name": "CarbonMint gauge reader", "version": "1.0.0", "commit": "d510b11"},
+  "zip": "waypoints.zip", "sha256": "…", "seconds": 236.1,
+  "summary": {"photos": 127, "accepted": 111, "review": 16, "no_gauge": 0, "error": 0, "visits": 66, "skipped": 0},
+  "visits": [ { "folder": "…/AIT-CP-2050-9573-CKP K26 VP - 051026113308", "checkpoint": "AIT-CP-2050-9573-CKP K26 VP",
+                "taken": "2026-10-05T11:33:08", "photos": ["…", "…"], "consistent": true,
+                "reading": {"status": "accepted", "stripes": 20.0, "level_cm": 20.0, "level_vs_guide_cm": 10.0, "soil_state": "Flooded"} } ],
+  "photos": [
+    { "file": "…/dji_fly_20261001_101600_0358_…_photo.jpg", "status": "accepted", "stripes": 4, "dry": false,
+      "level_cm": 4.0, "level_vs_guide_cm": -6.0, "soil_state": "Drying", "confidence": 0.934,
+      "gauge_box": [2095, 969, 2236, 1071], "flags": [] },
+    { "file": "…/dji_fly_20261001_100440_0349_…_photo.jpg", "status": "review", "stripes": null,
+      "candidate_stripes": 19, "confidence": 0.456, "note": "review: confidence below 0.7",
+      "gauge_box": [1977, 858, 2217, 1559], "flags": [] } ],
+  "skipped": [] }
+
+out/broken.error.json:   { "zip": "broken.zip", "sha256": "…", "error": "not a readable zip: BadZipFile" }</pre>
+<p class="small">Real entries from the pilot run, trimmed. The full schema is <code>service/report.schema.json</code>; a four-visit real report is <code>service/examples/sample_report.json</code>.</p>
+
+<h2>4. How one photo is read</h2>
+<figure>
+<svg viewBox="0 0 560 330" width="100%" role="img" aria-label="Decision flow for one photo">
+ <defs><marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1c2420"/></marker></defs>
+ <g font-size="8.6">
+  <rect x="190" y="4" width="180" height="26" rx="5" fill="#f3f6f4" stroke="#1c2420"/><text x="280" y="21" text-anchor="middle">Decode the photo (Pillow, full resolution)</text>
+  <rect x="190" y="44" width="180" height="26" rx="5" fill="#fff" stroke="#1c2420"/><text x="280" y="61" text-anchor="middle">Find the rod: stack of &ge; 3 red stripes</text>
+  <rect x="190" y="84" width="180" height="26" rx="5" fill="#fff" stroke="#1c2420"/><text x="280" y="101" text-anchor="middle">else: tall, thin blue-grey rod</text>
+  <rect x="190" y="124" width="180" height="26" rx="5" fill="#fff" stroke="#1c2420"/><text x="280" y="141" text-anchor="middle">Straighten, read the stripe rhythm &rarr; n</text>
+  <rect x="190" y="164" width="180" height="26" rx="5" fill="#fff" stroke="#1c2420"/><text x="280" y="181" text-anchor="middle">Features + the visit's other shot</text>
+  <rect x="190" y="204" width="180" height="26" rx="5" fill="#fff" stroke="#2f7d4a" stroke-width="1.6"/><text x="280" y="221" text-anchor="middle">Trained model &rarr; P(n is exact)</text>
+  <rect x="190" y="244" width="180" height="26" rx="5" fill="#fff" stroke="#1c2420"/><text x="280" y="261" text-anchor="middle">Bad-gauge check</text>
+  <rect x="190" y="290" width="180" height="30" rx="5" fill="#e3f1e7" stroke="#2f7d4a"/><text x="280" y="309" text-anchor="middle" font-weight="700">P &ge; 0.7 &rarr; accepted</text>
+  <rect x="408" y="290" width="148" height="30" rx="5" fill="#fdf2dc" stroke="#7a5208"/><text x="482" y="309" text-anchor="middle" font-weight="700">review (no number)</text>
+  <rect x="428" y="4" width="128" height="26" rx="5" fill="#fbe9e9" stroke="#8e1d23"/><text x="492" y="21" text-anchor="middle" font-weight="700">error</text>
+  <rect x="4" y="84" width="150" height="40" rx="5" fill="#fff" stroke="#1c2420"/><text x="79" y="100" text-anchor="middle">nothing found: colour locator</text><text x="79" y="113" text-anchor="middle">(OpenCV) &rarr; count, conf. input 0.3</text>
+  <rect x="4" y="150" width="150" height="26" rx="5" fill="#fbe9e9" stroke="#8e1d23"/><text x="79" y="167" text-anchor="middle" font-weight="700">no_gauge</text>
+  <g stroke="#1c2420" fill="none">
+   <path d="M280,30 V42" marker-end="url(#b)"/><path d="M280,70 V82" marker-end="url(#b)"/><path d="M280,110 V122" marker-end="url(#b)"/>
+   <path d="M280,150 V162" marker-end="url(#b)"/><path d="M280,190 V202" marker-end="url(#b)"/><path d="M280,230 V242" marker-end="url(#b)"/>
+   <path d="M280,270 V288" marker-end="url(#b)"/><path d="M370,17 H426" marker-end="url(#b)"/><path d="M190,97 H156" marker-end="url(#b)"/>
+   <path d="M79,124 V148" marker-end="url(#b)"/><path d="M154,110 C175,110 175,177 188,177" marker-end="url(#b)"/>
+   <path d="M370,257 H482 V288" marker-end="url(#b)"/><path d="M370,217 H520 V288" stroke-dasharray="3 2" marker-end="url(#b)"/>
+  </g>
+  <g fill="#5b6862"><text x="398" y="12" text-anchor="middle" font-size="7.6">cannot decode</text><text x="88" y="140">not found</text><text x="170" y="196" text-anchor="end">found</text>
+   <text x="378" y="252">fires</text><text x="452" y="212">P &lt; 0.7</text><text x="286" y="81">no stack</text></g>
+ </g>
+</svg>
+<figcaption>Figure 2. Decision flow, as implemented in <code>gauge/</code> and <code>service/gaugesvc/engine.py</code>. v1 has no second-look pass: a photo that is not confident enough goes to review.</figcaption>
+</figure>
+<table>
+ <thead><tr><th style="width:22%">Step</th><th>Exact rule</th></tr></thead>
+ <tbody>
+  <tr><td>Stripe pixels</td><td>R &minus; max(G, B) &gt; 25, R &gt; 1.25 &times; max(G, B), R &gt; 40 and B &ge; G &minus; 12 (straw and brown soil, where G is well above B, are excluded). Red is judged against green and blue, not by brightness, so shaded stripes count.</td></tr>
+  <tr><td>Find the rod</td><td>Stripe blobs of &ge; 8 px are grouped vertically; a group needs &ge; 3 separate stripes on a near-vertical axis (|direction<sub>y</sub>| &ge; 0.85, elongated). Pieces split by a leaf are joined when they lie within 2.5 half-widths of the same axis. Largest score wins. With no stripe stack, a tall, thin, near-vertical blue-grey tube (fill &ge; 0.3, length &ge; 3 widths) is taken instead.</td></tr>
+  <tr><td>Straighten</td><td>The ring centre is found row by row in a strip 5 half-widths wide; a quadratic (straight line for short rods) through those centres follows lean and bend, and the rod's core is resampled along it.</td></tr>
+  <tr><td>No paint showing</td><td>Fewer than 4 rows with stripe paint: the reading is 0 stripes (dry), a valid reading.</td></tr>
+  <tr><td>Stripe gap (pitch)</td><td>Autocorrelation of the redness down the rod. The pitch is the <b>shortest</b> lag whose peak is at least 0.75 of the strongest, so a stretch of 2&ndash;4 stripes is not taken as one gap. With 2&ndash;6 clear stripes the median spacing is used instead.</td></tr>
+  <tr><td>End stripes</td><td>Peaks at either end weaker than 0.3 &times; the median stripe are dropped (sleeve rims, stains).</td></tr>
+  <tr><td>Count</td><td>Gap by gap from the first stripe to the last: each gap counts round(gap &divide; local pitch) stripes, at least 1, where the local pitch is the median of the neighbouring gaps that lie between 0.6 and 1.5 &times; the pitch. Hidden stripes inside the run are counted; perspective is followed.</td></tr>
+  <tr><td>Colour locator</td><td>Only when nothing above finds a rod: our colour method's locator (brightness evened out first, then plain) finds the gauge by red stripes, blue-grey pipe and black sleeve on a 1000 px copy, and counts bands in its box (no bands = dry). Its reading enters the model with a fixed confidence input of 0.3.</td></tr>
+  <tr><td>Confidence</td><td>Logistic regression (L2 = 1, fitted by Newton steps) on 10 standardised inputs: the reader's own score, pattern strength, share of stripes actually seen, log sharpness, log rod length, red coverage, the other shot reads the same count, the other shot within 1, no other shot, reading is 0. Output: P(count is exactly right).</td></tr>
+  <tr><td>The other shot</td><td>The two shots of a visit are read first; each shot's features include the other's count. A missing or unreadable twin is an input (&ldquo;no other shot&rdquo;) and a flag, not a failure.</td></tr>
+  <tr><td>Bad gauge</td><td>More than 25 stripes, or a stripe gap outside 0.45&ndash;1.7 &times; the rod's half-width (with &ge; 3 stripes): never accepted, flag <code>bad_gauge</code>, confidence capped below 0.7.</td></tr>
+  <tr><td>Accept</td><td>P &ge; 0.7 (the client's bar). Visit reading = mean of its accepted shots (the client's folder rule); none accepted &rarr; the visit stays in review.</td></tr>
+ </tbody>
+</table>
+
+<h2>5. What the service is built from</h2>
+<table>
+ <thead><tr><th>Part</th><th>Version</th><th>Use</th></tr></thead>
+ <tbody>
+  <tr><td>Base image</td><td><code>python:3.11-slim</code> (3.11.17 at build)</td><td>Linux amd64 runtime</td></tr>
+  <tr><td>NumPy / SciPy</td><td>1.26.4 / 1.13.1</td><td>Rod finding, straightening, rhythm, confidence model</td></tr>
+  <tr><td>Pillow</td><td>12.1.1</td><td>Decoding photos straight from the zip</td></tr>
+  <tr><td>OpenCV (headless)</td><td>4.10.0.84</td><td>Colour locator only</td></tr>
+  <tr><td>Confidence model</td><td><code>models/v2_confidence.json</code>, 791 bytes</td><td>Weights, means and scales of the logistic model</td></tr>
+  <tr><td>Folder watcher, batch reader, report</td><td><code>service/gaugesvc</code>, engine 1.0.0</td><td>Our own code, standard library only</td></tr>
+  <tr><td>Test-only</td><td>jsonschema 4.23.0</td><td>Checks reports against the schema</td></tr>
+ </tbody>
+</table>
+
+<h2>6. Evaluation method</h2>
+<h3>Dataset</h3>
+<p>127 drone photos (4096 &times; 3072 JPEG, about 5.6 MB each) from 7 fields, 66 visits, 23 Sep &ndash; 6 Oct 2026; the client's pilot batch minus one photo missing from our copy. This is the development dataset: the reading rules were designed while looking at these photos.</p>
+<h3>Ground truth (<code>data/labels.csv</code>)</h3>
 <ol>
- <li><b>A zip goes into the <code>in</code> folder.</b> It should look like the first zip the client sent: one folder per visit, named <code>&lt;checkpoint&gt; - &lt;ddmmyyHHMMSS&gt;</code>, with that visit's photos inside. The folder name tells us the checkpoint and the time, and keeps the two shots of one visit together.</li>
- <li><b>The container notices it.</b> It looks at the folder every 10 seconds and waits until the file size stops changing, so it never reads a zip that is still being copied.</li>
- <li><b>It reads the photos directly from the zip.</b> Nothing is unpacked onto the disk. Photos are processed one visit at a time, so the two shots of a visit can check each other.</li>
- <li><b>Each photo goes through v1</b> (next sections).</li>
- <li><b>A report is written</b> to the <code>out</code> folder as <code>&lt;zipname&gt;.report.json</code>, and the zip is moved to <code>in/done</code>. A zip that cannot be read goes to <code>in/failed</code>, with an error file saying why. One damaged photo never stops the batch; it is marked as an error and the rest carry on.</li>
- <li><b>The same zip dropped twice is only processed once.</b> The container recognises it by its fingerprint (SHA-256), and remembers it across restarts.</li>
+ <li>For every photo the gauge was straightened and enlarged (<code>scripts/label_strips.py</code>) and the first and last visible stripe marked. The stripes were counted as whole stripes; a stripe partly hidden by the cap or sleeve counts when it is mostly visible. The first read was made by an AI assistant from these enlarged strips. Each label carries a confidence (high 103, low 24) and an occlusion flag (46 photos).</li>
+ <li>A person checked random samples against the photos (<code>gauge/spotcheck.py</code>, fixed seed). Round 1, 15 photos: 10 exact, mostly a half-stripe convention; the convention was fixed to whole stripes and 3 labels corrected. Round 2, 15 new photos: 15 of 15 exact.</li>
 </ol>
-<p>For safety, file names that try to climb out of the folder are ignored, only jpg and png files are read, very large single files are skipped, and there is a limit on how many photos one zip may hold.</p>
-
-<h2>What the report contains</h2>
-<p>The report is a JSON file, plain text that any system can read. It has a summary, then one entry per visit, then one entry per photo. A schema file describes exactly what a valid report looks like.</p>
+<h3>Photo sets</h3>
+<p>Each photo was sorted by eye into one set: <b>Clear</b> (59), the gauge and its stripes plainly visible; <b>Partly hidden</b> (43), leaves or grass across the stripes; <b>Hard</b> (25), the gauge barely visible even to the eye.</p>
+<h3>Metrics</h3>
 <table>
- <thead><tr><th>Field</th><th>Meaning</th></tr></thead>
  <tbody>
-  <tr><td><code>status</code></td><td><code>accepted</code>, <code>review</code> (not sure enough, so no number is given), <code>no_gauge</code> or <code>error</code></td></tr>
-  <tr><td><code>stripes</code></td><td>The stripe count, filled in only for accepted photos. <code>0</code> with <code>dry: true</code> means the gauge is down and the field is dry</td></tr>
-  <tr><td><code>candidate_stripes</code></td><td>For a photo in review: the count a person should check</td></tr>
-  <tr><td><code>confidence</code></td><td>The chance that the count is exactly right; a photo is accepted at 0.7 or more</td></tr>
-  <tr><td><code>level_cm</code>, <code>soil_state</code></td><td>The water level in cm and a label: Flooded, Saturated, Drying or Irrigate now</td></tr>
-  <tr><td><code>gauge_box</code></td><td>Where the gauge was found in the photo</td></tr>
-  <tr><td><code>flags</code></td><td>Anything unusual: no second shot of the visit, the second shot unreadable, the colour locator used, a bad gauge</td></tr>
-  <tr><td>visit <code>reading</code></td><td>The mean of the visit's accepted photos (the client's folder rule), and whether they agree</td></tr>
+  <tr><th style="width:30%">Accepted and exact (primary)</th><td>Photos with status accepted whose stripe count equals the label, divided by all 127 photos</td></tr>
+  <tr><th>Accepted but wrong</th><td>Accepted photos whose count differs from the label by any amount</td></tr>
+  <tr><th>Right when accepted</th><td>Accepted and exact &divide; accepted</td></tr>
+  <tr><th>Review, no gauge, error</th><td>Shares of photos with those statuses</td></tr>
+  <tr><th>Visits</th><td>A visit counts when the mean of its accepted shots is within 0.5 of the visit's median label</td></tr>
  </tbody>
 </table>
-<p>The soil state follows v0's own rule: the guide zero sits 10 cm up the gauge. Above +2 cm is Flooded, &minus;2 to +2 is Saturated, down to &minus;12 is Drying, and below that is Irrigate now. A real entry from the pilot zip, trimmed:</p>
-<pre>{
-  "file": ".../AIT-CP-5286-2931-CKP K26 NG - 011026101600/dji_fly_20261001_101600_0358_..._photo.jpg",
-  "status": "accepted",
-  "stripes": 4,
-  "dry": false,
-  "level_cm": 4.0,
-  "level_vs_guide_cm": -6.0,
-  "soil_state": "Drying",
-  "confidence": 0.934,
-  "gauge_box": [2095, 969, 2236, 1071],
-  "flags": []
-}</pre>
+<p><b>Leave one field out.</b> The confidence model is scored field by field: for each of the 7 fields it is trained on the other 6 and applied to that field, so no photo is scored by a model that saw its field. The figures below use this. The deployed service uses one model trained on all 7 fields, so on these same photos it looks slightly better (111 accepted, 98 exact); that in-sample figure is not quoted as accuracy. Reproduce: <code>python -m gauge.run</code>, then <code>python scripts/compare.py</code> (writes <code>docs/comparison.md</code>).</p>
+<div class="note">The 76.4% is measured on the development dataset. It shows the method works on these fields; it is not independent validation. A fresh labelled batch from fields and days v1 has never seen is needed to estimate real-world accuracy.</div>
 
-<h2>How one photo is read</h2>
-<p>v0 looks for the pinkest column and counts the short pink bars in it. v1 measures instead of counting, then asks how sure it is.</p>
-<table>
- <thead><tr><th>Step</th><th>What it does</th><th>Why it is there</th></tr></thead>
- <tbody>
-  <tr><td>1. Find the gauge</td><td>Looks for a stack of separate red stripes on one near-upright line, judging red against green and blue rather than by fixed brightness. A gauge split by a leaf is joined back up</td><td>Shaded stripes are dark; a fixed brightness bar misses them</td></tr>
-  <tr><td>2. Straighten it</td><td>Follows the gauge's lean and bend through the stripe centres</td><td>Drone shots are rarely square-on</td></tr>
-  <tr><td>3. Read the stripe rhythm</td><td>Measures the spacing of the stripes and counts gap by gap from the first stripe to the last</td><td>Stripes hidden by a leaf still count; perspective changes the spacing along the gauge</td></tr>
-  <tr><td>4. The colour locator</td><td>If step 1 finds nothing, our colour method takes over: it evens out brightness, switches off the green crop, and finds the gauge by its stripes, blue-grey pipe and black sleeve</td><td>A dry gauge has no stripes for step 1 to find</td></tr>
-  <tr><td>5. How sure it is</td><td>A small trained model gives the chance the count is exactly right, from the strength of the rhythm, how many stripes were actually seen, sharpness, gauge size and whether the visit's other shot agrees</td><td>The 0.7 bar then means what it says: probably exact</td></tr>
-  <tr><td>6. Client rules</td><td>Accept at 0.7; a visit takes the mean of its accepted photos; a reading that breaks the gauge's physics is flagged as a bad gauge and never accepted</td><td>The same rules v0 follows</td></tr>
- </tbody>
-</table>
-<p><b>A dry gauge is a reading.</b> When the gauge is found but no stripes are showing, v1 reports 0 stripes and <code>dry: true</code>. This is the reading AWD irrigation needs most, and v0 cannot give it. Of the 29 dry photos, v1 reads 28 correctly.</p>
-<p><b>When it is unsure,</b> the photo is marked <code>review</code>. We give no number rather than guess, so a person can check it.</p>
-
-<h2>What the service is built from</h2>
-<p>Everything is free, open-source software, and nothing needs a paid service or an internet connection once it is installed. The container runs as a normal user rather than an administrator, restarts itself if it stops, and is limited to 2 GB of memory.</p>
-<table>
- <thead><tr><th>Part</th><th>What it is</th><th>What we use it for</th></tr></thead>
- <tbody>
-  <tr><td>Docker</td><td>A way of packaging a program with everything it needs into one sealed box</td><td>The client runs the same box on any machine, with nothing else to install</td></tr>
-  <tr><td>Python 3.11</td><td>The programming language</td><td>All the logic: reading the zip, reading the gauges, writing the report</td></tr>
-  <tr><td>NumPy and SciPy</td><td>Libraries for fast calculations on large grids of numbers</td><td>A photo is a grid of numbers: finding the stripes, straightening, measuring the rhythm, and the confidence model</td></tr>
-  <tr><td>Pillow</td><td>A standard library for opening images</td><td>Reading the photos straight from the zip</td></tr>
-  <tr><td>OpenCV</td><td>A standard image-processing library</td><td>The colour locator for gauges the main finder cannot see</td></tr>
-  <tr><td>Confidence model</td><td>A small trained model (one file, under 1 KB)</td><td>The chance that a count is exactly right</td></tr>
-  <tr><td>JSON and JSON Schema</td><td>The report format, and a file describing a valid report</td><td>Any system can read the report, and reports are checked against the schema in our tests</td></tr>
-  <tr><td>Folder watcher</td><td>A short loop of our own code</td><td>Checks the input folder every 10 seconds and waits for copies to finish</td></tr>
-  <tr><td>Health check</td><td>A status signal the container gives Docker</td><td>Docker can see whether the service is alive</td></tr>
-  <tr><td>Docker Compose</td><td>A small settings file</td><td>Sets the folders, the memory limit, and options such as the poll interval and centimetres per stripe</td></tr>
- </tbody>
-</table>
-
-<h2>How v1 differs from v0</h2>
+<h2>7. Results: how v1 differs from v0</h2>
 <table>
  <thead><tr><th></th><th>v0</th><th>v1</th></tr></thead>
  <tbody>
-  <tr><td>Approach</td><td>Finds the pinkest column, counts the bars in it</td><td>Measures the stripe rhythm from the first stripe to the last</td></tr>
-  <tr><td>How sure it is</td><td>Judged by how regular the stripes look</td><td>A trained estimate of the chance the count is exactly right</td></tr>
-  <tr><td>Shade</td><td>Needs bright pink stripes, so shaded ones are missed</td><td>Judges red against green and blue, so dark stripes still count</td></tr>
-  <tr><td>A leaf across the gauge</td><td>The count breaks where the leaf cuts the stripes</td><td>Hidden stripes are counted from the rhythm</td></tr>
-  <tr><td>A dry gauge</td><td>No stripes means no reading at all</td><td>Dry (0 stripes) is a proper reading</td></tr>
-  <tr><td>The second shot of a visit</td><td>Not used</td><td>Agreement with it raises confidence</td></tr>
-  <tr><td>A broken gauge</td><td>Not checked</td><td>Too many stripes, or a spacing that doesn't fit the pipe, is flagged</td></tr>
-  <tr><td>An unsure photo</td><td>Left out</td><td>Sent to a person, with the count to check</td></tr>
+  <tr><td>Approach</td><td>Pinkest column, counts the bars in it</td><td>Stripe rhythm from the first stripe to the last</td></tr>
+  <tr><td>How sure it is</td><td>How regular the stripes look</td><td>Trained chance that the count is exactly right</td></tr>
+  <tr><td>Shade</td><td>Needs bright pink (value &ge; 50%); shaded stripes missed</td><td>Red against green and blue; dark stripes count</td></tr>
+  <tr><td>A leaf across the gauge</td><td>Keeps the longest unbroken run; the rest is dropped</td><td>Hidden stripes inside the run are counted</td></tr>
+  <tr><td>A dry gauge</td><td>No stripes, no reading</td><td>0 stripes is a reading (28 of 29 dry photos right)</td></tr>
+  <tr><td>Second shot, broken gauge, unsure photo</td><td>Not used / not checked / left out</td><td>Confidence input / flagged / sent to review with the count to check</td></tr>
  </tbody>
 </table>
-<p><b>Results, scored the same strict way for both.</b> A photo counts only when it is accepted and its stripe count matches the hand count <b>exactly</b>. All 127 photos are scored; none are left out. The visibility sets were sorted by eye.</p>
 <table>
- <thead><tr><th>Photos</th><th class="num">v0</th><th class="num">v1</th></tr></thead>
+ <thead><tr><th>Photos</th><th class="num">v0 accepted &amp; exact</th><th class="num">v1 accepted &amp; exact</th><th class="num">v1 accepted, wrong</th><th class="num">v1 review (right count / wrong)</th><th class="num">v1 no gauge</th></tr></thead>
  <tbody>
-  <tr><td>Clear (59)</td><td class="num">16 = 27.1%</td><td class="num">45 = 76.3%</td></tr>
-  <tr><td>Partly hidden (43)</td><td class="num">3 = 7.0%</td><td class="num">32 = 74.4%</td></tr>
-  <tr><td>Hard (25)</td><td class="num">0 = 0%</td><td class="num">20 = 80.0%</td></tr>
-  <tr class="total"><td>All (127)</td><td class="num">19 = 15.0%</td><td class="num">97 = 76.4%</td></tr>
-  <tr><td>Accepted</td><td class="num">47</td><td class="num">113</td></tr>
-  <tr><td>Accepted but wrong</td><td class="num">28</td><td class="num">16</td></tr>
-  <tr><td>Visits with an accepted, exact reading (66)</td><td class="num">9</td><td class="num">50</td></tr>
+  <tr><td>Clear (59)</td><td class="num">16 = 27.1%</td><td class="num">45 = 76.3%</td><td class="num">5</td><td class="num">9 (5 / 4)</td><td class="num">0</td></tr>
+  <tr><td>Partly hidden (43)</td><td class="num">3 = 7.0%</td><td class="num">32 = 74.4%</td><td class="num">9</td><td class="num">2 (2 / 0)</td><td class="num">0</td></tr>
+  <tr><td>Hard (25)</td><td class="num">0 = 0%</td><td class="num">20 = 80.0%</td><td class="num">2</td><td class="num">3 (1 / 2)</td><td class="num">0</td></tr>
+  <tr class="total"><td>All (127)</td><td class="num">19 = 15.0%</td><td class="num">97 = 76.4%</td><td class="num">16</td><td class="num">14 (8 / 6)</td><td class="num">0</td></tr>
  </tbody>
 </table>
-<p>v0 does accept about 60% of the clear photos (36 of 59), which matches the client's &ldquo;about half&rdquo;. The trouble is that more than half of what it accepts is wrong (28 of 47): its confidence measures how tidy the stripes look, not whether the count is correct.</p>
-<p><b>Why v0 misses the rest (108 photos).</b> It cannot find the gauge or a stripe stack, mostly because shaded stripes are too dark for its colour test: 37 photos. A dry gauge has no stripes, so it gives no reading: 29. It accepts a wrong count, mostly where leaves break its run of stripes: 28. A wrong count it does not accept: 13. The right count just under its confidence bar: 1.</p>
-<div class="note">Scored more loosely, the way some pilot results are reported (within 1 stripe, or within 3 on tall stems counted by estimate, with photos that can't be counted by eye left out), v1 scores 94 of 118 (79.7%). This report uses the strict, exact rule throughout.</div>
-<p class="small">v0 here is our rebuild from its written description, because the original code was not available to us. v1's confidence model is trained on six fields and scored on the seventh, for each field in turn, so no field is scored by a model that saw it.</p>
+<p>v0: 47 accepted, 28 of them wrong; 66 photos with no reading. v1: 113 accepted (89.0%), right when accepted 85.8%; 0 photos with errors. Visits: v0 9 of 66, v1 50 of 66. By field (leave one out), v1 ranges from 47.4% to 100% accepted and exact; the weakest are AIT-CP-2050-9573 (9 of 19) and GAN-CP-3116-8972 (10 of 17).</p>
+<p><b>Why v0 misses 108 photos.</b> No gauge column or stripe stack found, mostly shaded stripes below its brightness bar: 37. Dry gauge, no reading possible: 29. Accepted with a wrong count, mostly leaves breaking its run: 28. Wrong count, not accepted: 13. Right count under its confidence bar: 1.</p>
+<p><b>Tried and dropped</b>, each scored the same way: Lanczos 2&ndash;3&times; enlarging of small rods (no change on 13 rods), counting an extra stripe at the sleeve (+3, &minus;4), following a faint rhythm past the last stripe (+7, &minus;6), extra confidence inputs (lower), and using the colour method's count or score as a vote (lower). Under the looser rule used in some pilot reports (&plusmn;1, or &plusmn;3 on estimated tall stems; 9 uncountable photos left out), v1 scores 94 of 118 (79.7%); see the companion note.</p>
 
-<h2>How we tested it</h2>
+<h2>8. Failure analysis</h2>
+<p>All 16 accepted-but-wrong photos, grouped. &ldquo;Confirmed&rdquo; means the cause was seen on the straightened strip of the photo; &ldquo;suspected&rdquo; means it fits the evidence but was not traced step by step. 7 of the 16 come from one field, GAN-CP-3116-8972.</p>
+<table>
+ <thead><tr><th style="width:21%">Observed issue</th><th class="num">Photos</th><th style="width:28%">Likely cause</th><th>Status</th><th style="width:16%">Impact</th><th style="width:20%">Proposed investigation</th></tr></thead>
+ <tbody>
+  <tr><td>One stripe short at the sleeve (16&rarr;15, 15&rarr;14)</td><td class="num">4</td><td>A thin last stripe at the sleeve is weaker than 0.3 &times; the median and is dropped as a sleeve rim</td><td><span class="tag ok">confirmed</span></td><td>1 cm low</td><td>Measure band width as well as redness at the ends</td></tr>
+  <tr><td>One stripe extra (24&rarr;25)</td><td class="num">2</td><td>A leaf splits one stripe into two peaks</td><td><span class="tag sus">suspected</span></td><td>1 cm high</td><td>Reject gaps under 0.6 &times; local pitch</td></tr>
+  <tr><td>Two extra on a leaf-crossed stem (23&rarr;25)</td><td class="num">1</td><td>Same as above, twice</td><td><span class="tag sus">suspected</span></td><td>2 cm high</td><td>As above</td></tr>
+  <tr><td>Leaves hide the top of the stem (22&rarr;19), both shots</td><td class="num">2</td><td>Stripes under leaves above the first visible stripe cannot be counted; label marked low confidence</td><td><span class="tag ok">confirmed</span></td><td>3 cm low</td><td>Penalise a long grey cap above the first stripe</td></tr>
+  <tr><td>Blurred short stems (4&rarr;0/1, 6&rarr;1/3) accepted at 0.99</td><td class="num">4</td><td>Blur merges stripes; the model trusts a small rod where every visible stripe was &ldquo;seen&rdquo;</td><td><span class="tag sus">suspected</span></td><td>3&ndash;5 cm low; a wet field can read dry</td><td>Add sharpness relative to rod size to the model; re-score leave-one-field-out</td></tr>
+  <tr><td>Far shot, washed-out pink (24&rarr;13), both shots</td><td class="num">2</td><td>Distant pale stripes fail the stripe-pixel test; the rhythm continues past the detected end</td><td><span class="tag ok">confirmed</span></td><td>11 cm low</td><td>Relative threshold along the rod; capture guide (fly closer)</td></tr>
+  <tr><td>Dry gauge read as 2</td><td class="num">1</td><td>A tiny red patch (rod 58 px) taken as a two-stripe stack</td><td><span class="tag sus">suspected</span></td><td>2 cm high</td><td>Minimum rod size for a stripe stack</td></tr>
+ </tbody>
+</table>
+<table>
+ <thead><tr><th style="width:24%">Operational case</th><th>What happens today</th><th>Status</th></tr></thead>
+ <tbody>
+  <tr><td>Faded stripes</td><td>Pale but red stripes count; very washed-out pink on far shots is missed (above)</td><td><span class="tag sus">partly handled</span></td></tr>
+  <tr><td>Short stems</td><td>Read directly; blur is the risk (above)</td><td><span class="tag sus">partly handled</span></td></tr>
+  <tr><td>Crop over the gauge</td><td>Stripes hidden inside the run are counted; stripes hidden at the top are not</td><td><span class="tag sus">partly handled</span></td></tr>
+  <tr><td>Missing twin shot</td><td>Read with one input fewer, flagged; 6 photos in the pilot</td><td><span class="tag ok">handled</span></td></tr>
+  <tr><td>Faulty gauge</td><td>Bad-gauge rule exists; 0 false alarms on the 127 good gauges; never seen a real faulty gauge</td><td><span class="tag open">untested</span></td></tr>
+  <tr><td>Invalid zips</td><td>Broken, empty, photo-less and oversized zips go to <code>failed</code> with an error file (tested)</td><td><span class="tag ok">handled</span></td></tr>
+  <tr><td>Soil state for a dry gauge</td><td>0 stripes &rarr; &minus;10 cm &rarr; Drying, never Irrigate now, by v0's own rule</td><td><span class="tag open">needs client decision</span></td></tr>
+ </tbody>
+</table>
+
+<h2>9. Performance and resource profile</h2>
+<table>
+ <tbody>
+  <tr><th style="width:26%">Hardware</th><td>Laptop: Intel Core i5-1155G7 (4 cores, 8 threads), 15.8 GB RAM, Windows 11 Home</td></tr>
+  <tr><th>Container platform</th><td>Docker 29.6.2 on Docker Desktop (WSL2, Linux kernel 6.18); 8 CPUs and 7.65 GiB visible to Docker; container limited to 2 GB; <code>WORKERS=1</code></td></tr>
+  <tr><th>Input</th><td>Pilot zip: 127 photos, 4096 &times; 3072 JPEG, 713 MB, 66 visit folders</td></tr>
+  <tr><th>Measurement</th><td><b>Reading time</b>: the report's <code>seconds</code> field, from opening the zip to the finished report in memory (excludes the copy, the wait for a stable size and writing the file). <b>Wall time</b>: from starting the copy into <code>in/</code> to the report file appearing, checked every 5 s (includes copying 713 MB and up to two polls). <b>Memory</b>: the container's <code>memory.peak</code> since start, including idle.</td></tr>
+ </tbody>
+</table>
+<table>
+ <thead><tr><th>Run</th><th class="num">Reading time</th><th class="num">Wall time</th><th class="num">Per photo</th><th class="num">Peak memory</th><th>Result</th></tr></thead>
+ <tbody>
+  <tr><td>Oct 12, run 1</td><td class="num">267.0 s</td><td class="num">292 s</td><td class="num">2.1 s</td><td class="num">518 MB</td><td>111 accepted, 16 review, 0 no gauge, 0 error</td></tr>
+  <tr><td>Oct 12, run 2 (commit <code>d510b11</code>)</td><td class="num">236.1 s</td><td class="num">263 s</td><td class="num">1.9 s</td><td class="num">528 MB</td><td>same, 127/127 parity, schema valid</td></tr>
+ </tbody>
+</table>
+<p>Start-up: the container reported healthy 12&ndash;15 s after start. Storage: a report is about 94 KB for 127 photos; the zip itself is kept in <code>in/done</code>, so allow at least the zip's size again. Two runs on one machine are an indication, not a guarantee; other hardware, larger photos or more workers will change the figures.</p>
+
+<h2>10. Testing and reproducibility</h2>
 <ul>
- <li><b>Same answers as the research code.</b> Run over the 127 photos, the container gives the same stripe count and the same accept decision as our research code on <b>all 127</b>.</li>
- <li><b>Automated tests.</b> 39 checks in total. The service tests cover reading zips (visit folders, damaged photos, hostile file names, empty and broken zips, loose photos with no visit folder, too many photos), the soil-state rules, the visit rule, the report format against its schema, and the folder watcher (partly copied zips, duplicates, broken zips, restarts). The reader tests cover synthetic gauges with known answers, hidden stripes, dry gauges, the confidence model and the bad-gauge check.</li>
- <li><b>The real zip, end to end.</b> We started the container, copied in the real 127-photo zip (713 MB) and waited. The report appeared about 4.5 minutes later (267 seconds of reading), the zip moved to <code>done</code>, and the container reported healthy: 111 photos accepted, 16 sent to review, none with no gauge found, none in error. Memory peaked at 518 MB, well inside the 2 GB limit. Dropping the same zip again was recognised and skipped.</li>
- <li><b>A problem we found and fixed.</b> One dry gauge was found by our research code but not by the first build of the container: the container's colour locator skipped the brightness-evening step. With that step added, the container and the research code agree on every photo.</li>
- <li><b>The answer key itself was checked by a person</b> (15 of 15 in the second round), so the scores are not measured against unchecked numbers.</li>
+ <li><b>Parity with the research code:</b> <code>python service/tests/parity.py service/out/waypoints.report.json</code> &rarr; same reading 127/127, same accept decision 127/127.</li>
+ <li><b>Service tests</b> (<code>python -m unittest discover -s service/tests</code>, 8 tests): visit grouping, damaged photo, hostile names (<code>../</code>, drive letters), non-photo files, loose photos, folders of more than 4, empty / photo-less / broken / oversized zips, soil rules, visit rule, report validated against the schema, partial copy, duplicate under another name, broken zip to <code>failed</code> with its fingerprint, fingerprints kept across restarts.</li>
+ <li><b>Reader tests</b> (<code>python -m unittest tests/test_gauge.py tests/test_app.py</code>, 31 tests): synthetic gauges with known answers, hidden stripes, a pitch that the old rule took at 4&times; the true gap, dry gauges, the confidence model, the bad-gauge rule, the colour-locator fallback.</li>
+ <li><b>Live checks:</b> real zip end to end twice; the same zip dropped again under another name was recognised and skipped; container healthy, non-root, restart policy set.</li>
+ <li><b>Versions:</b> commit <code>d510b11</code>; Python 3.11.17 in the image; packages pinned in <code>service/requirements.txt</code>; ground truth <code>data/labels.csv</code>; leave-one-field-out results <code>data/v2_reads.csv</code>.</li>
 </ul>
 
-<h2>Limits and next steps</h2>
-<h3>Limits we want to be upfront about</h3>
-<ul>
- <li>The 76.4% was measured on the photos v1 was built on. The confidence model was always scored on a field it had not seen, but the reading rules were designed looking at these photos. The client's next upload will be the real test.</li>
- <li>One stripe is one centimetre is an assumption. It is not confirmed with the client, and <code>level_cm</code> and <code>soil_state</code> both depend on it. It is a single setting to change once someone measures a gauge.</li>
- <li>A dry gauge is reported as Drying, never Irrigate now. v0's rule puts the guide zero 10 cm up the gauge, so zero stripes works out to &minus;10 cm, which falls in the Drying band. We applied the rule as written, but it may need a second look.</li>
- <li>A photo with no second shot is weaker, because the visit check is missing. It is flagged in the report.</li>
- <li>No photo in our batch shows a faulty gauge, so the bad-gauge check has never seen a real one.</li>
- <li>16 photos were accepted with a wrong count, mostly one stripe off at the top or bottom of the gauge, where a stripe is half hidden by the cap or the sleeve.</li>
- <li>The container's own accept decisions use the model trained on all seven fields, so on these same photos it looks slightly better (111 accepted, 98 exact) than the fair score above.</li>
-</ul>
-<h3>Next steps</h3>
-<ul>
- <li>Run v1 on a fresh batch of client photos, including shots from farther away, and confirm the 76%.</li>
- <li>Ask the client for the real centimetres per stripe, or measure one gauge in the field.</li>
- <li>Agree with the client what the soil state should say for a dry gauge.</li>
- <li>Ask pilots to keep the gauge large in the frame and take two steady shots per visit; blurred and far shots are where v1 most often asks for review.</li>
- <li>Hand the repository and container to the client, with the service README as the starting point.</li>
-</ul>
+<h2>11. Limits and engineering backlog</h2>
+<table>
+ <thead><tr><th>Priority</th><th style="width:30%">Item</th><th>Acceptance criterion</th></tr></thead>
+ <tbody>
+  <tr><td>1</td><td>Run v1 on a fresh labelled batch</td><td>&ge; 100 new photos from fields or days not in the pilot, labelled the same way; accepted-and-exact and accepted-but-wrong reported with a confidence interval</td></tr>
+  <tr><td>1</td><td>Confirm centimetres per stripe</td><td>Three gauges measured in the field; <code>CM_PER_STRIPE</code> set; level within &plusmn;1 cm on those gauges</td></tr>
+  <tr><td>1</td><td>Agree the soil state for a dry gauge</td><td>Client rule written down; a test fixes the output for 0 stripes</td></tr>
+  <tr><td>2</td><td>Stop confident errors on blurred short stems</td><td>The 4 known photos fall below 0.7 with no more than 2 correct accepts lost, leave-one-field-out</td></tr>
+  <tr><td>2</td><td>Read washed-out far shots</td><td>The GAN-CP-3116-8972 27 Sep pair reads 24 or goes to review; no new accepted-but-wrong</td></tr>
+  <tr><td>2</td><td>Person reviews all 16 accepted-but-wrong photos</td><td>Each marked reader error or label error; key and figures updated</td></tr>
+  <tr><td>3</td><td>Heartbeat with <code>WORKERS</code> &gt; 1</td><td>Health stays &ldquo;healthy&rdquo; through a 1,000-photo zip with <code>WORKERS=2</code> (today the heartbeat is written per visit only with one worker)</td></tr>
+  <tr><td>3</td><td>Bad-gauge check on a real faulty gauge</td><td>A photo of a deliberately faulty gauge is flagged and not accepted</td></tr>
+ </tbody>
+</table>
 
+<h2>12. Handover checklist</h2>
+<p class="small">8 of 12 verified. Open items are in the backlog above.</p>
+<table>
+ <thead><tr><th style="width:15%">Area</th><th>Item</th><th style="width:16%">Status</th><th style="width:34%">Evidence</th></tr></thead>
+ <tbody>
+  <tr><td>Reproducibility</td><td>Source commit or release recorded</td><td><span class="tag ok">verified</span></td><td>Commit <code>d510b11</code> in every report</td></tr>
+  <tr><td></td><td>Python, Docker and dependency versions recorded</td><td><span class="tag ok">verified</span></td><td>Sections 5 and 9</td></tr>
+  <tr><td></td><td>Benchmark command and configuration documented</td><td><span class="tag ok">verified</span></td><td>Sections 6, 9 and 10</td></tr>
+  <tr><td></td><td>Ground truth and metric definitions provided</td><td><span class="tag ok">verified</span></td><td>Section 6, <code>data/labels.csv</code></td></tr>
+  <tr><td>Validation</td><td>Fresh dataset not used in development evaluated</td><td><span class="tag open">open</span></td><td>No new photos yet</td></tr>
+  <tr><td></td><td>Stripe-to-centimetre calibration verified</td><td><span class="tag open">open</span></td><td>Needs a field measurement</td></tr>
+  <tr><td></td><td>Dry-gauge soil-state rule confirmed</td><td><span class="tag open">open</span></td><td>Needs the client</td></tr>
+  <tr><td></td><td>All accepted-but-incorrect cases reviewed</td><td><span class="tag open">open</span></td><td>Classified in section 8; not yet reviewed by a person</td></tr>
+  <tr><td>Deployment</td><td>Start-up, configuration and shutdown documented</td><td><span class="tag ok">verified</span></td><td>Section 2</td></tr>
+  <tr><td></td><td>Health checks, logs and failed-zip handling verified</td><td><span class="tag ok">verified</span></td><td>Live run and tests</td></tr>
+  <tr><td></td><td>Duplicate uploads and interrupted copies tested</td><td><span class="tag ok">verified</span></td><td>Tests and live duplicate drop</td></tr>
+  <tr><td></td><td>Storage, memory and processing requirements documented</td><td><span class="tag ok">verified</span></td><td>Section 9</td></tr>
+ </tbody>
+</table>
 </body>
 </html>

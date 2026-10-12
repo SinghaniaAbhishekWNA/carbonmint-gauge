@@ -1,9 +1,15 @@
 {
+ "schema_version": "1.0",
+ "engine": {
+  "name": "CarbonMint gauge reader",
+  "version": "1.0.0",
+  "commit": "d510b11"
+ },
  "service": "CarbonMint gauge reader v1",
  "zip": "sample.zip",
  "sha256": "85364c4a1dffdad35b105078bb9ed7f3c44bab477aff5b359fd4d736e94c291f",
- "processed_at": "2026-10-12T17:42:29+0000",
- "seconds": 267.0,
+ "processed_at": "2026-10-12T18:41:03+0000",
+ "seconds": 236.1,
  "settings": {
   "cm_per_stripe": 1.0,
   "accept_at": 0.7,
