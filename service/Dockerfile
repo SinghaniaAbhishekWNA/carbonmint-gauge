@@ -16,6 +16,10 @@ COPY models/v2_confidence.json /app/models/v2_confidence.json
 COPY methods/teammate/pipeline/isolate.py methods/teammate/pipeline/locate.py methods/teammate/pipeline/rings.py /app/colour/
 COPY service/gaugesvc/ /app/service/gaugesvc/
 
+# the commit the image was built from; every report carries it
+ARG GIT_COMMIT=unknown
+ENV GIT_COMMIT=$GIT_COMMIT
+
 RUN useradd --create-home --uid 10001 gauge && mkdir -p /data/in /data/out && chown -R gauge /data
 USER gauge
 WORKDIR /app/service

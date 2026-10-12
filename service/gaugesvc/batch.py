@@ -6,6 +6,8 @@ from concurrent.futures import ProcessPoolExecutor
 from pathlib import PurePosixPath
 from . import engine
 
+VERSION = "1.0.0"
+SCHEMA_VERSION = "1.0"
 MAX_IMAGES = int(os.environ.get("MAX_IMAGES", "5000"))
 MAX_PHOTO_BYTES = int(os.environ.get("MAX_PHOTO_MB", "60")) * 2**20
 WORKERS = int(os.environ.get("WORKERS", "1"))
@@ -76,7 +78,7 @@ def _read_visit(args):
     return engine.visit(rows)
 
 
-def run(zpath, zip_name=None):
+def run(zpath, zip_name=None, on_visit=None):
     t0 = time.time()
     try:
         zf = zipfile.ZipFile(zpath)
@@ -89,7 +91,11 @@ def run(zpath, zip_name=None):
         with ProcessPoolExecutor(WORKERS) as ex:
             results = list(ex.map(_read_visit, jobs))
     else:
-        results = [_read_visit(j) for j in jobs]
+        results = []
+        for j in jobs:
+            results.append(_read_visit(j))
+            if on_visit:
+                on_visit()                              # keeps the health check alive through long batches
     photos, vis = [], []
     for (key, names), res in zip(visits.items(), results):
         m = VISIT_RE.match(PurePosixPath(names[0]).parent.name)
@@ -100,6 +106,8 @@ def run(zpath, zip_name=None):
             photos.append(dict(file=n, visit=str(PurePosixPath(n).parent), **r))
     count = lambda s: sum(p["status"] == s for p in photos)
     return dict(
+        schema_version=SCHEMA_VERSION,
+        engine=dict(name="CarbonMint gauge reader", version=VERSION, commit=os.environ.get("GIT_COMMIT", "unknown")),
         service="CarbonMint gauge reader v1", zip=zip_name or os.path.basename(zpath), sha256=sha256(zpath),
         processed_at=time.strftime("%Y-%m-%dT%H:%M:%S%z"), seconds=round(time.time() - t0, 1),
         settings=dict(cm_per_stripe=engine.CM_PER_STRIPE, accept_at=0.7, guide_zero_cm=10),

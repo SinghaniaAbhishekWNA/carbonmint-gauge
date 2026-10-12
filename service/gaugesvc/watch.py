@@ -11,6 +11,11 @@ HEARTBEAT = Path(os.environ.get("HEARTBEAT", "/tmp/heartbeat"))
 SEEN = ".processed.json"           # fingerprints of zips already read, kept in OUT
 
 
+def beat():
+    HEARTBEAT.parent.mkdir(parents=True, exist_ok=True)
+    HEARTBEAT.write_text(str(time.time()))
+
+
 def log(msg):
     print(time.strftime("%Y-%m-%d %H:%M:%S"), msg, flush=True)
 
@@ -52,9 +57,9 @@ class Watcher:
             return "duplicate"
         log(f"{z.name}: reading")
         try:
-            report = batch.run(z)
+            report = batch.run(z, on_visit=beat)
         except batch.ZipRejected as e:
-            _write(self.out / f"{z.stem}.error.json", dict(zip=z.name, error=str(e)))
+            _write(self.out / f"{z.stem}.error.json", dict(zip=z.name, sha256=fp, error=str(e)))
             _move(z, self.inp / "failed")
             log(f"{z.name}: failed: {e}")
             return "failed"
@@ -68,8 +73,7 @@ class Watcher:
         return "done"
 
     def once(self):
-        HEARTBEAT.parent.mkdir(parents=True, exist_ok=True)
-        HEARTBEAT.write_text(str(time.time()))
+        beat()
         return [self.handle(z) for z in self.ready()]
 
     def forever(self):
@@ -81,7 +85,7 @@ class Watcher:
 
 def healthy(max_age=None):
     """Docker HEALTHCHECK: the loop wrote its heartbeat recently."""
-    max_age = max_age or 3 * POLL + 600            # one long batch may hold the loop for minutes
+    max_age = max_age or 3 * POLL + 120            # the batch beats after every visit, so this is generous
     try:
         return time.time() - float(HEARTBEAT.read_text()) < max_age
     except (OSError, ValueError):

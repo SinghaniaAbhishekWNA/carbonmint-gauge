@@ -116,6 +116,7 @@ class TestWatcher(Base):
         self.assertEqual(self.w.once(), ["done"])
         rep = json.loads((self.tmp / "out" / "batch.report.json").read_text())
         self.assertEqual(rep["summary"]["photos"], 2)
+        self.assertEqual((rep["schema_version"], rep["engine"]["version"]), ("1.0", "1.0.0"))
         self.assertTrue((self.tmp / "in" / "done" / "batch.zip").exists())
         shutil.copy(self.tmp / "in" / "done" / "batch.zip", self.tmp / "in" / "again.zip")
         self.w.once()
@@ -128,7 +129,9 @@ class TestWatcher(Base):
         self.w.once()
         self.assertEqual(self.w.once(), ["failed"])
         self.assertTrue((self.tmp / "in" / "failed" / "bad.zip").exists())
-        self.assertIn("not a readable zip", json.loads((self.tmp / "out" / "bad.error.json").read_text())["error"])
+        err = json.loads((self.tmp / "out" / "bad.error.json").read_text())
+        self.assertIn("not a readable zip", err["error"])
+        self.assertEqual(len(err["sha256"]), 64)
 
     def test_watcher_survives_restart(self):
         z = make_zip(self.tmp / "in" / "x.zip", [(f"{V1}/a.jpg", jpg(14))])

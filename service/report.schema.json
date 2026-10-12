@@ -2,8 +2,14 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "CarbonMint gauge reader v1 report",
   "type": "object",
-  "required": ["service", "zip", "sha256", "processed_at", "seconds", "settings", "summary", "visits", "photos", "skipped"],
+  "required": ["schema_version", "engine", "service", "zip", "sha256", "processed_at", "seconds", "settings", "summary", "visits", "photos", "skipped"],
   "properties": {
+    "schema_version": {"const": "1.0"},
+    "engine": {
+      "type": "object",
+      "required": ["name", "version", "commit"],
+      "properties": {"name": {"type": "string"}, "version": {"type": "string"}, "commit": {"type": "string"}}
+    },
     "service": {"type": "string"},
     "zip": {"type": "string"},
     "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},

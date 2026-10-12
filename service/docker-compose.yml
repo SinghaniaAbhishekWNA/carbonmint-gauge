@@ -4,6 +4,8 @@ services:
     build:
       context: ..
       dockerfile: service/Dockerfile
+      args:
+        GIT_COMMIT: ${GIT_COMMIT:-unknown}   # GIT_COMMIT=$(git rev-parse --short HEAD) docker compose up -d --build
     image: carbonmint-gauge:v1
     container_name: carbonmint-gauge
     restart: unless-stopped
@@ -12,6 +14,7 @@ services:
       CM_PER_STRIPE: "1.0"     # centimetres per stripe: an assumption until a gauge is measured
       WORKERS: "1"             # visits read in parallel; each worker needs about 400 MB more
       MAX_IMAGES: "5000"       # largest zip accepted, counted in photos
+      MAX_PHOTO_MB: "60"       # a single photo larger than this (uncompressed in the zip) is skipped
     volumes:
       - ./in:/data/in
       - ./out:/data/out
