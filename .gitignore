@@ -24,3 +24,9 @@ data/index.csv
 
 .vercel
 .env*
+
+# service runtime folders and other teams' documents
+service/in/
+service/out/
+Session summary.pdf
+image v1 - service report.pdf

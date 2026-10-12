@@ -10,3 +10,4 @@ data/cache/
 data/*.jpg
 data/.secret
 walk-shots/
+service/

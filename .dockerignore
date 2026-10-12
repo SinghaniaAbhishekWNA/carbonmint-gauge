@@ -1,0 +1,10 @@
+# The image needs only the reader, one model file, three colour-method files and the service.
+*
+!gauge/
+!models/v2_confidence.json
+!methods/teammate/pipeline/isolate.py
+!methods/teammate/pipeline/locate.py
+!methods/teammate/pipeline/rings.py
+!service/requirements.txt
+!service/gaugesvc/
+**/__pycache__

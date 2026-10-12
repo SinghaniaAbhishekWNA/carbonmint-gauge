@@ -1,0 +1,18 @@
+# docker compose up -d --build   (run from this folder; the image is built from the repo root)
+services:
+  gauge:
+    build:
+      context: ..
+      dockerfile: service/Dockerfile
+    image: carbonmint-gauge:v1
+    container_name: carbonmint-gauge
+    restart: unless-stopped
+    environment:
+      POLL_SECONDS: "10"       # how often the in folder is checked
+      CM_PER_STRIPE: "1.0"     # centimetres per stripe: an assumption until a gauge is measured
+      WORKERS: "1"             # visits read in parallel; each worker needs about 400 MB more
+      MAX_IMAGES: "5000"       # largest zip accepted, counted in photos
+    volumes:
+      - ./in:/data/in
+      - ./out:/data/out
+    mem_limit: 2g

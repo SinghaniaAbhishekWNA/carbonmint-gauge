@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CarbonMint gauge reader v1 report",
+  "type": "object",
+  "required": ["service", "zip", "sha256", "processed_at", "seconds", "settings", "summary", "visits", "photos", "skipped"],
+  "properties": {
+    "service": {"type": "string"},
+    "zip": {"type": "string"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "processed_at": {"type": "string"},
+    "seconds": {"type": "number", "minimum": 0},
+    "settings": {
+      "type": "object",
+      "required": ["cm_per_stripe", "accept_at", "guide_zero_cm"],
+      "properties": {"cm_per_stripe": {"type": "number", "exclusiveMinimum": 0}, "accept_at": {"type": "number"}, "guide_zero_cm": {"type": "number"}}
+    },
+    "summary": {
+      "type": "object",
+      "required": ["photos", "accepted", "review", "no_gauge", "error", "visits", "skipped"],
+      "additionalProperties": {"type": "integer", "minimum": 0}
+    },
+    "visits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["folder", "checkpoint", "taken", "photos", "reading", "consistent"],
+        "properties": {
+          "folder": {"type": "string"},
+          "checkpoint": {"type": ["string", "null"]},
+          "taken": {"type": ["string", "null"]},
+          "photos": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+          "reading": {
+            "type": "object",
+            "required": ["status", "stripes", "level_cm", "soil_state"],
+            "properties": {
+              "status": {"enum": ["accepted", "review"]},
+              "stripes": {"type": ["number", "null"], "minimum": 0},
+              "level_cm": {"type": ["number", "null"]},
+              "level_vs_guide_cm": {"type": ["number", "null"]},
+              "soil_state": {"enum": ["Flooded", "Saturated", "Drying", "Irrigate now", null]}
+            }
+          },
+          "consistent": {"type": ["boolean", "null"]}
+        }
+      }
+    },
+    "photos": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["file", "visit", "status", "flags"],
+        "properties": {
+          "file": {"type": "string"},
+          "visit": {"type": "string"},
+          "status": {"enum": ["accepted", "review", "no_gauge", "error"]},
+          "stripes": {"type": ["integer", "null"], "minimum": 0},
+          "candidate_stripes": {"type": "integer", "minimum": 0},
+          "dry": {"type": "boolean"},
+          "level_cm": {"type": "number"},
+          "level_vs_guide_cm": {"type": "number"},
+          "soil_state": {"enum": ["Flooded", "Saturated", "Drying", "Irrigate now"]},
+          "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+          "gauge_box": {"type": ["array", "null"], "items": {"type": "integer"}, "minItems": 4, "maxItems": 4},
+          "note": {"type": "string"},
+          "error": {"type": "string"},
+          "flags": {"type": "array", "items": {"enum": ["no_twin_shot", "twin_unreadable", "colour_locator_used", "bad_gauge"]}}
+        },
+        "allOf": [
+          {"if": {"properties": {"status": {"const": "accepted"}}}, "then": {"required": ["stripes", "dry", "level_cm", "soil_state", "confidence"]}},
+          {"if": {"properties": {"status": {"const": "review"}}}, "then": {"required": ["candidate_stripes", "confidence", "note"]}}
+        ]
+      }
+    },
+    "skipped": {
+      "type": "array",
+      "items": {"type": "object", "required": ["name", "reason"], "properties": {"name": {"type": "string"}, "reason": {"type": "string"}}}
+    }
+  }
+}

@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Gauge reader v1 service report</title>
+<style>
+@page { size: Letter; margin: 18mm 17mm 18mm 17mm; @bottom-right { content: "Page " counter(page) " of " counter(pages); } }
+:root { --ink: #1c2420; --muted: #5b6862; --line: #d5ddd8; --accent: #b3262d; --ok: #2f7d4a; --paper: #fff; --soft: #f3f6f4; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 10.5pt/1.5 "Segoe UI", system-ui, sans-serif; }
+h1 { font-size: 21pt; line-height: 1.2; margin: 0 0 4pt; }
+h2 { font-size: 14pt; margin: 20pt 0 6pt; padding-top: 6pt; border-top: 1.5pt solid var(--ink); break-after: avoid; }
+h3 { font-size: 11pt; margin: 12pt 0 4pt; break-after: avoid; }
+p { margin: 0 0 7pt; }
+.meta { color: var(--muted); font-size: 9.5pt; margin-bottom: 12pt; }
+.lede { font-size: 11.5pt; }
+ol, ul { margin: 0 0 8pt; padding-left: 18pt; }
+li { margin-bottom: 3pt; }
+table { width: 100%; border-collapse: collapse; margin: 6pt 0 10pt; font-size: 9.5pt; break-inside: avoid; }
+th, td { text-align: left; vertical-align: top; padding: 5pt 7pt; border-bottom: 0.75pt solid var(--line); }
+th { background: var(--soft); font-weight: 600; }
+td.num, th.num { text-align: right; white-space: nowrap; }
+tr.total td { font-weight: 700; border-top: 1.25pt solid var(--ink); }
+code, pre { font-family: Consolas, "Cascadia Mono", monospace; font-size: 8.8pt; }
+code { background: var(--soft); padding: 0 3pt; border-radius: 2pt; }
+pre { background: var(--soft); border: 0.75pt solid var(--line); border-radius: 4pt; padding: 8pt 10pt; margin: 6pt 0 10pt; white-space: pre-wrap; break-inside: avoid; }
+.kpis { display: flex; gap: 10pt; margin: 10pt 0 12pt; }
+.kpi { flex: 1; border: 0.75pt solid var(--line); border-radius: 5pt; padding: 8pt 10pt; }
+.kpi b { display: block; font-size: 18pt; line-height: 1.1; }
+.kpi span { color: var(--muted); font-size: 8.8pt; }
+.kpi.v1 b { color: var(--ok); }
+.note { border-left: 3pt solid var(--accent); background: var(--soft); padding: 6pt 10pt; margin: 8pt 0 10pt; font-size: 9.5pt; break-inside: avoid; }
+.small { font-size: 9pt; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<h1>Gauge reader v1 service report: what we built and how it differs from v0</h1>
+<div class="meta">CarbonMint water-gauge reader &middot; Oct 12, 2026</div>
+
+<p class="lede">v1 reads the water level of a paddy-field gauge from a drone photo. It is packaged as a Docker container: the client drops in a zip of photos and gets a JSON report back. On the 127 pilot photos, v1 gives an accepted, exactly correct stripe count on <b>97 photos (76.4%)</b>. The existing reader, v0, manages <b>19 (15.0%)</b>. The target was 70 to 80%.</p>
+
+<div class="kpis">
+ <div class="kpi"><b>15.0%</b><span>v0: accepted and exact (19 of 127)</span></div>
+ <div class="kpi v1"><b>76.4%</b><span>v1: accepted and exact (97 of 127)</span></div>
+ <div class="kpi"><b>28 &rarr; 16</b><span>accepted but wrong, v0 &rarr; v1</span></div>
+</div>
+
+<h2>What we did</h2>
+<p>The client flies a drone over each paddy field every day and photographs a small float gauge standing in the water. As the water rises, red stripes come up out of a black sleeve, about one stripe per centimetre. No stripes showing means the field is dry. The crop often grows over the gauge, and the client's existing reader (v0) gets only about half of the photos right. We were asked to reach 70 to 80% without changing the gauge itself.</p>
+<ol>
+ <li><b>We made an answer key.</b> For every pilot photo we marked the first and last stripe and counted the stripes by hand, as whole stripes. A person then checked two random samples of 15 against the photos: the first round matched 10 of 15, so the key was corrected; the second round matched 15 of 15. Every number in this report is checked against that key.</li>
+ <li><b>We rebuilt v0 and measured it.</b> We did not have v0's code, only a written description of how it works, so we rebuilt it rule by rule from that description and ran it on the same photos.</li>
+ <li><b>We designed v1.</b> Instead of counting stripes one by one, v1 measures the rhythm of the stripes along the gauge, so stripes hidden by a leaf still count. A small trained model then judges how likely the count is to be exactly right, and the client's own acceptance rule decides. We tried each idea separately and kept only what helped.</li>
+ <li><b>We checked the weak spots.</b> We tested enlarging far-away gauges, counting an extra stripe at the sleeve, and several other ideas. Those that did not improve the result on fields the model had not seen were dropped.</li>
+ <li><b>We packaged it as a service.</b> A Docker container that watches a folder: a zip of photos goes in, a JSON report comes out.</li>
+ <li><b>We tested the container with the real zip</b> (127 photos, 713 MB) and confirmed it gives the same answers as our research code on every photo.</li>
+</ol>
+
+<h2>How the service works</h2>
+<p>The container runs all the time. The client copies a zip into one folder and collects the report from another.</p>
+<ol>
+ <li><b>A zip goes into the <code>in</code> folder.</b> It should look like the first zip the client sent: one folder per visit, named <code>&lt;checkpoint&gt; - &lt;ddmmyyHHMMSS&gt;</code>, with that visit's photos inside. The folder name tells us the checkpoint and the time, and keeps the two shots of one visit together.</li>
+ <li><b>The container notices it.</b> It looks at the folder every 10 seconds and waits until the file size stops changing, so it never reads a zip that is still being copied.</li>
+ <li><b>It reads the photos directly from the zip.</b> Nothing is unpacked onto the disk. Photos are processed one visit at a time, so the two shots of a visit can check each other.</li>
+ <li><b>Each photo goes through v1</b> (next sections).</li>
+ <li><b>A report is written</b> to the <code>out</code> folder as <code>&lt;zipname&gt;.report.json</code>, and the zip is moved to <code>in/done</code>. A zip that cannot be read goes to <code>in/failed</code>, with an error file saying why. One damaged photo never stops the batch; it is marked as an error and the rest carry on.</li>
+ <li><b>The same zip dropped twice is only processed once.</b> The container recognises it by its fingerprint (SHA-256), and remembers it across restarts.</li>
+</ol>
+<p>For safety, file names that try to climb out of the folder are ignored, only jpg and png files are read, very large single files are skipped, and there is a limit on how many photos one zip may hold.</p>
+
+<h2>What the report contains</h2>
+<p>The report is a JSON file, plain text that any system can read. It has a summary, then one entry per visit, then one entry per photo. A schema file describes exactly what a valid report looks like.</p>
+<table>
+ <thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+ <tbody>
+  <tr><td><code>status</code></td><td><code>accepted</code>, <code>review</code> (not sure enough, so no number is given), <code>no_gauge</code> or <code>error</code></td></tr>
+  <tr><td><code>stripes</code></td><td>The stripe count, filled in only for accepted photos. <code>0</code> with <code>dry: true</code> means the gauge is down and the field is dry</td></tr>
+  <tr><td><code>candidate_stripes</code></td><td>For a photo in review: the count a person should check</td></tr>
+  <tr><td><code>confidence</code></td><td>The chance that the count is exactly right; a photo is accepted at 0.7 or more</td></tr>
+  <tr><td><code>level_cm</code>, <code>soil_state</code></td><td>The water level in cm and a label: Flooded, Saturated, Drying or Irrigate now</td></tr>
+  <tr><td><code>gauge_box</code></td><td>Where the gauge was found in the photo</td></tr>
+  <tr><td><code>flags</code></td><td>Anything unusual: no second shot of the visit, the second shot unreadable, the colour locator used, a bad gauge</td></tr>
+  <tr><td>visit <code>reading</code></td><td>The mean of the visit's accepted photos (the client's folder rule), and whether they agree</td></tr>
+ </tbody>
+</table>
+<p>The soil state follows v0's own rule: the guide zero sits 10 cm up the gauge. Above +2 cm is Flooded, &minus;2 to +2 is Saturated, down to &minus;12 is Drying, and below that is Irrigate now. A real entry from the pilot zip, trimmed:</p>
+<pre>{
+  "file": ".../AIT-CP-5286-2931-CKP K26 NG - 011026101600/dji_fly_20261001_101600_0358_..._photo.jpg",
+  "status": "accepted",
+  "stripes": 4,
+  "dry": false,
+  "level_cm": 4.0,
+  "level_vs_guide_cm": -6.0,
+  "soil_state": "Drying",
+  "confidence": 0.934,
+  "gauge_box": [2095, 969, 2236, 1071],
+  "flags": []
+}</pre>
+
+<h2>How one photo is read</h2>
+<p>v0 looks for the pinkest column and counts the short pink bars in it. v1 measures instead of counting, then asks how sure it is.</p>
+<table>
+ <thead><tr><th>Step</th><th>What it does</th><th>Why it is there</th></tr></thead>
+ <tbody>
+  <tr><td>1. Find the gauge</td><td>Looks for a stack of separate red stripes on one near-upright line, judging red against green and blue rather than by fixed brightness. A gauge split by a leaf is joined back up</td><td>Shaded stripes are dark; a fixed brightness bar misses them</td></tr>
+  <tr><td>2. Straighten it</td><td>Follows the gauge's lean and bend through the stripe centres</td><td>Drone shots are rarely square-on</td></tr>
+  <tr><td>3. Read the stripe rhythm</td><td>Measures the spacing of the stripes and counts gap by gap from the first stripe to the last</td><td>Stripes hidden by a leaf still count; perspective changes the spacing along the gauge</td></tr>
+  <tr><td>4. The colour locator</td><td>If step 1 finds nothing, our colour method takes over: it evens out brightness, switches off the green crop, and finds the gauge by its stripes, blue-grey pipe and black sleeve</td><td>A dry gauge has no stripes for step 1 to find</td></tr>
+  <tr><td>5. How sure it is</td><td>A small trained model gives the chance the count is exactly right, from the strength of the rhythm, how many stripes were actually seen, sharpness, gauge size and whether the visit's other shot agrees</td><td>The 0.7 bar then means what it says: probably exact</td></tr>
+  <tr><td>6. Client rules</td><td>Accept at 0.7; a visit takes the mean of its accepted photos; a reading that breaks the gauge's physics is flagged as a bad gauge and never accepted</td><td>The same rules v0 follows</td></tr>
+ </tbody>
+</table>
+<p><b>A dry gauge is a reading.</b> When the gauge is found but no stripes are showing, v1 reports 0 stripes and <code>dry: true</code>. This is the reading AWD irrigation needs most, and v0 cannot give it. Of the 29 dry photos, v1 reads 28 correctly.</p>
+<p><b>When it is unsure,</b> the photo is marked <code>review</code>. We give no number rather than guess, so a person can check it.</p>
+
+<h2>What the service is built from</h2>
+<p>Everything is free, open-source software, and nothing needs a paid service or an internet connection once it is installed. The container runs as a normal user rather than an administrator, restarts itself if it stops, and is limited to 2 GB of memory.</p>
+<table>
+ <thead><tr><th>Part</th><th>What it is</th><th>What we use it for</th></tr></thead>
+ <tbody>
+  <tr><td>Docker</td><td>A way of packaging a program with everything it needs into one sealed box</td><td>The client runs the same box on any machine, with nothing else to install</td></tr>
+  <tr><td>Python 3.11</td><td>The programming language</td><td>All the logic: reading the zip, reading the gauges, writing the report</td></tr>
+  <tr><td>NumPy and SciPy</td><td>Libraries for fast calculations on large grids of numbers</td><td>A photo is a grid of numbers: finding the stripes, straightening, measuring the rhythm, and the confidence model</td></tr>
+  <tr><td>Pillow</td><td>A standard library for opening images</td><td>Reading the photos straight from the zip</td></tr>
+  <tr><td>OpenCV</td><td>A standard image-processing library</td><td>The colour locator for gauges the main finder cannot see</td></tr>
+  <tr><td>Confidence model</td><td>A small trained model (one file, under 1 KB)</td><td>The chance that a count is exactly right</td></tr>
+  <tr><td>JSON and JSON Schema</td><td>The report format, and a file describing a valid report</td><td>Any system can read the report, and reports are checked against the schema in our tests</td></tr>
+  <tr><td>Folder watcher</td><td>A short loop of our own code</td><td>Checks the input folder every 10 seconds and waits for copies to finish</td></tr>
+  <tr><td>Health check</td><td>A status signal the container gives Docker</td><td>Docker can see whether the service is alive</td></tr>
+  <tr><td>Docker Compose</td><td>A small settings file</td><td>Sets the folders, the memory limit, and options such as the poll interval and centimetres per stripe</td></tr>
+ </tbody>
+</table>
+
+<h2>How v1 differs from v0</h2>
+<table>
+ <thead><tr><th></th><th>v0</th><th>v1</th></tr></thead>
+ <tbody>
+  <tr><td>Approach</td><td>Finds the pinkest column, counts the bars in it</td><td>Measures the stripe rhythm from the first stripe to the last</td></tr>
+  <tr><td>How sure it is</td><td>Judged by how regular the stripes look</td><td>A trained estimate of the chance the count is exactly right</td></tr>
+  <tr><td>Shade</td><td>Needs bright pink stripes, so shaded ones are missed</td><td>Judges red against green and blue, so dark stripes still count</td></tr>
+  <tr><td>A leaf across the gauge</td><td>The count breaks where the leaf cuts the stripes</td><td>Hidden stripes are counted from the rhythm</td></tr>
+  <tr><td>A dry gauge</td><td>No stripes means no reading at all</td><td>Dry (0 stripes) is a proper reading</td></tr>
+  <tr><td>The second shot of a visit</td><td>Not used</td><td>Agreement with it raises confidence</td></tr>
+  <tr><td>A broken gauge</td><td>Not checked</td><td>Too many stripes, or a spacing that doesn't fit the pipe, is flagged</td></tr>
+  <tr><td>An unsure photo</td><td>Left out</td><td>Sent to a person, with the count to check</td></tr>
+ </tbody>
+</table>
+<p><b>Results, scored the same strict way for both.</b> A photo counts only when it is accepted and its stripe count matches the hand count <b>exactly</b>. All 127 photos are scored; none are left out. The visibility sets were sorted by eye.</p>
+<table>
+ <thead><tr><th>Photos</th><th class="num">v0</th><th class="num">v1</th></tr></thead>
+ <tbody>
+  <tr><td>Clear (59)</td><td class="num">16 = 27.1%</td><td class="num">45 = 76.3%</td></tr>
+  <tr><td>Partly hidden (43)</td><td class="num">3 = 7.0%</td><td class="num">32 = 74.4%</td></tr>
+  <tr><td>Hard (25)</td><td class="num">0 = 0%</td><td class="num">20 = 80.0%</td></tr>
+  <tr class="total"><td>All (127)</td><td class="num">19 = 15.0%</td><td class="num">97 = 76.4%</td></tr>
+  <tr><td>Accepted</td><td class="num">47</td><td class="num">113</td></tr>
+  <tr><td>Accepted but wrong</td><td class="num">28</td><td class="num">16</td></tr>
+  <tr><td>Visits with an accepted, exact reading (66)</td><td class="num">9</td><td class="num">50</td></tr>
+ </tbody>
+</table>
+<p>v0 does accept about 60% of the clear photos (36 of 59), which matches the client's &ldquo;about half&rdquo;. The trouble is that more than half of what it accepts is wrong (28 of 47): its confidence measures how tidy the stripes look, not whether the count is correct.</p>
+<p><b>Why v0 misses the rest (108 photos).</b> It cannot find the gauge or a stripe stack, mostly because shaded stripes are too dark for its colour test: 37 photos. A dry gauge has no stripes, so it gives no reading: 29. It accepts a wrong count, mostly where leaves break its run of stripes: 28. A wrong count it does not accept: 13. The right count just under its confidence bar: 1.</p>
+<div class="note">Scored more loosely, the way some pilot results are reported (within 1 stripe, or within 3 on tall stems counted by estimate, with photos that can't be counted by eye left out), v1 scores 94 of 118 (79.7%). This report uses the strict, exact rule throughout.</div>
+<p class="small">v0 here is our rebuild from its written description, because the original code was not available to us. v1's confidence model is trained on six fields and scored on the seventh, for each field in turn, so no field is scored by a model that saw it.</p>
+
+<h2>How we tested it</h2>
+<ul>
+ <li><b>Same answers as the research code.</b> Run over the 127 photos, the container gives the same stripe count and the same accept decision as our research code on <b>all 127</b>.</li>
+ <li><b>Automated tests.</b> 39 checks in total. The service tests cover reading zips (visit folders, damaged photos, hostile file names, empty and broken zips, loose photos with no visit folder, too many photos), the soil-state rules, the visit rule, the report format against its schema, and the folder watcher (partly copied zips, duplicates, broken zips, restarts). The reader tests cover synthetic gauges with known answers, hidden stripes, dry gauges, the confidence model and the bad-gauge check.</li>
+ <li><b>The real zip, end to end.</b> We started the container, copied in the real 127-photo zip (713 MB) and waited. The report appeared about 4.5 minutes later (267 seconds of reading), the zip moved to <code>done</code>, and the container reported healthy: 111 photos accepted, 16 sent to review, none with no gauge found, none in error. Memory peaked at 518 MB, well inside the 2 GB limit. Dropping the same zip again was recognised and skipped.</li>
+ <li><b>A problem we found and fixed.</b> One dry gauge was found by our research code but not by the first build of the container: the container's colour locator skipped the brightness-evening step. With that step added, the container and the research code agree on every photo.</li>
+ <li><b>The answer key itself was checked by a person</b> (15 of 15 in the second round), so the scores are not measured against unchecked numbers.</li>
+</ul>
+
+<h2>Limits and next steps</h2>
+<h3>Limits we want to be upfront about</h3>
+<ul>
+ <li>The 76.4% was measured on the photos v1 was built on. The confidence model was always scored on a field it had not seen, but the reading rules were designed looking at these photos. The client's next upload will be the real test.</li>
+ <li>One stripe is one centimetre is an assumption. It is not confirmed with the client, and <code>level_cm</code> and <code>soil_state</code> both depend on it. It is a single setting to change once someone measures a gauge.</li>
+ <li>A dry gauge is reported as Drying, never Irrigate now. v0's rule puts the guide zero 10 cm up the gauge, so zero stripes works out to &minus;10 cm, which falls in the Drying band. We applied the rule as written, but it may need a second look.</li>
+ <li>A photo with no second shot is weaker, because the visit check is missing. It is flagged in the report.</li>
+ <li>No photo in our batch shows a faulty gauge, so the bad-gauge check has never seen a real one.</li>
+ <li>16 photos were accepted with a wrong count, mostly one stripe off at the top or bottom of the gauge, where a stripe is half hidden by the cap or the sleeve.</li>
+ <li>The container's own accept decisions use the model trained on all seven fields, so on these same photos it looks slightly better (111 accepted, 98 exact) than the fair score above.</li>
+</ul>
+<h3>Next steps</h3>
+<ul>
+ <li>Run v1 on a fresh batch of client photos, including shots from farther away, and confirm the 76%.</li>
+ <li>Ask the client for the real centimetres per stripe, or measure one gauge in the field.</li>
+ <li>Agree with the client what the soil state should say for a dry gauge.</li>
+ <li>Ask pilots to keep the gauge large in the frame and take two steady shots per visit; blurred and far shots are where v1 most often asks for review.</li>
+ <li>Hand the repository and container to the client, with the service README as the starting point.</li>
+</ul>
+
+</body>
+</html>

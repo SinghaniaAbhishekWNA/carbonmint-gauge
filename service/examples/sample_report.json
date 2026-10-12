@@ -1,0 +1,228 @@
+{
+ "service": "CarbonMint gauge reader v1",
+ "zip": "sample.zip",
+ "sha256": "85364c4a1dffdad35b105078bb9ed7f3c44bab477aff5b359fd4d736e94c291f",
+ "processed_at": "2026-10-12T17:42:29+0000",
+ "seconds": 267.0,
+ "settings": {
+  "cm_per_stripe": 1.0,
+  "accept_at": 0.7,
+  "guide_zero_cm": 10
+ },
+ "summary": {
+  "photos": 8,
+  "accepted": 4,
+  "review": 4,
+  "no_gauge": 0,
+  "error": 0,
+  "visits": 4,
+  "skipped": 0
+ },
+ "visits": [
+  {
+   "folder": "way points/AIT-CP-2050-9573-CKP K26 VP - 011026100546",
+   "checkpoint": "AIT-CP-2050-9573-CKP K26 VP",
+   "taken": "2026-10-01T10:05:46",
+   "photos": [
+    "way points/AIT-CP-2050-9573-CKP K26 VP - 011026100546/dji_fly_20261001_100440_0349_1790916254023_photo.jpg",
+    "way points/AIT-CP-2050-9573-CKP K26 VP - 011026100546/dji_fly_20261001_100546_0350_1790916256510_photo.jpg"
+   ],
+   "reading": {
+    "status": "review",
+    "stripes": null,
+    "level_cm": null,
+    "soil_state": null
+   },
+   "consistent": null
+  },
+  {
+   "folder": "way points/AIT-CP-2050-9573-CKP K26 VP - 021026120016",
+   "checkpoint": "AIT-CP-2050-9573-CKP K26 VP",
+   "taken": "2026-10-02T12:00:16",
+   "photos": [
+    "way points/AIT-CP-2050-9573-CKP K26 VP - 021026120016/dji_fly_20261002_120014_0378_1790925115077_photo.jpg",
+    "way points/AIT-CP-2050-9573-CKP K26 VP - 021026120016/dji_fly_20261002_120016_0379_1790925116668_photo.jpg"
+   ],
+   "reading": {
+    "status": "accepted",
+    "stripes": 24.0,
+    "level_cm": 24.0,
+    "level_vs_guide_cm": 14.0,
+    "soil_state": "Flooded"
+   },
+   "consistent": true
+  },
+  {
+   "folder": "way points/AIT-CP-2050-9573-CKP K26 VP - 031026101858",
+   "checkpoint": "AIT-CP-2050-9573-CKP K26 VP",
+   "taken": "2026-10-03T10:18:58",
+   "photos": [
+    "way points/AIT-CP-2050-9573-CKP K26 VP - 031026101858/dji_fly_20261003_101858_0404_1791020614197_photo.jpg",
+    "way points/AIT-CP-2050-9573-CKP K26 VP - 031026101858/dji_fly_20261003_101900_0405_1791020615880_photo.jpg"
+   ],
+   "reading": {
+    "status": "review",
+    "stripes": null,
+    "level_cm": null,
+    "soil_state": null
+   },
+   "consistent": null
+  },
+  {
+   "folder": "way points/AIT-CP-2050-9573-CKP K26 VP - 041026111348",
+   "checkpoint": "AIT-CP-2050-9573-CKP K26 VP",
+   "taken": "2026-10-04T11:13:48",
+   "photos": [
+    "way points/AIT-CP-2050-9573-CKP K26 VP - 041026111348/dji_fly_20261004_111348_0428_1791100565483_photo.jpg",
+    "way points/AIT-CP-2050-9573-CKP K26 VP - 041026111348/dji_fly_20261004_111356_0429_1791100567251_photo.jpg"
+   ],
+   "reading": {
+    "status": "accepted",
+    "stripes": 15.0,
+    "level_cm": 15.0,
+    "level_vs_guide_cm": 5.0,
+    "soil_state": "Flooded"
+   },
+   "consistent": true
+  }
+ ],
+ "photos": [
+  {
+   "file": "way points/AIT-CP-2050-9573-CKP K26 VP - 011026100546/dji_fly_20261001_100440_0349_1790916254023_photo.jpg",
+   "visit": "way points/AIT-CP-2050-9573-CKP K26 VP - 011026100546",
+   "status": "review",
+   "confidence": 0.456,
+   "gauge_box": [
+    1977,
+    858,
+    2217,
+    1559
+   ],
+   "flags": [],
+   "stripes": null,
+   "candidate_stripes": 19,
+   "note": "review: confidence below 0.7"
+  },
+  {
+   "file": "way points/AIT-CP-2050-9573-CKP K26 VP - 011026100546/dji_fly_20261001_100546_0350_1790916256510_photo.jpg",
+   "visit": "way points/AIT-CP-2050-9573-CKP K26 VP - 011026100546",
+   "status": "review",
+   "confidence": 0.497,
+   "gauge_box": [
+    1878,
+    872,
+    2036,
+    1347
+   ],
+   "flags": [],
+   "stripes": null,
+   "candidate_stripes": 18,
+   "note": "review: confidence below 0.7"
+  },
+  {
+   "file": "way points/AIT-CP-2050-9573-CKP K26 VP - 021026120016/dji_fly_20261002_120014_0378_1790925115077_photo.jpg",
+   "visit": "way points/AIT-CP-2050-9573-CKP K26 VP - 021026120016",
+   "status": "accepted",
+   "confidence": 0.797,
+   "gauge_box": [
+    2128,
+    881,
+    2481,
+    1892
+   ],
+   "flags": [],
+   "stripes": 24,
+   "dry": false,
+   "level_cm": 24.0,
+   "level_vs_guide_cm": 14.0,
+   "soil_state": "Flooded"
+  },
+  {
+   "file": "way points/AIT-CP-2050-9573-CKP K26 VP - 021026120016/dji_fly_20261002_120016_0379_1790925116668_photo.jpg",
+   "visit": "way points/AIT-CP-2050-9573-CKP K26 VP - 021026120016",
+   "status": "accepted",
+   "confidence": 0.797,
+   "gauge_box": [
+    1939,
+    815,
+    2286,
+    1805
+   ],
+   "flags": [],
+   "stripes": 24,
+   "dry": false,
+   "level_cm": 24.0,
+   "level_vs_guide_cm": 14.0,
+   "soil_state": "Flooded"
+  },
+  {
+   "file": "way points/AIT-CP-2050-9573-CKP K26 VP - 031026101858/dji_fly_20261003_101858_0404_1791020614197_photo.jpg",
+   "visit": "way points/AIT-CP-2050-9573-CKP K26 VP - 031026101858",
+   "status": "review",
+   "confidence": 0.546,
+   "gauge_box": [
+    1712,
+    1103,
+    2082,
+    2030
+   ],
+   "flags": [],
+   "stripes": null,
+   "candidate_stripes": 24,
+   "note": "review: confidence below 0.7"
+  },
+  {
+   "file": "way points/AIT-CP-2050-9573-CKP K26 VP - 031026101858/dji_fly_20261003_101900_0405_1791020615880_photo.jpg",
+   "visit": "way points/AIT-CP-2050-9573-CKP K26 VP - 031026101858",
+   "status": "review",
+   "confidence": 0.546,
+   "gauge_box": [
+    1921,
+    1042,
+    2269,
+    1929
+   ],
+   "flags": [],
+   "stripes": null,
+   "candidate_stripes": 23,
+   "note": "review: confidence below 0.7"
+  },
+  {
+   "file": "way points/AIT-CP-2050-9573-CKP K26 VP - 041026111348/dji_fly_20261004_111348_0428_1791100565483_photo.jpg",
+   "visit": "way points/AIT-CP-2050-9573-CKP K26 VP - 041026111348",
+   "status": "accepted",
+   "confidence": 0.874,
+   "gauge_box": [
+    1719,
+    1196,
+    2006,
+    1843
+   ],
+   "flags": [],
+   "stripes": 15,
+   "dry": false,
+   "level_cm": 15.0,
+   "level_vs_guide_cm": 5.0,
+   "soil_state": "Flooded"
+  },
+  {
+   "file": "way points/AIT-CP-2050-9573-CKP K26 VP - 041026111348/dji_fly_20261004_111356_0429_1791100567251_photo.jpg",
+   "visit": "way points/AIT-CP-2050-9573-CKP K26 VP - 041026111348",
+   "status": "accepted",
+   "confidence": 0.873,
+   "gauge_box": [
+    1696,
+    1217,
+    1979,
+    1855
+   ],
+   "flags": [],
+   "stripes": 15,
+   "dry": false,
+   "level_cm": 15.0,
+   "level_vs_guide_cm": 5.0,
+   "soil_state": "Flooded"
+  }
+ ],
+ "skipped": []
+}
