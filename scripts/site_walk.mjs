@@ -1,7 +1,7 @@
 // Headless walk of the betadoc site + demo app (CDP, no dependencies).
 //   node scripts/site_walk.mjs <base-url> <admin-pin> <photo.jpg> [shots-dir]
 // Checks: every page at 1280 and 390 px in light and dark: 0 console errors, no horizontal scroll; index section
-// order; no internal text; theme toggle survives reload; status rows = built count; tour player loads, 7 chapters,
+// order; no internal text; theme toggle survives reload; status rows = built count; tour player loads, one chapter button per chapters.vtt cue,
 // a chapter seeks; app: back-to-home on sign-in, wrong PIN refused, sign in, 127 tiles, open a photo, live read.
 import { spawn } from 'node:child_process';
 import { mkdtempSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
@@ -60,7 +60,8 @@ await ev('localStorage.removeItem("cm-theme")');
 await go(`${base}/index.html`, 1280, 'light');
 await ev('new Promise(r => { const v = document.getElementById("tourvid"); if (v.readyState >= 1) r(); else v.addEventListener("loadedmetadata", r); setTimeout(r, 8000); })');
 ok((await ev('document.getElementById("tourvid").duration')) > 50, `tour video metadata loads (${(await ev('document.getElementById("tourvid").duration'))?.toFixed?.(1)} s)`);
-ok((await ev('document.querySelectorAll("#chapters button").length')) === 7, 'tour has 7 chapters');
+const cues = ((await (await fetch(base + '/media/explainer.chapters.vtt')).text()).match(/-->/g) || []).length;
+ok(cues > 0 && (await ev('document.querySelectorAll("#chapters button").length')) === cues, `tour has ${cues} chapters (one per VTT cue)`);
 await ev('document.getElementById("tourvid").muted = true; document.querySelectorAll("#chapters button")[3].click()');
 await sleep(800);
 ok((await ev('document.getElementById("tourvid").currentTime')) >= 23.9, `chapter click seeks (t=${(await ev('document.getElementById("tourvid").currentTime'))?.toFixed?.(1)})`);

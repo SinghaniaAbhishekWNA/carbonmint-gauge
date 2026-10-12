@@ -8,9 +8,9 @@ from pathlib import Path
 SITE, PUB = Path("site"), Path("public")
 APP_URL = sys.argv[sys.argv.index("--app-url") + 1] if "--app-url" in sys.argv else "app.html"
 NAMES = {"v0 (company, rebuilt)": "v0: current detector (rebuilt)", "Teammate (method 3)": "Colour method (team)",
-         "Our reader, own score": "v1 reader, untrained confidence", "**v1**": "<b>v1</b>"}
+         "Our reader, own score": "v1 reader, untrained confidence", "v1": "v1", "**v2**": "<b>v2</b>"}
 CHAPTERS = [(0, "The gauge and the goal"), (10.6, "Three methods"), (28.1, "None was good enough"),
-            (38.3, "v1: the best idea from each"), (53.0, "The company's rule"), (66.0, "Result: 72.4%"), (81.6, "Next")]
+            (38.3, "v1: the best idea from each"), (53.0, "The company's rule"), (66.0, "Result: 72.4%"), (81.6, "Next"), (90.0, "Update: v2, 76.4%")]
 
 
 def arch_svg():
@@ -62,7 +62,7 @@ def main():
         shutil.copyfile(src, PUB / "media" / name)
     rows, c = results_rows()
     mrows, n = matrix()
-    v0, v1 = c["v0 (company, rebuilt)"], c["**v1**"]
+    v0, v1 = c["v0 (company, rebuilt)"], c["**v2**"]
     fill = {"{{STYLE}}": (SITE / "_style.css").read_text(encoding="utf-8"), "{{THEME}}": (SITE / "_theme.js").read_text(encoding="utf-8"),
             "{{RESULTS_ROWS}}": rows, "{{MATRIX_ROWS}}": mrows, "{{BUILT_COUNT}}": str(n), "{{ARCH_SVG}}": arch_svg(),
             "{{V0_PCT}}": f"{100 * v0['acc_exact'] / v0['n']:.0f}%", "{{V1_PCT}}": f"{100 * v1['acc_exact'] / v1['n']:.0f}%",
@@ -74,7 +74,7 @@ def main():
             t = t.replace(k, v)
         assert "{{" not in t, (page, t[t.index("{{"):t.index("{{") + 30])
         (PUB / page).write_text(t, encoding="utf-8")
-    print(f"public/: index, documentation, app; {n} built features; v0 {fill['{{V0_PCT}}']} vs v1 {fill['{{V1_PCT}}']}; app url {APP_URL}")
+    print(f"public/: index, documentation, app; {n} built features; v0 {fill['{{V0_PCT}}']} vs v2 {fill['{{V1_PCT}}']}; app url {APP_URL}")
 
 
 if __name__ == "__main__":

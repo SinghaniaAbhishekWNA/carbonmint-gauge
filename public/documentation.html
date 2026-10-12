@@ -74,7 +74,7 @@ svg text{fill:var(--ink);font-family:var(--sans)}
  <h3>Read a photo</h3>
  <p>Choose a drone JPEG of a gauge. v1 returns:</p>
  <ul><li>the ring count, in centimetres</li><li>the level against the guide, and the soil state</li><li>its confidence</li><li>whether the reading is accepted</li></ul>
- <p>On the hosted demo the photo is shrunk to 2048 px in your browser first, because the host accepts at most 4.5 MB per request. Exact readings drop from 78% to about 73% at that size. The on-premises lane reads full size.</p>
+ <p>On the hosted demo the photo is shrunk to 2048 px in your browser first, because the host accepts at most 4.5 MB per request. Exact readings drop from 81% to about 75% at that size. The on-premises lane reads full size.</p>
  <h3>Corrections and export</h3>
  <p>Type the right count and save. On-premises, corrections go to <code>data/corrections.csv</code>; the hosted demo does not keep them. Admins can download every reading as CSV.</p>
 </section>
@@ -111,11 +111,19 @@ svg text{fill:var(--ink);font-family:var(--sans)}
   <tr><td>Confidence</td><td>Spacing &times; holes &times; solidity &times; thickness</td><td>Trained probability of an exact count</td></tr>
   <tr><td>Accepting a reading</td><td colspan="2">Confidence &ge; 0.7; a visit takes the mean of its accepted photos (same rule)</td></tr>
  </tbody></table></div>
+ <h3 style="margin-top:20px">What v2 changes</h3>
+ <p>v2 is v1 with three changes, each kept only because it raised the score on photos from a field the model had not seen:</p>
+ <ul>
+  <li><b>Ring gap.</b> The gap is the shortest strong repeat, not the strongest. The strongest repeat can be 2&ndash;4 rings long, which made one rod read 4 instead of 24.</li>
+  <li><b>Gap-by-gap count.</b> Perspective stretches the gap along the rod, so each gap is compared with the gaps next to it rather than one average gap.</li>
+  <li><b>Colour-method locator as a fallback.</b> When our rod finder sees nothing, the team's colour locator is tried. On-premises only, because it needs OpenCV.</li>
+ </ul>
+ <p>Tried and dropped, because they gained nothing or added errors: 2&ndash;3&times; upscaling of far rods, adding a ring at the sleeve, following a faint rhythm past the last ring, and the colour method's count or score as a confidence signal.</p>
 </section>
 <section id="accuracy">
  <h2>How accuracy is measured</h2>
  <p>The company's target: of the photos showing a correct gauge, 70&ndash;80% must be <b>accepted</b> (confidence 0.7 or more) <b>and exact</b>. A confident wrong count does not count.</p>
- <div class="scroll"><table class="table"><thead><tr><th>Method</th><th>Accepted &amp; exact</th><th>Accepted</th><th>Right when accepted</th><th>Exact, all photos</th></tr></thead><tbody><tr><td>v0: current detector (rebuilt)</td><td><b>19/127 = 15.0%</b></td><td>37.0%</td><td>40.4%</td><td>15.7%</td></tr><tr><td>Colour method (team)</td><td><b>51/127 = 40.2%</b></td><td>81.1%</td><td>49.5%</td><td>51.2%</td></tr><tr><td>v1 reader, untrained confidence</td><td><b>17/127 = 13.4%</b></td><td>19.7%</td><td>68.0%</td><td>78.0%</td></tr><tr><td><b>v1</b></td><td><b>92/127 = 72.4%</b></td><td>82.7%</td><td>87.6%</td><td>78.0%</td></tr></tbody></table></div>
+ <div class="scroll"><table class="table"><thead><tr><th>Method</th><th>Accepted &amp; exact</th><th>Accepted</th><th>Right when accepted</th><th>Exact, all photos</th></tr></thead><tbody><tr><td>v0: current detector (rebuilt)</td><td><b>19/127 = 15.0%</b></td><td>37.0%</td><td>40.4%</td><td>15.7%</td></tr><tr><td>Colour method (team)</td><td><b>51/127 = 40.2%</b></td><td>81.1%</td><td>49.5%</td><td>51.2%</td></tr><tr><td>v1 reader, untrained confidence</td><td><b>17/127 = 13.4%</b></td><td>19.7%</td><td>68.0%</td><td>78.0%</td></tr><tr><td>v1</td><td><b>92/127 = 72.4%</b></td><td>82.7%</td><td>87.6%</td><td>78.0%</td></tr><tr><td><b>v2</b></td><td><b>97/127 = 76.4%</b></td><td>89.0%</td><td>85.8%</td><td>82.7%</td></tr></tbody></table></div>
  <p class="small">How the numbers were made:</p>
  <ul class="small">
   <li><b>Labels:</b> ring counts for 127 photos were read by eye. A person checked two random samples of 15: round 1 matched 10 of 15, so the labels were fixed and moved to whole rings; round 2 matched 15 of 15.</li>

@@ -99,6 +99,13 @@ class TestPitch(unittest.TestCase):
         self.assertLess(abs(p - 31.5) / 31.5, 0.03)
 
 
+    def test_strong_multiple_not_taken(self):
+        x = (np.sin(np.arange(900) * 2 * np.pi / 12) > 0.6).astype(float)
+        x[::48] += 1.0                                       # every 4th ring brighter: lag 48 correlates best
+        p, _ = pitch(x)
+        self.assertLess(abs(p - 12) / 12, 0.05)
+
+
 class TestRead(unittest.TestCase):
     def test_known_levels(self):
         for n, p, leaves, sleeve, tilt in [(14, 40, (), "black", 0), (14, 40, (5, 6), "black", 0.05),
@@ -187,6 +194,12 @@ class TestV1(unittest.TestCase):
         self.assertGreater(((m.prob(X) > 0.5) == y).mean(), 0.85)
         m2 = v1.Model.from_json(m.to_json())
         self.assertTrue(np.allclose(m.prob(X), m2.prob(X)))
+
+    def test_fallback_locator(self):
+        from gauge import v1
+        self.assertEqual(v1.fallback({"rings": ""}, {"state": "dry", "rings": "0"})["rings"], 0.0)
+        self.assertEqual(v1.fallback({"rings": ""}, {"state": "unreadable", "rings": ""})["rings"], "")
+        self.assertEqual(v1.fallback({"rings": 7.0}, {"state": "counted", "rings": "9"})["rings"], 7.0)
 
     def test_folder_rule(self):
         from gauge import v1

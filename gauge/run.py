@@ -1,4 +1,4 @@
-"""Read every photo once (parallel) -> data/photo_reads.csv. Other modules read that file.
+"""Read every photo once (parallel) -> data/photo_reads_v2.csv (data/photo_reads.csv is the frozen v1 run).
 Usage: python -m gauge.run ["way points"]"""
 import csv, json, sys
 from multiprocessing import Pool
@@ -38,7 +38,7 @@ def one(args):
     return out
 
 
-def run(root="way points", out="data/photo_reads.csv"):
+def run(root="way points", out="data/photo_reads_v2.csv"):
     rows = list(index.rows(root))
     with Pool(6) as pool:
         res = pool.map(one, [(root, r) for r in rows])

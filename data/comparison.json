@@ -32,7 +32,7 @@
   "visits": 66,
   "visit_ok": 11
  },
- "**v1**": {
+ "v1": {
   "n": 127,
   "acc": 105,
   "acc_exact": 92,
@@ -40,6 +40,17 @@
   "exact": 99,
   "pm1": 111,
   "none": 2,
+  "visits": 66,
+  "visit_ok": 50
+ },
+ "**v2**": {
+  "n": 127,
+  "acc": 113,
+  "acc_exact": 97,
+  "prec": 0.8584070796460177,
+  "exact": 105,
+  "pm1": 115,
+  "none": 0,
   "visits": 66,
   "visit_ok": 50
  }

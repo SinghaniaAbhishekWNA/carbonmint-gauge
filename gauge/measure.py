@@ -53,7 +53,7 @@ def pitch(sig, lo=6, hi=160):
     pk = pk[pk >= lo]
     if not len(pk):
         return None, 0.0
-    k = pk[np.argmax(ac[pk])]
+    k = pk[ac[pk] >= 0.75 * ac[pk].max()][0]          # shortest strong lag: the strongest can be 2-4x the true gap
     y0, y1, y2 = ac[k - 1], ac[k], ac[k + 1]
     den = y0 - 2 * y1 + y2
     return float(k + (0.5 * (y0 - y2) / den if den else 0)), float(ac[k])
@@ -117,6 +117,14 @@ def read(im, det):
             pk = pk[1:]
     first, last = pk.min(), pk.max()
     n = round((last - first) / p) + 1
+    if len(pk) >= 3:                                      # perspective changes the gap along the rod: count gap by
+        g = np.diff(pk).astype(float)                     # gap against the local pitch, not one global pitch
+        n = 1
+        for i, gi in enumerate(g):
+            near = g[max(0, i - 4): i + 5]
+            near = near[(near > 0.6 * p) & (near < 1.5 * p)]
+            q = gi / (np.median(near) if len(near) else p)
+            n += max(1, round(q))
     # ponytail: rings hidden right at the sleeve are not added back (sleeve colour varies by plot); the
     # timeline and two-shot fusion catch those cases instead.
     s = min(s, last + int(p / 2))

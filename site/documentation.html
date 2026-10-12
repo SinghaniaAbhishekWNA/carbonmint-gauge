@@ -34,7 +34,7 @@
  <h3>Read a photo</h3>
  <p>Choose a drone JPEG of a gauge. v1 returns:</p>
  <ul><li>the ring count, in centimetres</li><li>the level against the guide, and the soil state</li><li>its confidence</li><li>whether the reading is accepted</li></ul>
- <p>On the hosted demo the photo is shrunk to 2048 px in your browser first, because the host accepts at most 4.5 MB per request. Exact readings drop from 78% to about 73% at that size. The on-premises lane reads full size.</p>
+ <p>On the hosted demo the photo is shrunk to 2048 px in your browser first, because the host accepts at most 4.5 MB per request. Exact readings drop from 81% to about 75% at that size. The on-premises lane reads full size.</p>
  <h3>Corrections and export</h3>
  <p>Type the right count and save. On-premises, corrections go to <code>data/corrections.csv</code>; the hosted demo does not keep them. Admins can download every reading as CSV.</p>
 </section>
@@ -71,6 +71,14 @@
   <tr><td>Confidence</td><td>Spacing &times; holes &times; solidity &times; thickness</td><td>Trained probability of an exact count</td></tr>
   <tr><td>Accepting a reading</td><td colspan="2">Confidence &ge; 0.7; a visit takes the mean of its accepted photos (same rule)</td></tr>
  </tbody></table></div>
+ <h3 style="margin-top:20px">What v2 changes</h3>
+ <p>v2 is v1 with three changes, each kept only because it raised the score on photos from a field the model had not seen:</p>
+ <ul>
+  <li><b>Ring gap.</b> The gap is the shortest strong repeat, not the strongest. The strongest repeat can be 2&ndash;4 rings long, which made one rod read 4 instead of 24.</li>
+  <li><b>Gap-by-gap count.</b> Perspective stretches the gap along the rod, so each gap is compared with the gaps next to it rather than one average gap.</li>
+  <li><b>Colour-method locator as a fallback.</b> When our rod finder sees nothing, the team's colour locator is tried. On-premises only, because it needs OpenCV.</li>
+ </ul>
+ <p>Tried and dropped, because they gained nothing or added errors: 2&ndash;3&times; upscaling of far rods, adding a ring at the sleeve, following a faint rhythm past the last ring, and the colour method's count or score as a confidence signal.</p>
 </section>
 <section id="accuracy">
  <h2>How accuracy is measured</h2>

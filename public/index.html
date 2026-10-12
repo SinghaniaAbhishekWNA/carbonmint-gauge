@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CarbonMint gauge reader</title>
-<meta name="description" content="Reads the water level from drone photos of AWD field gauges. v1 is accepted and exact on 72% of photos, against 15% for the current detector on the same photos.">
+<meta name="description" content="Reads the water level from drone photos of AWD field gauges. v2 is accepted and exact on 76% of photos, against 15% for the current detector on the same photos.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='5' y='0' width='6' height='16' rx='2' fill='%23b3262d'/%3E%3C/svg%3E">
 <script>(function(){try{var t=localStorage.getItem("cm-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}})();
 function cmToggleTheme(){var r=document.documentElement,cur=r.getAttribute("data-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"),nx=cur==="dark"?"light":"dark";r.setAttribute("data-theme",nx);try{localStorage.setItem("cm-theme",nx)}catch(e){}cmThemeLabel()}
@@ -60,11 +60,11 @@ svg text{fill:var(--ink);font-family:var(--sans)}
 <section id="hero"><div class="wrap">
  <div class="eyebrow">Water level from drone photos</div>
  <h1>Read the gauge in most photos, not half of them.</h1>
- <p class="lede">Each paddy field has a float gauge: the more red rings show above the sleeve, the more water. A drone photographs it every day. v1 reads those rings, says when it is sure, and sends the rest to a person.</p>
+ <p class="lede">Each paddy field has a float gauge: the more red rings show above the sleeve, the more water. A drone photographs it every day. v2 reads those rings, says when it is sure, and sends the rest to a person.</p>
  <p><a class="btn" href="#tour" id="watch">Watch the tour</a> <a class="btn ghost" data-app href="app.html">Try it on real photos</a></p>
  <div class="grid g2" style="margin:28px 0 8px">
   <div class="card"><div class="small">Current detector (v0), same 127 photos</div><div class="stat v0">15%</div><div class="small">accepted at confidence 0.7 and exactly right</div></div>
-  <div class="card"><div class="small">v1</div><div class="stat v1">72%</div><div class="small">accepted at confidence 0.7 and exactly right &middot; target 70&ndash;80%</div></div>
+  <div class="card"><div class="small">v2</div><div class="stat v1">76%</div><div class="small">accepted at confidence 0.7 and exactly right &middot; target 70&ndash;80%</div></div>
  </div>
  <div id="tour" style="margin-top:28px">
   <div class="player"><video id="tourvid" controls preload="metadata" playsinline poster="media/explainer-poster.jpg" width="1920" height="1080">
@@ -72,8 +72,8 @@ svg text{fill:var(--ink);font-family:var(--sans)}
    <track kind="captions" src="media/explainer.captions.vtt" srclang="en" label="English">
    <track kind="chapters" src="media/explainer.chapters.vtt" srclang="en" label="Chapters">
   </video></div>
-  <p class="small">90-second tour: the company's detector, the colour method and our reader on the same photos, and how v1 takes the best idea from each. Captions are in the picture; a text track is also available from the player menu.</p>
-  <ol class="chapters" id="chapters"><li><button type="button" data-t="0">The gauge and the goal</button></li><li><button type="button" data-t="10.6">Three methods</button></li><li><button type="button" data-t="28.1">None was good enough</button></li><li><button type="button" data-t="38.3">v1: the best idea from each</button></li><li><button type="button" data-t="53.0">The company&#x27;s rule</button></li><li><button type="button" data-t="66.0">Result: 72.4%</button></li><li><button type="button" data-t="81.6">Next</button></li></ol>
+  <p class="small">Tour (1 min 44 s): the company's detector, the colour method and our reader on the same photos, how v1 takes the best idea from each, and what v2 adds. Captions are in the picture; a text track is also available from the player menu.</p>
+  <ol class="chapters" id="chapters"><li><button type="button" data-t="0">The gauge and the goal</button></li><li><button type="button" data-t="10.6">Three methods</button></li><li><button type="button" data-t="28.1">None was good enough</button></li><li><button type="button" data-t="38.3">v1: the best idea from each</button></li><li><button type="button" data-t="53.0">The company&#x27;s rule</button></li><li><button type="button" data-t="66.0">Result: 72.4%</button></li><li><button type="button" data-t="81.6">Next</button></li><li><button type="button" data-t="90.0">Update: v2, 76.4%</button></li></ol>
  </div>
 </div></section>
 
@@ -111,8 +111,8 @@ svg text{fill:var(--ink);font-family:var(--sans)}
  </div>
  <h3 style="margin-top:36px">Every photo through every method</h3>
  <p class="small">127 drone photos, 7 fields, 66 visits, 23 September to 6 October 2026. Ring counts were read by eye and checked by a person on two random samples of 15 (the second matched 15 of 15).</p>
- <div class="scroll"><table class="table"><thead><tr><th>Method</th><th>Accepted &amp; exact</th><th>Accepted</th><th>Right when accepted</th><th>Exact, all photos</th></tr></thead><tbody><tr><td>v0: current detector (rebuilt)</td><td><b>19/127 = 15.0%</b></td><td>37.0%</td><td>40.4%</td><td>15.7%</td></tr><tr><td>Colour method (team)</td><td><b>51/127 = 40.2%</b></td><td>81.1%</td><td>49.5%</td><td>51.2%</td></tr><tr><td>v1 reader, untrained confidence</td><td><b>17/127 = 13.4%</b></td><td>19.7%</td><td>68.0%</td><td>78.0%</td></tr><tr><td><b>v1</b></td><td><b>92/127 = 72.4%</b></td><td>82.7%</td><td>87.6%</td><td>78.0%</td></tr></tbody></table></div>
- <p class="small">v0 is the current detector, rebuilt from its written description; its 50% is measured on the company's photos, these photos are harder for it (its brightness floor drops shaded rings). v1's confidence model is trained on six fields and scored on the seventh, for each field in turn. The reader's rules were designed on these same photos, so the next batch of field photos is the real test.</p>
+ <div class="scroll"><table class="table"><thead><tr><th>Method</th><th>Accepted &amp; exact</th><th>Accepted</th><th>Right when accepted</th><th>Exact, all photos</th></tr></thead><tbody><tr><td>v0: current detector (rebuilt)</td><td><b>19/127 = 15.0%</b></td><td>37.0%</td><td>40.4%</td><td>15.7%</td></tr><tr><td>Colour method (team)</td><td><b>51/127 = 40.2%</b></td><td>81.1%</td><td>49.5%</td><td>51.2%</td></tr><tr><td>v1 reader, untrained confidence</td><td><b>17/127 = 13.4%</b></td><td>19.7%</td><td>68.0%</td><td>78.0%</td></tr><tr><td>v1</td><td><b>92/127 = 72.4%</b></td><td>82.7%</td><td>87.6%</td><td>78.0%</td></tr><tr><td><b>v2</b></td><td><b>97/127 = 76.4%</b></td><td>89.0%</td><td>85.8%</td><td>82.7%</td></tr></tbody></table></div>
+ <p class="small">v0 is the current detector, rebuilt from its written description; its 50% is measured on the company's photos, these photos are harder for it (its brightness floor drops shaded rings). v2 adds two reader fixes to v1 (the ring gap can no longer lock onto a multiple of itself, and rings are counted gap by gap because perspective stretches the gap along the rod) and uses the colour method's locator when ours finds no rod. Its confidence model is trained on six fields and scored on the seventh, for each field in turn. The reader's rules were designed on these same photos, so the next batch of field photos is the real test.</p>
 </div></section>
 
 <section id="architecture"><div class="wrap">
@@ -131,8 +131,8 @@ svg text{fill:var(--ink);font-family:var(--sans)}
  <div class="eyebrow">Roadmap</div>
  <h2>Now, next, later</h2>
  <div class="grid g3">
-  <div class="card"><h3>Now</h3><ul><li>v1 reader with trained confidence</li><li>Demo on the 127 pilot photos</li><li>Capture guide for pilots</li></ul></div>
-  <div class="card"><h3>Next</h3><ul><li>Score v1 on the company's own labelled photos</li><li>Confirm the ring-to-centimetre scale</li><li>Add sharpness to the confidence score</li><li>Test the bad-gauge check on a real broken gauge</li></ul></div>
+  <div class="card"><h3>Now</h3><ul><li>v2 reader with trained confidence</li><li>Demo on the 127 pilot photos</li><li>Capture guide for pilots</li></ul></div>
+  <div class="card"><h3>Next</h3><ul><li>Score v2 on the company's own labelled photos</li><li>Confirm the ring-to-centimetre scale</li><li>Add sharpness to the confidence score</li><li>Test the bad-gauge check on a real broken gauge</li></ul></div>
   <div class="card"><h3>Later</h3><ul><li>Trained detector for very far shots</li><li>Burst and low-angle capture trial</li><li>Daily batch run per field</li></ul></div>
  </div>
 </div></section>
@@ -150,11 +150,11 @@ svg text{fill:var(--ink);font-family:var(--sans)}
 
 <section id="demo"><div class="wrap" style="text-align:center">
  <h2>See it on the real photos</h2>
- <p class="lede" style="margin:0 auto 20px">Every pilot photo with v0's and v1's reading side by side, and a live reading of any gauge photo you upload. Sign-in needed: the photos belong to the fields.</p>
+ <p class="lede" style="margin:0 auto 20px">Every pilot photo with the v0, v1 and v2 readings side by side, and a live reading of any gauge photo you upload. Sign-in needed: the photos belong to the fields.</p>
  <a class="btn" data-app href="app.html">Open the demo</a> <a class="btn ghost" href="documentation.html">Read the docs</a>
 </div></section>
 </main>
-<footer><div class="wrap">CarbonMint gauge reader v1 &middot; v0 is the current detector, rebuilt for comparison &middot; <a href="documentation.html">Documentation</a></div></footer>
+<footer><div class="wrap">CarbonMint gauge reader v2 &middot; v0 is the current detector, rebuilt for comparison &middot; <a href="documentation.html">Documentation</a></div></footer>
 <script>
 window.CM_APP_URL="https://carbonmint-gauge-app.vercel.app/app.html";
 (function(){var v=document.getElementById("tourvid"),items=[].slice.call(document.querySelectorAll("#chapters button"));
