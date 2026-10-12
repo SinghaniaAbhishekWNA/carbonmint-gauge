@@ -21,3 +21,6 @@ node_modules/
 phase 1.txt
 methods/0*/
 data/index.csv
+
+.vercel
+.env*

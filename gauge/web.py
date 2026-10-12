@@ -16,6 +16,19 @@ MAX_UPLOAD = int(os.environ.get("CM_MAX_UPLOAD", 4_400_000))      # Vercel caps 
 CLOUD = os.environ.get("CM_CLOUD") == "1"                          # hosted lane: corrections are not kept
 
 
+def _load_env(f=ROOT / ".env"):
+    """Local lane: read KEY=VALUE lines from the gitignored .env (PM2 runs as SYSTEM and sees no user env).
+    Values already in the environment win, so the hosted lane's encrypted env is never overridden."""
+    if f.exists():
+        for line in f.read_text().splitlines():
+            k, sep, v = line.strip().partition("=")
+            if sep and k and not k.startswith("#"):
+                os.environ.setdefault(k.strip(), v.strip())
+
+
+_load_env()
+
+
 def _secret():
     s = os.environ.get("CM_SECRET")
     if s:
