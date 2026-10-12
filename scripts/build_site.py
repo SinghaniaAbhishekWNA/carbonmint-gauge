@@ -9,8 +9,8 @@ SITE, PUB = Path("site"), Path("public")
 APP_URL = sys.argv[sys.argv.index("--app-url") + 1] if "--app-url" in sys.argv else "app.html"
 NAMES = {"v0 (company, rebuilt)": "v0: current detector (rebuilt)", "Teammate (method 3)": "Colour method (team)",
          "Our reader, own score": "v1 reader, untrained confidence", "**v1**": "<b>v1</b>"}
-CHAPTERS = [(0, "The gauge"), (7.9, "Counting fails"), (14.3, "Straighten, find the ends"), (24.0, "The ring gap"),
-            (35.4, "The reading"), (42.2, "Safety check"), (51.2, "Measure, don't count")]
+CHAPTERS = [(0, "The gauge and the goal"), (10.6, "Three methods"), (28.1, "None was good enough"),
+            (38.3, "v1: the best idea from each"), (53.0, "The company's rule"), (66.0, "Result: 72.4%"), (81.6, "Next")]
 
 
 def arch_svg():

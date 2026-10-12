@@ -1,46 +1,61 @@
 WEBVTT
 
-00:00:00.670 --> 00:00:04.175
-In every field, a float rod rises with the water.
+00:00:00.260 --> 00:00:02.200
+Every field has a float rod.
 
-00:00:04.615 --> 00:00:07.450
-The more red rings we see, the higher the water.
+00:00:02.600 --> 00:00:05.550
+The red rings above the sleeve tell you the water level.
 
-00:00:08.470 --> 00:00:10.125
-But leaves hide rings.
+00:00:05.950 --> 00:00:09.900
+The goal: read seven in ten photos exactly, and be sure of it.
 
-00:00:10.545 --> 00:00:14.050
-A simple counter on this photo finds only eleven.
+00:00:10.840 --> 00:00:12.275
+We tried three ways.
 
-00:00:14.830 --> 00:00:16.150
-So we don't count.
+00:00:12.675 --> 00:00:16.800
+The company's detector, version zero, hunts for the pinkest column.
 
-00:00:16.560 --> 00:00:23.875
-We straighten the rod, find its top and the edge of the sleeve, and measure the striped part: nine hundred and one pixels.
+00:00:17.200 --> 00:00:23.525
+Our friend's method isolates the colour, remembers where each gauge stands, and carries it across the two shots.
 
-00:00:24.590 --> 00:00:27.975
-Down the rod, red and grey repeat like a heartbeat.
+00:00:23.935 --> 00:00:27.375
+Our reader measures the ring rhythm, so hidden rings still count.
 
-00:00:28.425 --> 00:00:32.050
-Even where grass covers the rings, the rhythm doesn't change.
+00:00:28.360 --> 00:00:32.200
+On the same hundred and twenty seven photos, none was good enough.
 
-00:00:32.530 --> 00:00:35.250
-Here, one ring every sixty-two pixels.
+00:00:32.600 --> 00:00:37.575
+Our reader was right seventy eight percent of the time, but it was rarely sure enough to say so.
 
-00:00:35.990 --> 00:00:39.475
-Length divided by the gap: fourteen and a half rings.
+00:00:38.600 --> 00:00:41.300
+Version one takes the best idea from each.
 
-00:00:39.935 --> 00:00:42.100
-Hidden rings can't fool a measurement.
+00:00:41.690 --> 00:00:48.675
+It finds the rod by colour, reads the ring rhythm, checks the visit's other shot, and reads a bare grey rod as dry.
 
-00:00:42.760 --> 00:00:45.000
-The plain grey tip checks the scale.
+00:00:49.105 --> 00:00:52.300
+Then a trained model gives the chance the count is exact.
 
-00:00:45.430 --> 00:00:51.000
-And when a photo is too hard, the system says so, and a person checks it, instead of guessing.
+00:00:53.250 --> 00:00:55.050
+The company's rule decides.
 
-00:00:51.850 --> 00:00:52.900
-Measure.
+00:00:55.440 --> 00:01:00.975
+Accept at seventy percent, average the accepted shots, and turn the count into a soil state.
 
-00:00:53.370 --> 00:00:54.575
-Don't count.
+00:01:01.385 --> 00:01:05.275
+A reading that breaks the gauge's physics is flagged as a bad gauge.
+
+00:01:06.270 --> 00:01:11.225
+Result: ninety two of a hundred and twenty seven photos, accepted and exact.
+
+00:01:11.625 --> 00:01:14.200
+Seventy two percent, inside the target.
+
+00:01:14.640 --> 00:01:20.875
+Here, version zero reads ten, our friend's method twenty three, and version one twenty four, which is right.
+
+00:01:21.860 --> 00:01:25.475
+Next, a fresh batch of field photos is the real test.
+
+00:01:25.925 --> 00:01:28.950
+Version one: read every ring, and know when you're sure.
