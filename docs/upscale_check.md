@@ -80,4 +80,33 @@ Otherwise it stays off (`UPSCALE=off`, the default), and the result is reported 
 
 ## Results
 
-(Filled in after the runs. Every triggered photo is listed with before/after, hand count, accepted before/after, adopted or blocked and why.)
+Run on 2026-10-13. Rules above unchanged.
+
+### Test A: pipeline. Gate **failed**, so upscaling stays off.
+
+| | Baseline | Test A |
+|---|---|---|
+| Accepted and exact (127) | 97 = 76.4% | **97 = 76.4%** |
+| Accepted but wrong | 16 | **17** |
+| Review / no gauge | 14 / 0 | 13 / 0 |
+| Looser rule (118) | 94 | 94 |
+
+| Photo | Trigger | Before | Upscayl read | After | Hand count | Other shot | Accepted before → after | Decision |
+|---|---|---|---|---|---|---|---|---|
+| 3158, 27 Sep `_0343` | thin rod | 23 | 22 | 22 | 23 | 22 | no → **yes** | adopted (R3, matches other shot): a right reading in review became a confident wrong one |
+| 3116, 5 Oct `_0457` | thin rod | 2 | **7** | 2 | 0 | 0 | yes → yes | blocked by R3. Upscayl turned a small red patch into 7 stripes. |
+| 3116, 6 Oct `_0484` | no rod (colour locator) | 0 | no rod found | 0 | 0 | 0 | yes → yes | R1: no reading on the upscaled crop |
+| 7 more dry gauges and one no-rod photo | thin rod / no rod | 0 | 0 | 0 | 0 | 0 | yes → yes | adopted, no change |
+
+**Why it does not help:**
+- The pre-registered triggers fire only where the gauge is tiny in the picture (10 photos). v1 was already right on 9 of them.
+- On the one it got wrong, Upscayl made things worse by inventing stripes.
+- v1's real misses (blurred short stems, washed-out far shots, leaves hiding the top) have normal-size gauges, so the triggers do not fire on them.
+
+The gate needed accepted-but-wrong ≤ 16; it is 17. Upscaling is **not adopted**; `UPSCALE` stays off and nothing in v1 changed.
+
+**Run time:** about 15–20 s per crop on the Intel Iris Xe. A typical 0.44-megapixel gauge crop took 60–150 s, and the engine used about 2 GB of memory.
+
+### Test B, S1, S2: **not completed**
+Stopped at the owner's request after 52 of 127 crops (the laptop was overheating). No result is claimed. The 52 upscaled crops are cached in `data/cache/upscayl/`, so the test can resume on a stronger machine with `python scripts/upscale_eval.py upscale`, then `score`.
+

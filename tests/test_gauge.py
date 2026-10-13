@@ -209,3 +209,36 @@ class TestV1(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestUpscale(unittest.TestCase):
+    """Pre-registered rules of docs/upscale_check.md; the engine itself is not needed."""
+
+    def test_missing_engine_falls_back(self):
+        from gauge import upscale
+        old, oldc = upscale.BIN, upscale.CACHE
+        import tempfile
+        upscale.BIN, upscale.CACHE = upscale.Path("no/such/upscayl-bin"), upscale.Path(tempfile.mkdtemp())
+        try:
+            self.assertEqual(upscale.upscale_many([np.zeros((20, 10, 3), np.uint8)]), [None])
+        finally:
+            upscale.BIN, upscale.CACHE = old, oldc
+
+    def test_dry_reading_never_gains_stripes_alone(self):
+        from gauge.upscale import adopt
+        self.assertFalse(adopt("0.0", {"rings": 2.0}, "0.0")[0])
+        self.assertFalse(adopt("0.0", {"rings": 2.0}, None)[0])
+        self.assertTrue(adopt("0.0", {"rings": 2.0}, "2.0")[0])
+
+    def test_disagreeing_with_other_shot_is_blocked(self):
+        from gauge.upscale import adopt
+        self.assertFalse(adopt("13.0", {"rings": 20.0}, "24.0")[0])
+        self.assertTrue(adopt("13.0", {"rings": 23.0}, "24.0")[0])
+        self.assertFalse(adopt("13.0", None, "24.0")[0])
+
+    def test_triggers(self):
+        from gauge.upscale import triggers
+        self.assertEqual(triggers({"rings": ""}), ["no rod"])
+        self.assertEqual(triggers({"rings": "5", "half": "9", "pitch_px": "30"}), ["thin rod"])
+        self.assertEqual(triggers({"rings": "5", "half": "30", "pitch_px": "12"}), ["fine pitch"])
+        self.assertEqual(triggers({"rings": "5", "half": "30", "pitch_px": "30"}), [])
