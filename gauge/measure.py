@@ -53,7 +53,9 @@ def pitch(sig, lo=6, hi=160):
     pk = pk[pk >= lo]
     if not len(pk):
         return None, 0.0
-    k = pk[ac[pk] >= 0.75 * ac[pk].max()][0]          # shortest strong lag: the strongest can be 2-4x the true gap
+    m = ac[pk].max()
+    k = pk[ac[pk] >= 0.75 * m][0] if m > 0 else pk[np.argmax(ac[pk])]   # shortest strong lag: the strongest can be
+                                                                        # 2-4x the true gap; no positive peak: strongest
     y0, y1, y2 = ac[k - 1], ac[k], ac[k + 1]
     den = y0 - 2 * y1 + y2
     return float(k + (0.5 * (y0 - y2) / den if den else 0)), float(ac[k])

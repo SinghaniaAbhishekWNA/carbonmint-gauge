@@ -106,6 +106,13 @@ class TestPitch(unittest.TestCase):
         self.assertLess(abs(p - 12) / 12, 0.05)
 
 
+    def test_no_positive_peak_does_not_crash(self):
+        x = np.array([-1.2, 0.3, -1.0, -1.0, 0.7, -0.1, 0.5, -0.6, 1.2, 0.1, 1.2, 0.7, 0.2, -0.5, 0.0, 0.8, 0.7, -1.2,
+                      1.0, -0.2, 0.8, -0.7])                    # no rhythm: every autocorrelation peak is negative
+        p, _ = pitch(x)                                         # crashed before the fix
+        self.assertIsNotNone(p)
+
+
 class TestRead(unittest.TestCase):
     def test_known_levels(self):
         for n, p, leaves, sleeve, tilt in [(14, 40, (), "black", 0), (14, 40, (5, 6), "black", 0.05),

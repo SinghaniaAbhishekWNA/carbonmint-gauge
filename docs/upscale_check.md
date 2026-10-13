@@ -107,6 +107,54 @@ The gate needed accepted-but-wrong ≤ 16; it is 17. Upscaling is **not adopted*
 
 **Run time:** about 15–20 s per crop on the Intel Iris Xe. A typical 0.44-megapixel gauge crop took 60–150 s, and the engine used about 2 GB of memory.
 
-### Test B, S1, S2: **not completed**
-Stopped at the owner's request after 52 of 127 crops (the laptop was overheating). No result is claimed. The 52 upscaled crops are cached in `data/cache/upscayl/`, so the test can resume on a stronger machine with `python scripts/upscale_eval.py upscale`, then `score`.
+### Test B: every photo. Upscaling makes v1 **worse**.
+Resumed on 2026-10-13 and completed (127 gauge crops, about 70 min on the Intel Iris Xe). Same rules R1–R4.
 
+| | Baseline | Test B |
+|---|---|---|
+| Accepted and exact (127) | 97 = 76.4% | **82 = 64.6%** |
+| Accepted but wrong | 16 | **21** |
+| Review / no gauge | 14 / 0 | 24 / 0 |
+| Looser rule (118) | 94 | 84 |
+
+**What Upscayl did to the counts:**
+- Its reading differs from v1's original on **53 of 127** photos.
+- In **41** of those, v1 was right and Upscayl's reading is wrong.
+- In **0**, v1 was wrong and Upscayl's reading is right.
+- Rule R3 (must agree with the other shot) blocked 46 of the 53. The 8 that got through all made the reading worse, or left a wrong reading wrong:
+
+| Photo | Before | After | Hand count | Accepted before → after |
+|---|---|---|---|---|
+| `_0338` | 3 | 4 | 3 | yes → no |
+| `_0422` | 22 | 23 | 22 | yes → no |
+| `_0343` | 23 | 22 | 23 | no → yes (now a confident wrong reading) |
+| `_0346` | 25 | 14 | 23 | yes → no |
+| `_0401` | 18 | 17 | 18 | yes → no |
+| `_0471` | 3 | 2 | 3 | yes → yes (now wrong) |
+| PK 23 Sep | 25 | 21 | 25 | yes → yes (now wrong) |
+| `_0305` | 9 | 10 | 9 | yes → no |
+
+**Confidence:** 72 photos kept the same count but now carry the upscaled read's signals (sharpness, pattern strength). With those, 11 correct photos fell below 0.7 and 5 rose above it (2 of them correct).
+
+**Why:** Upscayl's model is trained to make photos look sharp, not to keep stripe positions. On gauge crops it shifts, merges or adds stripe edges, so the rhythm v1 measures changes. S2 confirms this directly.
+
+### S1: invented stripes. **Failed** (1 of 29 dry gauges)
+- Dry gauges: Upscayl's crop of `_0457` (hand count 0) reads **7 stripes**. On the other 28 dry gauges it reads 0.
+- Stripe-free caps: 1 of 67 upscaled caps shows a stripe-like band, and the same cap shows one after plain Lanczos enlarging too. That band is real paint at the cap edge, not something Upscayl invented.
+
+### S2: shrink and restore. Upscayl is **worse than plain Lanczos**.
+81 accepted-and-exact photos (half-width ≥ 25 px), shrunk to a quarter, then enlarged ×4:
+- Lanczos gives the exact count back on **77/81** (95%).
+- Upscayl gives the exact count back on **69/81** (85%).
+
+### Conclusion
+On these photos Upscayl does not raise v1's accuracy anywhere:
+- **Test A** (only where the gauge is tiny): 97 → 97, with one more confident mistake.
+- **Test B** (every photo): 97 → 82.
+- It changes correct counts far more often than it fixes wrong ones (41 against 0), and it invented stripes on one dry gauge.
+
+**Upscaling is not adopted.** `UPSCALE` stays off and v1 is unchanged. If far-away photos arrive in a future batch, a non-generative enlarger (Lanczos, or FSRCNN as the team found) is the safer candidate.
+
+**Bug found and fixed on the way:** on some upscaled crops, v1's `pitch()` crashed when every autocorrelation peak was negative (no rhythm). It now falls back to the strongest peak. v1's readings on the 127 real photos are unchanged (checked), and a test reproduces the old crash.
+
+Raw results: `data/upscale_eval.json`. Upscaled images: `data/cache/upscayl/` (local only, not in git).
