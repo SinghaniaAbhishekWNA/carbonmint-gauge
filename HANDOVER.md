@@ -108,11 +108,14 @@ client's container would need source-sharing; only tested so far.
   10 photos; v1 was already right on 9. Result 97 → 97, wrong accepts 16 → **17** (a far shot read 23 correctly but in
   review became an accepted 22). Upscayl also invented 7 stripes on a dry gauge (blocked by the other-shot rule).
   `UPSCALE` stays off; v1 unchanged.
-- **Test B (every photo) + safety checks S1/S2: not completed.** Stopped by the user at 52/127 crops (laptop
-  overheating; ~15–20 s per crop on Intel Iris Xe, ~2 GB RAM). No result claimed. To resume on a stronger machine:
-  download the engine + model into `third_party/upscayl/` (`bin/upscayl-bin.exe`, `models/upscayl-standard-4x.{param,bin}`,
-  check the hashes in the doc), then `python scripts/upscale_eval.py upscale` (reuses any cached crops in `data/cache/upscayl/`), then
-  `python scripts/upscale_eval.py score`.
+- **Test B (every photo): completed 2026-10-13. Makes v1 worse: 97 → 82 (64.6%), 21 wrong accepts.** Upscayl's count
+  differed on 53 photos: 41 times it turned a right count wrong, 0 times it fixed a wrong one. S1: invented 7 stripes on
+  one dry gauge. S2: plain Lanczos restores shrunk gauges better (77/81) than Upscayl (69/81). **Not adopted; `UPSCALE`
+  stays off.** Full write-up `docs/upscale_check.md`, raw `data/upscale_eval.json`, images local only in
+  `data/cache/upscayl/`.
+- **Bug fixed on the way:** `gauge/measure.py` `pitch()` crashed when no autocorrelation peak was positive; now falls
+  back to the strongest (commit `7222e8e`, readings on the 127 photos unchanged). **Not yet live:** needs a Vercel
+  redeploy, an elevated `pm2 restart carbonmint-app` and a Docker rebuild; the user chose to leave that for now.
 - The team's Image V1 has its own upscaling (FSRCNN ×2 retry when < 3 of 5 tests agree). After the team tightened the
   retry rule it changes **0 of 128** photos (their `docs/upscale_check.md`, `results/matrix.csv`).
 
@@ -153,7 +156,7 @@ Reports are HTML printed with headless Chrome (`--print-to-pdf --no-pdf-header-f
 2. Fresh, unseen labelled photo batch: the most important validation step.
 3. Confirm cm per stripe and the dry-gauge soil-state rule with the client.
 4. Person to review the 16 accepted-but-wrong v1 photos.
-5. Upscayl Test B: resume only on a stronger machine (§8).
+5. Redeploy the `pitch()` fix to Vercel, local PM2 and Docker when convenient (§8).
 6. Phasedoc: P5.1.3 (company benchmark), P6.1.4 (cm calibration), P2.1.2 (trained detector), P8.1.6 (90%) open.
 
 ## 13. Continue this conversation
