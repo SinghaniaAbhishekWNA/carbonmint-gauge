@@ -81,7 +81,8 @@ rotating them.
 | `data/labels.csv` (answer key, human spot-checked: round 1 10/15, round 2 15/15), all `*_reads.csv`, `data/comparison.json`, `data/gallery.json` | `way points/`: the 127 original drone photos (714 MB, contain field GPS). **Required to re-run anything.** |
 | `media_private/photos/`: 1200 px copies, metadata stripped, served only after sign-in | `data/index.csv` (holds GPS) |
 | `data/team_key_recounted.csv` (team's recounted key) | `.env` (PINs, secret) |
-| `data/cache/upscayl/`: 52 Upscayl-upscaled crops (660 MB, added on request) | `third_party/upscayl/` (Upscayl engine + model; re-download, see §8) |
+| | `third_party/upscayl/` (Upscayl engine + model; re-download, see §8) |
+| | `data/cache/upscayl/`: Upscayl-upscaled crops (local only; were briefly in git in commit `18896ed`, removed in `a0a411f`) |
 | `models/`, `docs/`, `service/`, `site/`, `public/` | `client-v0/` (client's private v0 source, see §9), `videos/`, `team-report/` |
 
 ## 7. Set up a new laptop
@@ -110,7 +111,7 @@ client's container would need source-sharing; only tested so far.
 - **Test B (every photo) + safety checks S1/S2: not completed.** Stopped by the user at 52/127 crops (laptop
   overheating; ~15–20 s per crop on Intel Iris Xe, ~2 GB RAM). No result claimed. To resume on a stronger machine:
   download the engine + model into `third_party/upscayl/` (`bin/upscayl-bin.exe`, `models/upscayl-standard-4x.{param,bin}`,
-  check the hashes in the doc), then `python scripts/upscale_eval.py upscale` (reuses the 52 cached crops), then
+  check the hashes in the doc), then `python scripts/upscale_eval.py upscale` (reuses any cached crops in `data/cache/upscayl/`), then
   `python scripts/upscale_eval.py score`.
 - The team's Image V1 has its own upscaling (FSRCNN ×2 retry when < 3 of 5 tests agree). After the team tightened the
   retry rule it changes **0 of 128** photos (their `docs/upscale_check.md`, `results/matrix.csv`).
